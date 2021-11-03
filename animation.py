@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from manim import *
 from numpy import *
 import numpy as np
@@ -106,9 +108,9 @@ class CircleWithArcs(Scene):
     def construct(self):
         circle = Circle()
         eps = 0.01
-        phi_1 = PI
+        phi_1 = 5 * PI / 4
         # phi_2 != 0, PI because else we divide by 0
-        phi_2 = PI / 3
+        phi_2 = 13 * PI / 8
 
         # bugs:
         # phi_1 = 0.1, phi_2 = 0.5
@@ -123,8 +125,8 @@ class CircleWithArcs(Scene):
         middle = get_circle_middle(phi_1, phi_2)
 
         # todo remove
-        line_1 = TangentLine(circle, alpha=phi_1 / (2 * PI), length=4)
-        line_2 = TangentLine(circle, alpha=phi_2 / (2 * PI), length=4)
+        line_1 = TangentLine(circle, alpha=phi_1 / (2 * PI), length=10)
+        line_2 = TangentLine(circle, alpha=phi_2 / (2 * PI), length=10)
 
         self.play(Create(circle))
         self.play(Create(line_1))
@@ -150,10 +152,16 @@ def get_arc(phi_1, phi_2):
     middle = get_circle_middle(phi_1, phi_2)
 
     r = np.linalg.norm(middle - point_1)
-    start_angle = arcsin((point_1[1] - middle[1]) / r)
-    angle = arcsin((point_2[0] - middle[0]) / r) - PI / 2 - start_angle
+    # start_angle = arcsin((point_1[1] - middle[1]) / r)
+    # angle = arcsin((point_2[0] - middle[0]) / r) - PI / 2 - start_angle
 
-    arc = Arc(radius=r, arc_center=middle, start_angle=start_angle, angle=angle)
+    # gets angle between two tangents
+    angle = Angle(TangentLine(Circle(), alpha=phi_1 / (2 * PI), length=10),
+                  TangentLine(Circle(), alpha=phi_2 / (2 * PI), length=10))
+
+    ang = angle.get_value(degrees=False)
+    # sometimes wrong middle of arc -> point 1 and point 2 changing, but not sure when
+    arc = ArcBetweenPoints(start=point_2, end=point_1, angle=ang, radius=r)
     return arc
 
 
