@@ -107,35 +107,27 @@ class Horodisk(Scene):
 class CircleWithArcs(Scene):
     def construct(self):
         circle = Circle()
-        eps = 0.01
-        phi_1 = 5 * PI / 4
-        # phi_2 != 0, PI because else we divide by 0
-        phi_2 = 13 * PI / 8
-
-        # bugs:
-        # phi_1 = 0.1, phi_2 = 0.5
-        # phi_1 = 0.1, phi_2 = 3.5
-        # phi_1 = 0.1, phi_2 = 4.5
-
-        point_1 = radian_to_point(phi_1)
-        point_2 = radian_to_point(phi_2)
-        self.play(Create(Dot(point_1, color=RED)))
-        self.play(Create(Dot(point_2, color=BLUE)))
-
-        middle = get_circle_middle(phi_1, phi_2)
-
-        # todo remove
-        line_1 = TangentLine(circle, alpha=phi_1 / (2 * PI), length=10)
-        line_2 = TangentLine(circle, alpha=phi_2 / (2 * PI), length=10)
-
         self.play(Create(circle))
-        self.play(Create(line_1))
-        self.play(Create(line_2))
-        self.play(Create(Dot(middle)))
-        arc = get_arc(phi_1, phi_2)
-        self.play(Create(arc))
 
-        self.wait(duration=2)
+        phis = np.sort(np.random.uniform(0, 2 * PI, 6))
+        dot = Dot(radian_to_point(phis[0]), color=RED)
+        self.add_foreground_mobject(dot)
+        self.play(Create(dot))
+
+        # create hyperbolic hexagon
+        for i in range(phis.shape[0]):
+            phi_1 = phis[i]
+            phi_2 = phis[(i + 1) % 6]
+            point = radian_to_point(phi_2)
+            if i < phis.shape[0] - 1:
+                dot = Dot(point, color=RED)
+                self.add_foreground_mobject(dot)
+                self.play(Create(dot))
+            # bug: if two adjacent points have distance > PI, then the direction needs to be flipped
+            arc = get_arc(phi_1, phi_2).reverse_direction()
+            self.play(Create(arc))
+
+        self.wait(duration=5)
 
 
 def radian_to_point(angle):
@@ -144,28 +136,39 @@ def radian_to_point(angle):
 
 def get_arc(phi_1, phi_2):
     assert phi_1 >= 0
+    assert phi_1 < 2 * PI
     assert phi_2 >= 0
+    assert phi_2 < 2 * PI
+
+    if phi_1 >= phi_2:
+        tmp = phi_2
+        phi_2 = phi_1
+        phi_1 = tmp
+    assert phi_1 < phi_2
 
     point_1 = radian_to_point(phi_1)
     point_2 = radian_to_point(phi_2)
 
     middle = get_circle_middle(phi_1, phi_2)
-
     r = np.linalg.norm(middle - point_1)
-    # start_angle = arcsin((point_1[1] - middle[1]) / r)
-    # angle = arcsin((point_2[0] - middle[0]) / r) - PI / 2 - start_angle
 
     # gets angle between two tangents
-    angle = Angle(TangentLine(Circle(), alpha=phi_1 / (2 * PI), length=10),
-                  TangentLine(Circle(), alpha=phi_2 / (2 * PI), length=10))
+    angle = Angle(TangentLine(Circle(), alpha=phi_1 / (2 * PI)),
+                  TangentLine(Circle(), alpha=phi_2 / (2 * PI)))
 
     ang = angle.get_value(degrees=False)
-    # sometimes wrong middle of arc -> point 1 and point 2 changing, but not sure when
-    arc = ArcBetweenPoints(start=point_2, end=point_1, angle=ang, radius=r)
+    if phi_2 - phi_1 < PI:
+        arc = ArcBetweenPoints(start=point_2, end=point_1, angle=-ang, radius=r)
+    else:
+        arc = ArcBetweenPoints(start=point_1, end=point_2, angle=-ang, radius=r)
     return arc
 
 
 def get_circle_middle(phi_1, phi_2):
+    if sin(phi_2) == 0:  # phi_2 != 0, PI because else we divide by 0
+        tmp = phi_2
+        phi_2 = phi_1
+        phi_1 = tmp
     x = (-sin(phi_1) + sin(phi_2)) / (-cos(phi_2) * sin(phi_1) + cos(phi_1) * sin(phi_2))
     y = (1 - x * cos(phi_2)) / sin(phi_2)
     return np.array((x, y, 0))
