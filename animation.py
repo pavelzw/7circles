@@ -136,6 +136,44 @@ class CircleWithArcs(Scene):
         self.wait(duration=2)
 
 
+class LineTransform(ThreeDScene):
+    def construct(self):
+        line = Line(start=radian_to_point(PI/2), end=radian_to_point(PI))
+        square = Square()
+        circle = Circle()
+        self.add(ThreeDAxes(), circle)
+        self.set_camera_orientation(phi=75 * DEGREES, theta=30 * DEGREES)
+        #self.play(Create(square))
+        #self.play(Create(circle))
+        self.play(Create(line))
+        self.play(ApplyPointwiseFunction(lambda x: tfKleinToHem(x), line))
+
+def tfKleinToHem(point):
+    x = point[0]
+    y = point[1]
+    print(sqrt(1-(x**2)-(y**2)))
+    return array([x,y,sqrt(1-(x**2)-(y**2))])
+
+def tfHemToPoin(point):
+    x = point[0]
+    y = point[1]
+    z = point[2]
+    return array([divide(x,(1+z)), divide(y,(1+z)), 0.])
+
+def tfKleinToPoin(point):
+    return tfHemToPoin(tfKleinToHem(point))
+
+def mobius_transform(point):
+    res = complex_mobius_transform(complex(point[0],point[1]))
+    print(res)
+    return array([real(res), imag(res), point[2]])
+
+def complex_mobius_transform(z):
+    if absolute(z) == 1:
+        return complex(0,0)
+
+    return add(z,complex(-1,0))/add(z,complex(1,0))
+
 def radian_to_point(angle):
     return np.array((cos(angle), sin(angle), 0))
 
