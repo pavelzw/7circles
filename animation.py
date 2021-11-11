@@ -44,64 +44,77 @@ class CircleAndGeodesic(Scene):
 class Horodisk(Scene):
     def construct(self):
         # points of position
-        positionDot1 = array([-1, 0, 0])
-        positionDot2 = array([-2, 0, 0])
-        positionDot3 = array([1, 0, 0])
+        posDot1 = array([-1, 0, 0])
+        posDot2 = array([-2, 0, 0])
+        posDot3 = array([1, 0, 0])
 
         circle1 = Circle(color=WHITE, radius=2)
         circle2 = Circle(color=WHITE, radius=1.5)
         circle3 = Circle(color=WHITE, radius=1)
         circle4 = Circle(color=WHITE, radius=0.5)
-        dot = Dot()
+        dot = Dot(color=BLUE)
+        ToDoText = Text('TODO:Gegenüberstellung euklidische und hyperbolische Horodisks, Center, Radii',
+                        font_size=17).move_to([0, -3, 0])
+        text_dot = Text('Center', font_size=15, color=BLUE).next_to(dot)
 
         # creating circles and dot
         self.play(FadeIn(circle1))
         self.play(FadeIn(dot))
-        self.play(Create(circle2))
-        self.play(Create(circle3))
-        self.play(Create(circle4))
+        self.play(FadeIn(text_dot))
+        self.wait(duration=2)
+        self.play(FadeOut(text_dot))
+        self.play(Create(circle2), Create(circle3), Create(circle4))
+        self.add(ToDoText)
 
         # moving horodisks and dot to [-1,0,0]
-        lineDot = Line(start=ORIGIN, end=positionDot1)  # to coordinate moving of horodisks and point
-        line2 = Line(start=ORIGIN, end=positionDot1 * 0.25)
-        line3 = Line(start=ORIGIN, end=positionDot1 * 0.5)
-        line4 = Line(start=ORIGIN, end=positionDot1 * 0.75)
+        lines = moving_line(ORIGIN, posDot1)
 
         # moves everything to the left
-        self.play(MoveAlongPath(dot, lineDot), MoveAlongPath(circle2, line2), MoveAlongPath(circle3, line3),
-                  MoveAlongPath(circle4, line4))
+        self.play(MoveAlongPath(dot, lines[0]), MoveAlongPath(circle2, lines[1]), MoveAlongPath(circle3, lines[2]),
+                  MoveAlongPath(circle4, lines[3]))
         self.wait(duration=1)
 
         # moving to center [-2,0,0]
-        lineDot = Line(start=positionDot1, end=positionDot2)
-        line2 = Line(start=positionDot1 * 0.25, end=positionDot2 * 0.25)
-        line3 = Line(start=positionDot1 * 0.5, end=positionDot2 * 0.5)
-        line4 = Line(start=positionDot1 * 0.75, end=positionDot2 * 0.75)
+        lines = moving_line(posDot1, posDot2)
 
-        self.play(MoveAlongPath(dot, lineDot), MoveAlongPath(circle2, line2), MoveAlongPath(circle3, line3),
-                  MoveAlongPath(circle4, line4))
+        self.play(MoveAlongPath(dot, lines[0]), MoveAlongPath(circle2, lines[1]),
+                  MoveAlongPath(circle3, lines[2]), MoveAlongPath(circle4, lines[3]))
         self.wait(duration=1)
 
         # moving to [1,0,0]
-        lineDot = Line(start=positionDot2, end=positionDot3)
-        line2 = Line(start=positionDot2 * 0.25, end=positionDot3 * 0.25)
-        line3 = Line(start=positionDot2 * 0.5, end=positionDot3 * 0.5)
-        line4 = Line(start=positionDot2 * 0.75, end=positionDot3 * 0.75)
+        lines = moving_line(posDot2, posDot3)
 
-        self.play(MoveAlongPath(dot, lineDot), MoveAlongPath(circle2, line2), MoveAlongPath(circle3, line3),
-                  MoveAlongPath(circle4, line4))
+        self.play(MoveAlongPath(dot, lines[0]), MoveAlongPath(circle2, lines[1]),
+                  MoveAlongPath(circle3, lines[2]), MoveAlongPath(circle4, lines[3]))
         self.wait(duration=1)
 
         # moving to [1/sqrt(2),1/sqrt(2),0]
+        arcs = moving_circle(0, PI / 4)
 
-        arcDot = Arc(angle=PI / 4)  # creates eighth of circle
-        arc2 = Arc(angle=PI / 4, radius=0.25)
-        arc3 = Arc(angle=PI / 4, radius=0.5)
-        arc4 = Arc(angle=PI / 4, radius=0.75)
-
-        self.play(MoveAlongPath(dot, arcDot), MoveAlongPath(circle2, arc2), MoveAlongPath(circle3, arc3),
-                  MoveAlongPath(circle4, arc4))
+        self.play(MoveAlongPath(dot, arcs[0]), MoveAlongPath(circle2, arcs[1]),
+                  MoveAlongPath(circle3, arcs[2]), MoveAlongPath(circle4, arcs[3]))
         self.wait(duration=2)
+
+        arcs = moving_circle(PI / 4, 4 * PI / 3)
+        self.play(MoveAlongPath(dot, arcs[0]), MoveAlongPath(circle2, arcs[1]),
+                  MoveAlongPath(circle3, arcs[2]), MoveAlongPath(circle4, arcs[3]), run_time=2)
+        self.wait(duration=2)
+
+
+def moving_circle(startangle, angle):
+    arc1 = Arc(start_angle=startangle, angle=angle)  # creates eighth of circle
+    arc2 = Arc(start_angle=startangle, angle=angle, radius=0.25)
+    arc3 = Arc(start_angle=startangle, angle=angle, radius=0.5)
+    arc4 = Arc(start_angle=startangle, angle=angle, radius=0.75)
+    return [arc1, arc2, arc3, arc4]
+
+
+def moving_line(start_point, end_point):
+    line1 = Line(start=start_point, end=end_point)
+    line2 = Line(start=start_point * 0.25, end=end_point * 0.25)
+    line3 = Line(start=start_point * 0.5, end=end_point * 0.5)
+    line4 = Line(start=start_point * 0.75, end=end_point * 0.75)
+    return [line1, line2, line3, line4]
 
 
 class CircleWithArcs(Scene):
