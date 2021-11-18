@@ -136,20 +136,38 @@ class CircleWithArcs(Scene):
         self.wait(duration=2)
 
 
-class LineTransform(ThreeDScene):
+class LineTransform(Scene):
     def construct(self):
-        phi_1 = 0
-        phi_2 = 2
-        line = Line(start=radian_to_point(phi_1), end=radian_to_point(phi_2), shade_in_3d=True)
-        line.insert_n_curves(100)
+        base_point = radian_to_point(0)
+        phis = []
+        lines = []
+        for i in range(1,7):
+            phis.append(radian_to_point(i))
+
+        for p in phis:
+            lines.append(Line(start=base_point, end=p, shade_in_3d=True))
+
+        for l in lines:
+            l.insert_n_curves(500)
+
         circle = Circle(shade_in_3d=True)
-        self.add(circle, ThreeDAxes(), Dot3D([0., 0., -1.]))
+        self.add(circle, ThreeDAxes())
 
-        self.set_camera_orientation(phi=75 * DEGREES, theta=30 * DEGREES)
-        self.play(Create(line))
+        #self.set_camera_orientation(phi=75 * DEGREES, theta=30 * DEGREES)
 
-        self.play(ApplyPointwiseFunction(lambda x: tf_klein_to_hem(0.9999 * x), line))
-        self.play(ApplyPointwiseFunction(lambda x: tf_hem_to_poincare(x), line))
+        animations = [[],[],[],[]]
+
+        for l in lines:
+            animations[0].append(Create(l))
+            animations[1].append(ApplyPointwiseFunction(lambda x: tf_klein_to_poincare(0.9999 * x), l))
+            animations[2].append(ApplyPointwiseFunction(lambda x: mobius_transform(x, 0., 2., 0.), l))
+            animations[3].append(ApplyPointwiseFunction(lambda x: mobius_transform(x, 1.1, 0., 0.), l))
+
+        self.play(*animations[0])
+        self.play(*animations[1])
+        self.play(*animations[2])
+        self.play(*animations[3])
+
         # self.play(Create(Sphere()))
 
 
@@ -171,17 +189,18 @@ def tf_klein_to_poincare(point):
     return tf_hem_to_poincare(tf_klein_to_hem(point))
 
 
-def mobius_transform(point):
-    res = complex_mobius_transform(complex(point[0], point[1]))
-    print(res)
+def mobius_transform(point, x, y, u):
+    res = complex_mobius_transform(complex(point[0], point[1]), x, y, u)
+    #print(res)
     return array([real(res), imag(res), point[2]])
 
 
-def complex_mobius_transform(z):
-    if absolute(z) == 1:
-        return complex(0, 0)
-
-    return add(z, complex(-1, 0)) / add(z, complex(1, 0))
+def complex_mobius_transform(z, x, y, u):
+    a = complex(x,y)
+    b = complex(u, sqrt(-pow(u,2) + pow(x,2) + pow(y,2) - 1))
+    #if absolute(z) == 1:
+    #    return complex(0, 0)
+    return divide(add(multiply(a,z), conj(b)), add(multiply(b,z), conj(a)))
 
 
 def radian_to_point(angle):
