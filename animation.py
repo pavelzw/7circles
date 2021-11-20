@@ -141,32 +141,33 @@ class LineTransform(Scene):
         base_point = radian_to_point(0)
         phis = []
         lines = []
-        for i in range(1,7):
+        for i in range(1, 7):
             phis.append(radian_to_point(i))
 
         for p in phis:
             lines.append(Line(start=base_point, end=p, shade_in_3d=True))
 
         for l in lines:
-            l.insert_n_curves(500)
+            l.insert_n_curves(1000)
 
         circle = Circle(shade_in_3d=True)
         self.add(circle, ThreeDAxes())
 
-        #self.set_camera_orientation(phi=75 * DEGREES, theta=30 * DEGREES)
+        # self.set_camera_orientation(phi=75 * DEGREES, theta=30 * DEGREES)
 
-        animations = [[],[],[],[]]
+        n = 10
+        animations = [[] for _ in range(n)]
 
         for l in lines:
             animations[0].append(Create(l))
             animations[1].append(ApplyPointwiseFunction(lambda x: tf_klein_to_poincare(0.9999 * x), l))
-            animations[2].append(ApplyPointwiseFunction(lambda x: mobius_transform(x, 0., 2., 0.), l))
-            animations[3].append(ApplyPointwiseFunction(lambda x: mobius_transform(x, 1.1, 0., 0.), l))
+            for i in range(2, n):
+                animations[i].append(ApplyPointwiseFunction(lambda x: mobius_transform(x, 1.01, 0., 0.), l))
 
         self.play(*animations[0])
         self.play(*animations[1])
-        self.play(*animations[2])
-        self.play(*animations[3])
+        for i in range(2, n):
+            self.play(*animations[i], run_time=1, rate_func=(lambda x: x))
 
         # self.play(Create(Sphere()))
 
@@ -191,16 +192,16 @@ def tf_klein_to_poincare(point):
 
 def mobius_transform(point, x, y, u):
     res = complex_mobius_transform(complex(point[0], point[1]), x, y, u)
-    #print(res)
+    # print(res)
     return array([real(res), imag(res), point[2]])
 
 
 def complex_mobius_transform(z, x, y, u):
-    a = complex(x,y)
-    b = complex(u, sqrt(-pow(u,2) + pow(x,2) + pow(y,2) - 1))
-    #if absolute(z) == 1:
+    a = complex(x, y)
+    b = complex(u, sqrt(-pow(u, 2) + pow(x, 2) + pow(y, 2) - 1))
+    # if absolute(z) == 1:
     #    return complex(0, 0)
-    return divide(add(multiply(a,z), conj(b)), add(multiply(b,z), conj(a)))
+    return divide(add(multiply(a, z), conj(b)), add(multiply(b, z), conj(a)))
 
 
 def radian_to_point(angle):
