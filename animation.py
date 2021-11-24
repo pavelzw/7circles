@@ -138,38 +138,49 @@ class CircleWithArcs(Scene):
 
 class LineTransform(Scene):
     def construct(self):
-        base_point = radian_to_point(0)
-        phis = []
-        lines = []
-        for i in range(1, 7):
-            phis.append(radian_to_point(i))
+        m = 2
+        phisA = []
+        phisB = []
+        lines = [[] for _ in range(m)]
 
-        for p in phis:
-            lines.append(Line(start=base_point, end=p, shade_in_3d=True))
+        for j in range(m):
 
-        for l in lines:
-            l.insert_n_curves(1000)
+            for i in np.arange(0, 3, 1):
+                phisA.append(radian_to_point(i))
+                phisB.append(radian_to_point(i + 3))
 
-        circle = Circle(shade_in_3d=True)
-        self.add(circle, ThreeDAxes())
+            for p in phisA:
+                for q in phisB:
+                    lines[j].append(Line(start=p, end=q, shade_in_3d=False, stroke_width=0.3))
 
-        # self.set_camera_orientation(phi=75 * DEGREES, theta=30 * DEGREES)
+            for l in lines[j]:
+                l.insert_n_curves(1000)
 
-        n = 10
-        animations = [[] for _ in range(n)]
+            circle = Circle(shade_in_3d=True)
+            self.add(circle, ThreeDAxes())
 
-        for l in lines:
-            animations[0].append(Create(l))
-            animations[1].append(ApplyPointwiseFunction(lambda x: tf_klein_to_poincare(0.9999 * x), l))
+            # self.set_camera_orientation(phi=75 * DEGREES, theta=30 * DEGREES)
+
+            n = 5
+            animations = [[] for _ in range(n)]
+
+            for l in lines[j]:
+                animations[0].append(Create(l))
+                animations[1].append(ApplyPointwiseFunction(lambda x: tf_klein_to_poincare(0.9999 * x), l))
+                for i in range(2, n):
+                    for k in lines:
+                        for h in k:
+                            animations[i].append(ApplyPointwiseFunction(lambda x: mobius_transform(x, 1.01, 0., 0.), h))
+
+            self.play(*animations[0])
+            self.play(*animations[1])
             for i in range(2, n):
-                animations[i].append(ApplyPointwiseFunction(lambda x: mobius_transform(x, 1.01, 0., 0.), l))
+                self.play(*animations[i], run_time=1, rate_func=(lambda x: x))
 
-        self.play(*animations[0])
-        self.play(*animations[1])
-        for i in range(2, n):
-            self.play(*animations[i], run_time=1, rate_func=(lambda x: x))
+        phisA = []
+        phisB = []
 
-        # self.play(Create(Sphere()))
+            # self.play(Create(Sphere()))
 
 
 def tf_klein_to_hem(point):
@@ -229,3 +240,14 @@ def get_circle_middle(phi_1, phi_2):
     x = (-sin(phi_1) + sin(phi_2)) / (-cos(phi_2) * sin(phi_1) + cos(phi_1) * sin(phi_2))
     y = (1 - x * cos(phi_2)) / sin(phi_2)
     return np.array((x, y, 0))
+
+if __name__ == '__main__':
+
+    import subprocess
+
+    params = 'manim -pql animation.py LineTransform -v DEBUG'.split()
+    subprocess.run(params,
+                   check=True,
+                   capture_output=True,
+                   text=True)
+
