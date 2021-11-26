@@ -31,89 +31,74 @@ class CirclesNextToEachOther(Scene):
 
 class CircleAndGeodesic(Scene):
     def construct(self):
-        circle1 = Circle()
-        line1 = Line()  # creates line
-        geod = Arc(angle=PI / 2)  # creates quarter circle
-        geod.move_to([-0.5, -0.5, 0])  # moves to bottom left, but why 0.5??????
+        circle3 = Circle(radius=0.5).move_to([-3, 0, 0])
+        line3 = Line(start=array([-3, 0, 0]), end=array([-3, 0, 0]) - array([0.75, 0, 0]))
 
-        self.play(Create(circle1))
-        self.play(Create(line1))
-        self.play(Create(geod))
+        circle2 = Circle().move_to([-3, 0, 0])
+        line2 = Line(start=array([-3, 0, 0]), end=array([-3, 0, 0]) - array([0.5, 0, 0]))
+
+        circle1 = Circle(radius=1.5).move_to([-3, 0, 0])
+        line1 = Line(start=array([-3, 0, 0]), end=array([-3, 0, 0]) - array([0.25, 0, 0]))
+
+        self.add(Circle(radius=2).move_to([-3, 0, 0]))
+        self.play(MoveAlongPath(circle3, line3), MoveAlongPath(circle2, line2),
+                  MoveAlongPath(circle1, line1))  # creates line
 
 
 class Horodisk(Scene):
     def construct(self):
-        # points of position
-        posDot1 = array([-1, 0, 0])
-        posDot2 = array([-2, 0, 0])
-        posDot3 = array([1, 0, 0])
 
-        circle1 = Circle(color=WHITE, radius=2)
-        circle2 = Circle(color=WHITE, radius=1.5)
-        circle3 = Circle(color=WHITE, radius=1)
-        circle4 = Circle(color=WHITE, radius=0.5)
-        dot = Dot(color=BLUE)
-        ToDoText = Text('TODO:Gegenüberstellung euklidische und hyperbolische Horodisks, Center, Radii',
-                        font_size=17).move_to([0, -3, 0])
-        text_dot = Text('Center', font_size=15, color=BLUE).next_to(dot)
+        # points of position
+        center = [-4, 0, 0]
+        start_points = array([center, center, center, center])
+        length = [1, 1, -3]  # 1 is 1 unit to the left, -3 is 3 units to the right, way of circles moving
+
+        angle1 = PI / 4
+        angle2 = 4 * PI / 3
+        angles = [0, angle1, angle2]
+
+        outer_circle = Circle(color=WHITE, radius=2).move_to(center)
+        circle = [Dot(color=BLUE), Circle(color=WHITE, radius=1.5),
+                  Circle(color=WHITE, radius=1), Circle(color=WHITE, radius=0.5)]
+        circles = Group(circle[0], circle[1], circle[2], circle[3]).move_to(center)
 
         # creating circles and dot
-        self.play(FadeIn(circle1))
-        self.play(FadeIn(dot))
-        self.play(FadeIn(text_dot))
+        self.play(FadeIn(outer_circle))
+        self.play(FadeIn(circle[0]))
         self.wait(duration=2)
-        self.play(FadeOut(text_dot))
-        self.play(Create(circle2), Create(circle3), Create(circle4))
-        self.add(ToDoText)
+        self.play(Create(circle[1]), Create(circle[2]), Create(circle[3]))
 
-        # moving horodisks and dot to [-1,0,0]
-        lines = moving_line(ORIGIN, posDot1)
+        # circles moving along a line 3 times
+        for i in range(3):
+            end_points = array([start_points[0] - [1 * length[i], 0, 0], start_points[1] - [0.25 * length[i], 0, 0],
+                                start_points[2] - [0.5 * length[i], 0, 0], start_points[3] - [0.75 * length[i], 0, 0]])
+            lines = moving_line(start_points, end_points)
+            self.play(MoveAlongPath(circle[0], lines[0]), MoveAlongPath(circle[1], lines[1]),
+                      MoveAlongPath(circle[2], lines[2]), MoveAlongPath(circle[3], lines[3]))
+            self.wait(duration=1)
+            start_points = end_points
 
-        # moves everything to the left
-        self.play(MoveAlongPath(dot, lines[0]), MoveAlongPath(circle2, lines[1]), MoveAlongPath(circle3, lines[2]),
-                  MoveAlongPath(circle4, lines[3]))
-        self.wait(duration=1)
-
-        # moving to center [-2,0,0]
-        lines = moving_line(posDot1, posDot2)
-
-        self.play(MoveAlongPath(dot, lines[0]), MoveAlongPath(circle2, lines[1]),
-                  MoveAlongPath(circle3, lines[2]), MoveAlongPath(circle4, lines[3]))
-        self.wait(duration=1)
-
-        # moving to [1,0,0]
-        lines = moving_line(posDot2, posDot3)
-
-        self.play(MoveAlongPath(dot, lines[0]), MoveAlongPath(circle2, lines[1]),
-                  MoveAlongPath(circle3, lines[2]), MoveAlongPath(circle4, lines[3]))
-        self.wait(duration=1)
-
-        # moving to [1/sqrt(2),1/sqrt(2),0]
-        arcs = moving_circle(0, PI / 4)
-
-        self.play(MoveAlongPath(dot, arcs[0]), MoveAlongPath(circle2, arcs[1]),
-                  MoveAlongPath(circle3, arcs[2]), MoveAlongPath(circle4, arcs[3]))
-        self.wait(duration=2)
-
-        arcs = moving_circle(PI / 4, 4 * PI / 3)
-        self.play(MoveAlongPath(dot, arcs[0]), MoveAlongPath(circle2, arcs[1]),
-                  MoveAlongPath(circle3, arcs[2]), MoveAlongPath(circle4, arcs[3]), run_time=2)
-        self.wait(duration=2)
+        # circles moving along part circle twice
+        for i in range(2):
+            arcs = moving_circle(angles[i], angles[i + 1])
+            self.play(MoveAlongPath(circle[0], arcs[0]), MoveAlongPath(circle[1], arcs[1]),
+                      MoveAlongPath(circle[2], arcs[2]), MoveAlongPath(circle[3], arcs[3]))
+            self.wait(duration=1)
 
 
-def moving_circle(startangle, angle):
-    arc1 = Arc(start_angle=startangle, angle=angle)  # creates eighth of circle
-    arc2 = Arc(start_angle=startangle, angle=angle, radius=0.25)
-    arc3 = Arc(start_angle=startangle, angle=angle, radius=0.5)
-    arc4 = Arc(start_angle=startangle, angle=angle, radius=0.75)
+def moving_circle(start_angle, end_angle):
+    arc1 = Arc(start_angle=start_angle, angle=end_angle).move_arc_center_to([-4, 0, 0])  # creates eighth of circle
+    arc2 = Arc(start_angle=start_angle, angle=end_angle, radius=0.25).move_arc_center_to([-4, 0, 0])
+    arc3 = Arc(start_angle=start_angle, angle=end_angle, radius=0.5).move_arc_center_to([-4, 0, 0])
+    arc4 = Arc(start_angle=start_angle, angle=end_angle, radius=0.75).move_arc_center_to([-4, 0, 0])
     return [arc1, arc2, arc3, arc4]
 
 
-def moving_line(start_point, end_point):
-    line1 = Line(start=start_point, end=end_point)
-    line2 = Line(start=start_point * 0.25, end=end_point * 0.25)
-    line3 = Line(start=start_point * 0.5, end=end_point * 0.5)
-    line4 = Line(start=start_point * 0.75, end=end_point * 0.75)
+def moving_line(start_points, end_points):
+    line1 = Line(start=start_points[0], end=end_points[0])
+    line2 = Line(start=start_points[1], end=end_points[1])
+    line3 = Line(start=start_points[2], end=end_points[2])
+    line4 = Line(start=start_points[3], end=end_points[3])
     return [line1, line2, line3, line4]
 
 
