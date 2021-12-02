@@ -29,7 +29,7 @@ class CirclesNextToEachOther(Scene):
         self.play(Create(circle2))
 
 
-class CircleAndGeodesic(Scene):
+class Try(Scene):
     def construct(self):
         circle3 = Circle(radius=0.5).move_to([-3, 0, 0])
         line3 = Line(start=array([-3, 0, 0]), end=array([-3, 0, 0]) - array([0.75, 0, 0]))
@@ -45,9 +45,29 @@ class CircleAndGeodesic(Scene):
                   MoveAlongPath(circle1, line1))  # creates line
 
 
+class EuclidianCircles(Scene):
+    def construct(self):
+        # euclidian situation
+        eucl_center = [4, 0, 0]
+        point1 = eucl_center - array([1, 0, 0])
+        point2 = point1 + array([1, 1, 0])
+        points = array([eucl_center, point1, point2])
+
+        square = Square(side_length=4).move_to(eucl_center)
+        circle = Circle(radius=1).move_to(eucl_center)
+        dot = Dot().move_to(eucl_center)
+        group = Group(circle, dot)
+        self.play(Create(square))
+        self.play(Create(dot))
+        self.play(Create(circle))
+        for i in range(2):
+            self.play(MoveAlongPath(group, Line(start=points[i], end=points[i + 1])))
+
+
 class Horodisk(Scene):
     def construct(self):
 
+        # hyperbolic situation
         # points of position
         center = [-4, 0, 0]
         start_points = array([center, center, center, center])
@@ -80,17 +100,17 @@ class Horodisk(Scene):
 
         # circles moving along part circle twice
         for i in range(2):
-            arcs = moving_circle(angles[i], angles[i + 1])
+            arcs = moving_circle(angles[i], angles[i + 1], center)
             self.play(MoveAlongPath(circle[0], arcs[0]), MoveAlongPath(circle[1], arcs[1]),
                       MoveAlongPath(circle[2], arcs[2]), MoveAlongPath(circle[3], arcs[3]))
             self.wait(duration=1)
 
 
-def moving_circle(start_angle, end_angle):
-    arc1 = Arc(start_angle=start_angle, angle=end_angle).move_arc_center_to([-4, 0, 0])  # creates eighth of circle
-    arc2 = Arc(start_angle=start_angle, angle=end_angle, radius=0.25).move_arc_center_to([-4, 0, 0])
-    arc3 = Arc(start_angle=start_angle, angle=end_angle, radius=0.5).move_arc_center_to([-4, 0, 0])
-    arc4 = Arc(start_angle=start_angle, angle=end_angle, radius=0.75).move_arc_center_to([-4, 0, 0])
+def moving_circle(start_angle, end_angle, center):
+    arc1 = Arc(start_angle=start_angle, angle=end_angle).move_arc_center_to(center)  # creates eighth of circle
+    arc2 = Arc(start_angle=start_angle, angle=end_angle, radius=0.25).move_arc_center_to(center)
+    arc3 = Arc(start_angle=start_angle, angle=end_angle, radius=0.5).move_arc_center_to(center)
+    arc4 = Arc(start_angle=start_angle, angle=end_angle, radius=0.75).move_arc_center_to(center)
     return [arc1, arc2, arc3, arc4]
 
 
