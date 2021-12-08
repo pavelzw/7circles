@@ -6,29 +6,6 @@ import numpy as np
 import math
 
 
-class SquareToCircle(Scene):
-    def construct(self):
-        circle = Circle()  # create a circle
-        circle.set_fill(PINK, opacity=0.5)  # set color and transparency
-
-        square = Square()  # create a square
-        square.rotate(PI / 4)  # rotate a certain amount
-
-        self.play(Create(square))  # animate the creation of the square
-        self.play(Transform(square, circle))  # interpolate the square into the circle
-        self.play(FadeOut(square))  # fade out animation
-
-
-class CirclesNextToEachOther(Scene):
-    def construct(self):
-        circle1 = Circle()
-        circle2 = Circle()
-        circle2.move_to([2, 0, 0])  # moves circle2 to the right by 2
-
-        self.play(Create(circle1))
-        self.play(Create(circle2))
-
-
 class Try(Scene):
     def construct(self):
         circle3 = Circle(radius=0.5).move_to([-3, 0, 0])
@@ -47,21 +24,40 @@ class Try(Scene):
 
 class EuclidianCircles(Scene):
     def construct(self):
-        # euclidian situation
-        eucl_center = [4, 0, 0]
+        # euclidian situation in center
+        eucl_center = array([0, 0, 0])
+        new_center = array([4, 0, 0])
         point1 = eucl_center - array([1, 0, 0])
         point2 = point1 + array([1, 1, 0])
-        points = array([eucl_center, point1, point2])
+        point3 = eucl_center + array([0.5, -0.5, 0])
+        points = array([eucl_center, point1, point2, point3])
 
         square = Square(side_length=4).move_to(eucl_center)
         circle = Circle(radius=1).move_to(eucl_center)
         dot = Dot().move_to(eucl_center)
+        text = Text('Euclidian Center', font_size=15).next_to(dot)
         group = Group(circle, dot)
         self.play(Create(square))
         self.play(Create(dot))
         self.play(Create(circle))
-        for i in range(2):
+        self.play(FadeIn(text))
+        self.play(FadeOut(text))
+        for i in range(3):
             self.play(MoveAlongPath(group, Line(start=points[i], end=points[i + 1])))
+
+        # explaining radii
+        radius_text = Text('radius 3', font_size=18)
+        group2 = Group(group, square)
+        circle_radii = Circle(radius=3)
+        self.play(Transform(group2, circle_radii))
+        self.play(Create(dot))
+        radius1 = Line(start=eucl_center, end=eucl_center + array([3, 0, 0]))
+        radius2 = Line(start=eucl_center, end=eucl_center + array([-1, -math.sqrt(8), 0]))
+        self.play(Create(radius1))
+        self.play(Create(radius2), FadeIn(radius_text.next_to(radius2)))
+        self.play(Uncreate(radius2), Uncreate(radius_text), Uncreate(radius1))
+    # radius with arc
+    # moving everything to the right  so we can continue with the horodisk
 
 
 class Horodisk(Scene):
