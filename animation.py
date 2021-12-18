@@ -227,6 +227,85 @@ def create_phi_transition(phi_old, phi_new, step_size=10):
     return transition
 
 
+class LineTransform(Scene):
+    def construct(self):
+        m = 2
+        phisA = []
+        phisB = []
+        lines = [[] for _ in range(m)]
+
+        for j in range(m):
+
+            for i in np.arange(0, 3, 1):
+                phisA.append(radian_to_point(i))
+                phisB.append(radian_to_point(i + 3))
+
+            for p in phisA:
+                for q in phisB:
+                    lines[j].append(Line(start=p, end=q, shade_in_3d=False, stroke_width=0.3))
+
+            for l in lines[j]:
+                l.insert_n_curves(1000)
+
+            circle = Circle(shade_in_3d=True)
+            self.add(circle, ThreeDAxes())
+
+            # self.set_camera_orientation(phi=75 * DEGREES, theta=30 * DEGREES)
+
+            n = 5
+            animations = [[] for _ in range(n)]
+
+            for l in lines[j]:
+                animations[0].append(Create(l))
+                animations[1].append(ApplyPointwiseFunction(lambda x: tf_klein_to_poincare(0.9999 * x), l))
+                for i in range(2, n):
+                    for k in lines:
+                        for h in k:
+                            animations[i].append(ApplyPointwiseFunction(lambda x: mobius_transform(x, 1.01, 0., 0.), h))
+
+            self.play(*animations[0])
+            self.play(*animations[1])
+            for i in range(2, n):
+                self.play(*animations[i], run_time=1, rate_func=(lambda x: x))
+
+        phisA = []
+        phisB = []
+
+            # self.play(Create(Sphere()))
+
+
+def tf_klein_to_hem(point):
+    x = point[0]
+    y = point[1]
+    assert x ** 2 + y ** 2 <= 1
+    return array([x, y, sqrt(1 - (x ** 2) - (y ** 2))])
+
+
+def tf_hem_to_poincare(point):
+    x = point[0]
+    y = point[1]
+    z = point[2]
+    return array([x / (1 + z), y / (1 + z), 0.])
+
+
+def tf_klein_to_poincare(point):
+    return tf_hem_to_poincare(tf_klein_to_hem(point))
+
+
+def mobius_transform(point, x, y, u):
+    res = complex_mobius_transform(complex(point[0], point[1]), x, y, u)
+    # print(res)
+    return array([real(res), imag(res), point[2]])
+
+
+def complex_mobius_transform(z, x, y, u):
+    a = complex(x, y)
+    b = complex(u, sqrt(-pow(u, 2) + pow(x, 2) + pow(y, 2) - 1))
+    # if absolute(z) == 1:
+    #    return complex(0, 0)
+    return divide(add(multiply(a, z), conj(b)), add(multiply(b, z), conj(a)))
+
+
 def radian_to_point(angle):
     return np.array((cos(angle), sin(angle), 0))
 
@@ -290,3 +369,14 @@ def get_circle_middle(phi_1, phi_2):
     x = (-sin(phi_1) + sin(phi_2)) / (-cos(phi_2) * sin(phi_1) + cos(phi_1) * sin(phi_2))
     y = (1 - x * cos(phi_2)) / sin(phi_2)
     return np.array((x, y, 0))
+
+if __name__ == '__main__':
+
+    import subprocess
+
+    params = 'manim -pql animation.py LineTransform -v DEBUG'.split()
+    subprocess.run(params,
+                   check=True,
+                   capture_output=True,
+                   text=True)
+
