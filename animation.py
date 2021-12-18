@@ -165,23 +165,6 @@ class CircleWithArcsMoving(Scene):
         # self.wait(duration=5)
 
 
-class CircleWithIntersections(Scene):
-    def construct(self):
-        circle = Circle()
-        self.add(circle)
-
-        phis = create_phis(min_dist=.4)[:-1]
-        for phi in phis:
-            dot = Dot(radian_to_point(phi))
-            self.add(dot)
-        intersection, phi = get_last_phi(phis)
-        dot = Dot(intersection, color=BLUE)
-        self.add(dot)
-        dot = Dot(radian_to_point(phi), color=RED)
-        self.add(dot)
-        # self.wait(duration=5)
-
-
 def get_intersection_line_unit_circle(start_point, direction):
     # solves (x + at)^2 + (y + bt)^2 = 1
     # with x^2 + y^2 = 1
@@ -271,7 +254,7 @@ class LineTransform(Scene):
         phisA = []
         phisB = []
 
-            # self.play(Create(Sphere()))
+        # self.play(Create(Sphere()))
 
 
 def tf_klein_to_hem(point):
@@ -358,6 +341,8 @@ def create_phis(min_dist=0.4):
     phis = np.sort(np.random.uniform(0, 2 * PI, 6))
     while np.min(np.abs(np.roll(phis, shift=1) - phis)) < min_dist or phis[0] < phis[5] - 2 * PI + min_dist:
         phis = np.sort(np.random.uniform(0, 2 * PI, 6))
+
+    phis[-1] = get_last_phi(phis[:-1])
     return phis
 
 
@@ -370,13 +355,18 @@ def get_circle_middle(phi_1, phi_2):
     y = (1 - x * cos(phi_2)) / sin(phi_2)
     return np.array((x, y, 0))
 
-if __name__ == '__main__':
 
-    import subprocess
+class SmallCircles(Scene):
+    def construct(self):
+        circle = Circle()
+        self.add(circle)
 
-    params = 'manim -pql animation.py LineTransform -v DEBUG'.split()
-    subprocess.run(params,
-                   check=True,
-                   capture_output=True,
-                   text=True)
+        phis = create_phis(min_dist=.4)[:-1]
+        for phi in phis:
+            dot = Dot(radian_to_point(phi))
+            self.add(dot)
 
+        phi = get_last_phi(phis)
+        dot = Dot(radian_to_point(phi), color=RED)
+        self.add(dot)
+        # self.wait(duration=5)
