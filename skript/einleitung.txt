@@ -1,0 +1,15 @@
+Aufbau Einleitung:
+
+Teasern was kommen wird:
+	-Einführung hyperbolische Geometrie
+	-Beweis eines geometrischen Satz im Euklidischen 
+	mithilfe hyperbolischer Geometrie
+	
+"Unser Ziel für heute ist, den 7-Kreise-Satz zu beweisen."
+
+Formulierung des Satzes:
+	Wenn man einen Kreis hat und sechs in diesem Kreis liegenden innere Kreise C1,...,C6 sodass sich je zwei nebeneinanderliegende Kreise in einem Punkt berühren und jeder innere Kreise den äußeren Kreis in einem Punkt berührt. Dann bilden die Berührungspunkte mit dem äußeren Kreis ein Hexagon. Verbindet man gegenüberliegende Punkte des Hexagons, dann schneiden sich die drei Geraden immer in einem Punkt.
+	(Währenddessen Animation laufen lassen).
+	
+Um diesen Satz zu zeigen werden wir die Problemstellung zuerst einmal umformulieren.
+Um die nötige Sprache dafür einzuführen müssen wir uns aber zuerst mit hyperbolischer Geometrie vertraut machen.
