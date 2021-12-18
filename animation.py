@@ -144,8 +144,51 @@ class CircleWithArcs(Scene):
         self.wait(duration=5)
 
 
+class CircleWithArcsMoving(Scene):
+    def construct(self):
+        circle = Circle()
+        self.add(circle)
+
+        phi_old = create_phis(min_dist=.4)
+        phi_new = create_phis(min_dist=.4)
+        step_size = 10
+        # phis = np.array([0, 1, 2, 3, 4, 5])
+        transition = create_phi_transition(phi_old, phi_new, step_size=step_size)
+
+        arcs = create_arcs(transition[0])
+        self.add(arcs)
+
+        for t in range(1, step_size):
+            arcs_new = create_arcs(transition[t])
+            self.play(Transform(arcs, arcs_new), run_time=0.2, rate_func=lambda a: a)
+
+        # self.wait(duration=5)
+
+
+def create_phi_transition(phi_old, phi_new, step_size=10):
+    assert phi_old.shape == phi_new.shape
+    transition = np.empty(shape=(step_size, phi_old.shape[0]))
+    for t in range(step_size):
+        transition[t] = phi_old * (1 - t / step_size) + phi_new * t / step_size
+    return transition
+
+
 def radian_to_point(angle):
     return np.array((cos(angle), sin(angle), 0))
+
+
+def create_arcs(phis):
+    # create hyperbolic hexagon
+    arcs = []
+    for i in range(phis.shape[0]):
+        phi_1 = phis[i]
+        phi_2 = phis[(i + 1) % 6]
+        point = radian_to_point(phi_2)
+        # bug: if two adjacent points have distance > PI, then the direction needs to be flipped
+        arc = get_arc(phi_1, phi_2).reverse_direction()
+        arcs.append(arc)
+    arcs = Group(arcs[0], arcs[1], arcs[2], arcs[3], arcs[4], arcs[5])
+    return arcs
 
 
 def get_arc(phi_1, phi_2):
@@ -176,6 +219,13 @@ def get_arc(phi_1, phi_2):
     else:
         arc = ArcBetweenPoints(start=point_1, end=point_2, angle=-ang, radius=r)
     return arc
+
+
+def create_phis(min_dist=0.4):
+    phis = np.sort(np.random.uniform(0, 2 * PI, 6))
+    while np.min(np.abs(np.roll(phis, shift=1) - phis)) < min_dist or phis[0] < phis[5] - 2 * PI + min_dist:
+        phis = np.sort(np.random.uniform(0, 2 * PI, 6))
+    return phis
 
 
 def get_circle_middle(phi_1, phi_2):
