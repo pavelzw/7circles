@@ -165,6 +165,60 @@ class CircleWithArcsMoving(Scene):
         # self.wait(duration=5)
 
 
+class CircleWithIntersections(Scene):
+    def construct(self):
+        circle = Circle()
+        self.add(circle)
+
+        phis = create_phis(min_dist=.4)[:-1]
+        for phi in phis:
+            dot = Dot(radian_to_point(phi))
+            self.add(dot)
+        intersection, phi = get_last_phi(phis)
+        dot = Dot(intersection, color=BLUE)
+        self.add(dot)
+        dot = Dot(radian_to_point(phi), color=RED)
+        self.add(dot)
+        # self.wait(duration=5)
+
+
+def get_intersection_line_unit_circle(start_point, direction):
+    # solves (x + at)^2 + (y + bt)^2 = 1
+    # with x^2 + y^2 = 1
+    x, y, _ = start_point
+    a, b, _ = direction
+
+    t = - 2 * (a * x + b * y) / (a ** 2 + b ** 2)
+    return start_point + t * direction
+
+
+def get_last_phi(phis):
+    assert phis.shape == (5,)
+    p0 = radian_to_point(phis[0])
+    p1 = radian_to_point(phis[1])
+    p2 = radian_to_point(phis[2])
+    p3 = radian_to_point(phis[3])
+    p4 = radian_to_point(phis[4])
+    intersection = get_intersection(p0, p3, p1, p4)
+    point_on_circle = get_intersection_line_unit_circle(p2, intersection - p2)
+    phi = np.arctan2(point_on_circle[1], point_on_circle[0])
+    return phi
+
+
+def get_intersection(p1, p2, p3, p4):
+    # uses this formula: https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line
+    x1, y1, _ = p1
+    x2, y2, _ = p2
+    x3, y3, _ = p3
+    x4, y4, _ = p4
+    denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
+    intersection1 = (x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)
+    intersection2 = (x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)
+    intersection1 /= denominator
+    intersection2 /= denominator
+    return np.array([intersection1, intersection2, 0])
+
+
 def create_phi_transition(phi_old, phi_new, step_size=10):
     assert phi_old.shape == phi_new.shape
     transition = np.empty(shape=(step_size, phi_old.shape[0]))
