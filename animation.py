@@ -337,12 +337,51 @@ def get_arc(phi_1, phi_2):
     return arc
 
 
+def get_intersections_of_circles(c0, r0, c1, r1):
+    # circle 1: center c0, radius r0
+    # circle 2: center c1, radius r1
+
+    x0, y0, _ = c0
+    x1, y1, _ = c1
+
+    d = math.sqrt((x1 - x0) ** 2 + (y1 - y0) ** 2)
+
+    # non intersecting
+    if d > r0 + r1:
+        raise ValueError(f'Circles non intersecting\n{c0}\n{r0}\n{c1}\n{r1}')
+    # One circle within other
+    if d < abs(r0 - r1):
+        raise ValueError('One circle within other\n{c0}\n{r0}\n{c1}\n{r1}')
+    # coincident circles
+    if d == 0 and r0 == r1:
+        raise ValueError('Coincident circles\n{c0}\n{r0}\n{c1}\n{r1}')
+    else:
+        a = (r0 ** 2 - r1 ** 2 + d ** 2) / (2 * d)
+        h = math.sqrt(r0 ** 2 - a ** 2)
+        x2 = x0 + a * (x1 - x0) / d
+        y2 = y0 + a * (y1 - y0) / d
+        x3 = x2 + h * (y1 - y0) / d
+        y3 = y2 - h * (x1 - x0) / d
+
+        x4 = x2 - h * (y1 - y0) / d
+        y4 = y2 + h * (x1 - x0) / d
+
+        # we only want the one intersection with ||.|| < 1
+        intersection1 = np.array((x3, y3, 0))
+        intersection2 = np.array((x4, y4, 0))
+        if np.abs(np.linalg.norm(intersection1) - 1) < 0.0001:
+            return intersection2
+        return intersection1
+
+
 def create_phis(min_dist=0.4):
     phis = np.sort(np.random.uniform(0, 2 * PI, 6))
     while np.min(np.abs(np.roll(phis, shift=1) - phis)) < min_dist or phis[0] < phis[5] - 2 * PI + min_dist:
         phis = np.sort(np.random.uniform(0, 2 * PI, 6))
 
-    phis[-1] = get_last_phi(phis[:-1])
+    new_phi = get_last_phi(phis[:-1])
+    phis[-1] = new_phi + 2 * PI if new_phi < 0 else new_phi
+
     return phis
 
 
@@ -356,17 +395,43 @@ def get_circle_middle(phi_1, phi_2):
     return np.array((x, y, 0))
 
 
-class SmallCircles(Scene):
+def get_next_circle(center, radius, phi_old, phi_new):
+    arc = get_arc(phi_old, phi_new)
+    arc_center = get_circle_middle(phi_old, phi_new)
+    intersection = get_intersections_of_circles(center, radius, arc_center, arc.radius)
+    assert intersection is not None
+    middle_between_phi_new_and_intersection = (intersection + radian_to_point(phi_new)) / 2
+    direction = intersection - radian_to_point(phi_new)
+    orthogonal_direction = np.array([-direction[1], direction[0], 0])
+    center_of_circle = get_intersection(radian_to_point(phi_new), np.array([0, 0, 0]),
+                                        middle_between_phi_new_and_intersection,
+                                        orthogonal_direction + middle_between_phi_new_and_intersection)
+    return center_of_circle, np.linalg.norm(center_of_circle - radian_to_point(phi_new))
+
+
+class SmallCircles(MovingCameraScene):
     def construct(self):
+        self.camera.frame.set_width(8)
         circle = Circle()
         self.add(circle)
 
-        phis = create_phis(min_dist=.4)[:-1]
-        for phi in phis:
-            dot = Dot(radian_to_point(phi))
-            self.add(dot)
+        phis = create_phis(min_dist=.4)
 
-        phi = get_last_phi(phis)
-        dot = Dot(radian_to_point(phi), color=RED)
-        self.add(dot)
+        first_circle_radius = .25
+        p0 = radian_to_point(phis[0])
+        first_circle_center = p0 * (1 - first_circle_radius)
+        circle = Circle(radius=first_circle_radius, color=BLUE).move_to(first_circle_center)
+        self.add(circle)
+
+        new_center, new_radius = first_circle_center, first_circle_radius
+
+        for i in range(1, 6):
+            new_center, new_radius = get_next_circle(new_center, new_radius, phis[i - 1], phis[i])
+            self.add(Circle(radius=new_radius, color=BLUE).move_to(new_center))
+
+        self.add(create_arcs(phis))
+
+        self.add(get_arc(phis[0], phis[3]))
+        self.add(get_arc(phis[1], phis[4]))
+        self.add(get_arc(phis[2], phis[5]))
         # self.wait(duration=5)
