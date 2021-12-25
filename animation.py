@@ -2,8 +2,8 @@ from manim import *
 import numpy as np
 from math import pi
 
-from hyperbolic_hexagon import HyperbolicHexagon
-from util import radian_to_point, get_arc, get_next_circle
+from hyperbolic_hexagon import HyperbolicHexagon, HyperbolicHexagonCircles, HyperbolicHexagonMainDiagonals
+from util import radian_to_point, get_arc
 from hexagon_utils import create_phis, create_phi_transition
 
 
@@ -242,28 +242,18 @@ def complex_mobius_transform(z, x, y, u):
 
 class SmallCircles(MovingCameraScene):
     def construct(self):
-        # todo DeprecationWarning
-        self.camera.frame.set_width(8)
+        self.camera.frame.width = 8
         circle = Circle()
         self.add(circle)
 
         phis = create_phis(min_dist=.4)
 
         first_circle_radius = .25
-        p0 = radian_to_point(phis[0])
-        first_circle_center = p0 * (1 - first_circle_radius)
-        circle = Circle(radius=first_circle_radius, color=BLUE).move_to(first_circle_center)
-        self.add(circle)
+        hexagon = HyperbolicHexagon(phis)
+        hexagon_circles = HyperbolicHexagonCircles(hexagon, first_circle_radius)
+        hexagon_diagonals = HyperbolicHexagonMainDiagonals(hexagon)
+        self.add(hexagon)
+        self.add(hexagon_circles)
+        self.add(hexagon_diagonals)
 
-        new_center, new_radius = first_circle_center, first_circle_radius
-
-        for i in range(1, 6):
-            new_center, new_radius = get_next_circle(new_center, new_radius, phis[i - 1], phis[i])
-            self.add(Circle(radius=new_radius, color=BLUE).move_to(new_center))
-
-        self.add(HyperbolicHexagon(phis))
-
-        self.add(get_arc(phis[0], phis[3]))
-        self.add(get_arc(phis[1], phis[4]))
-        self.add(get_arc(phis[2], phis[5]))
         # self.wait(duration=5)

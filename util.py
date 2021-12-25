@@ -84,20 +84,6 @@ def get_circle_middle(phi_1, phi_2):
     return np.array((x, y, 0))
 
 
-def get_next_circle(center, radius, phi_old, phi_new):
-    arc = get_arc(phi_old, phi_new)
-    arc_center = get_circle_middle(phi_old, phi_new)
-    intersection = get_intersections_of_circles(center, radius, arc_center, arc.radius)
-    assert intersection is not None
-    middle_between_phi_new_and_intersection = (intersection + radian_to_point(phi_new)) / 2
-    direction = intersection - radian_to_point(phi_new)
-    orthogonal_direction = np.array([-direction[1], direction[0], 0])
-    center_of_circle = get_intersection(radian_to_point(phi_new), np.array([0, 0, 0]),
-                                        middle_between_phi_new_and_intersection,
-                                        orthogonal_direction + middle_between_phi_new_and_intersection)
-    return center_of_circle, np.linalg.norm(center_of_circle - radian_to_point(phi_new))
-
-
 def get_intersection(p1, p2, p3, p4):
     # uses this formula: https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line
     x1, y1, _ = p1
