@@ -5,7 +5,7 @@ from math import pi
 from hyperbolic_hexagon import HyperbolicHexagon, HyperbolicHexagonCircles, HyperbolicHexagonMainDiagonals, \
     ArcBetweenPointsOnUnitDisk
 from geometry_util import radian_to_point
-from hexagon_utils import create_phis, create_phi_transition
+from hexagon_util import create_phis, create_phi_transition
 
 
 class Try(Scene):
