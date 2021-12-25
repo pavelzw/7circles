@@ -1,36 +1,4 @@
 import numpy as np
-from math import pi
-from manim import Angle, TangentLine, ArcBetweenPoints, Circle, WHITE
-
-
-def get_arc(phi_1, phi_2, color=WHITE):
-    assert phi_1 >= 0
-    assert phi_1 < 2 * pi
-    assert phi_2 >= 0
-    assert phi_2 < 2 * pi
-
-    if phi_1 >= phi_2:
-        tmp = phi_2
-        phi_2 = phi_1
-        phi_1 = tmp
-    assert phi_1 < phi_2
-
-    point_1 = radian_to_point(phi_1)
-    point_2 = radian_to_point(phi_2)
-
-    middle = get_circle_middle(phi_1, phi_2)
-    r = np.linalg.norm(middle - point_1)
-
-    # gets angle between two tangents
-    angle = Angle(TangentLine(Circle(), alpha=phi_1 / (2 * pi)),
-                  TangentLine(Circle(), alpha=phi_2 / (2 * pi)))
-
-    ang = angle.get_value(degrees=False)
-    if phi_2 - phi_1 < pi:
-        arc = ArcBetweenPoints(start=point_2, end=point_1, angle=-ang, radius=r, color=color)
-    else:
-        arc = ArcBetweenPoints(start=point_1, end=point_2, angle=-ang, radius=r, color=color)
-    return arc
 
 
 def get_intersections_of_circles(c0: np.array, r0: float, c1: np.array, r1: float):

@@ -2,8 +2,9 @@ from manim import *
 import numpy as np
 from math import pi
 
-from hyperbolic_hexagon import HyperbolicHexagon, HyperbolicHexagonCircles, HyperbolicHexagonMainDiagonals
-from util import radian_to_point, get_arc
+from hyperbolic_hexagon import HyperbolicHexagon, HyperbolicHexagonCircles, HyperbolicHexagonMainDiagonals, \
+    ArcBetweenPointsOnUnitDisk
+from geometry_util import radian_to_point
 from hexagon_utils import create_phis, create_phi_transition
 
 
@@ -132,15 +133,15 @@ class CircleWithArcs(Scene):
 
         # create hyperbolic hexagon
         for i in range(phis.shape[0]):
-            phi_1 = phis[i]
-            phi_2 = phis[(i + 1) % 6]
-            point = radian_to_point(phi_2)
+            phi1 = phis[i]
+            phi2 = phis[(i + 1) % 6]
+            point = radian_to_point(phi2)
             if i < phis.shape[0] - 1:
                 dot = Dot(point, color=RED)
                 self.add_foreground_mobject(dot)
                 self.play(Create(dot))
             # bug: if two adjacent points have distance > pi, then the direction needs to be flipped
-            arc = get_arc(phi_1, phi_2).reverse_direction()
+            arc = ArcBetweenPointsOnUnitDisk(phi1, phi2).reverse_direction()
             self.play(Create(arc))
 
         self.wait(duration=5)

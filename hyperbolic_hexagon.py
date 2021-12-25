@@ -1,10 +1,10 @@
 from abc import ABC
 
 import numpy as np
-from manim import Group, Circle, BLUE, WHITE
+from manim import Group, Circle, BLUE, WHITE, ArcBetweenPoints, TangentLine, Angle
 from math import pi
 
-from util import get_arc, radian_to_point, get_intersection, get_intersection_line_unit_circle, \
+from geometry_util import radian_to_point, get_intersection, get_intersection_line_unit_circle, \
     get_intersections_of_circles, get_circle_middle
 
 
@@ -34,17 +34,46 @@ class HexagonAngles(np.ndarray):
         return phi
 
 
+class ArcBetweenPointsOnUnitDisk(ArcBetweenPoints, ABC):
+    def __init__(self, phi1, phi2, color=WHITE, **kwargs):
+        assert phi1 >= 0
+        assert phi1 < 2 * pi
+        assert phi2 >= 0
+        assert phi2 < 2 * pi
+
+        if phi1 >= phi2:
+            tmp = phi2
+            phi2 = phi1
+            phi1 = tmp
+        assert phi1 < phi2
+
+        point1 = radian_to_point(phi1)
+        point2 = radian_to_point(phi2)
+
+        middle = get_circle_middle(phi1, phi2)
+        r = np.linalg.norm(middle - point1)
+
+        # gets angle between two tangents
+        angle = Angle(TangentLine(Circle(), alpha=phi1 / (2 * pi)),
+                      TangentLine(Circle(), alpha=phi2 / (2 * pi)))
+
+        ang = angle.get_value(degrees=False)
+        if phi2 - phi1 < pi:
+            super().__init__(start=point2, end=point1, angle=-ang, radius=r, color=color)
+        else:
+            super().__init__(start=point1, end=point2, angle=-ang, radius=r, color=color)
+
+
 class HyperbolicHexagon(Group, ABC):
     def __init__(self, phis: HexagonAngles, **kwargs):
         super().__init__(**kwargs)
         self._phis = phis
         arcs = []
         for i in range(phis.shape[0]):
-            phi_1 = phis[i]
-            phi_2 = phis[(i + 1) % 6]
-            point = radian_to_point(phi_2)
+            phi1 = phis[i]
+            phi2 = phis[(i + 1) % 6]
             # bug: if two adjacent points have distance > PI, then the direction needs to be flipped
-            arc = get_arc(phi_1, phi_2).reverse_direction()
+            arc = ArcBetweenPointsOnUnitDisk(phi1, phi2).reverse_direction()
             arcs.append(arc)
         self.add(arcs[0], arcs[1], arcs[2], arcs[3], arcs[4], arcs[5])
 
@@ -68,7 +97,7 @@ class HyperbolicHexagonCircles(Group, ABC):
 
     @staticmethod
     def _get_next_circle(center, radius, phi_old, phi_new):
-        arc = get_arc(phi_old, phi_new)
+        arc = ArcBetweenPointsOnUnitDisk(phi_old, phi_new)
         arc_center = get_circle_middle(phi_old, phi_new)
         intersection = get_intersections_of_circles(center, radius, arc_center, arc.radius)
         assert intersection is not None
@@ -85,6 +114,6 @@ class HyperbolicHexagonMainDiagonals(Group, ABC):
     def __init__(self, hexagon: HyperbolicHexagon, color=WHITE, **kwargs):
         super().__init__(**kwargs)
         phis = hexagon.phis
-        self.add(get_arc(phis[0], phis[3], color=color))
-        self.add(get_arc(phis[1], phis[4], color=color))
-        self.add(get_arc(phis[2], phis[5], color=color))
+        self.add(ArcBetweenPointsOnUnitDisk(phis[0], phis[3], color=color))
+        self.add(ArcBetweenPointsOnUnitDisk(phis[1], phis[4], color=color))
+        self.add(ArcBetweenPointsOnUnitDisk(phis[2], phis[5], color=color))
