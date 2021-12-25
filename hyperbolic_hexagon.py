@@ -83,8 +83,8 @@ class HyperbolicHexagonCircles(Group, ABC):
 
 class HyperbolicHexagonMainDiagonals(Group, ABC):
     def __init__(self, hexagon: HyperbolicHexagon, color=WHITE, **kwargs):
-        super().__init__()
+        super().__init__(**kwargs)
         phis = hexagon.phis
-        self.add(get_arc(phis[0], phis[3]))
-        self.add(get_arc(phis[1], phis[4]))
-        self.add(get_arc(phis[2], phis[5]))
+        self.add(get_arc(phis[0], phis[3], color=color))
+        self.add(get_arc(phis[1], phis[4], color=color))
+        self.add(get_arc(phis[2], phis[5], color=color))

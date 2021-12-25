@@ -1,9 +1,9 @@
 import numpy as np
 from math import pi
-from manim import Angle, TangentLine, ArcBetweenPoints, Circle
+from manim import Angle, TangentLine, ArcBetweenPoints, Circle, WHITE
 
 
-def get_arc(phi_1, phi_2):
+def get_arc(phi_1, phi_2, color=WHITE):
     assert phi_1 >= 0
     assert phi_1 < 2 * pi
     assert phi_2 >= 0
@@ -27,9 +27,9 @@ def get_arc(phi_1, phi_2):
 
     ang = angle.get_value(degrees=False)
     if phi_2 - phi_1 < pi:
-        arc = ArcBetweenPoints(start=point_2, end=point_1, angle=-ang, radius=r)
+        arc = ArcBetweenPoints(start=point_2, end=point_1, angle=-ang, radius=r, color=color)
     else:
-        arc = ArcBetweenPoints(start=point_1, end=point_2, angle=-ang, radius=r)
+        arc = ArcBetweenPoints(start=point_1, end=point_2, angle=-ang, radius=r, color=color)
     return arc
 
 
