@@ -1,7 +1,10 @@
 from manim import *
 import numpy as np
+from math import pi
 
-from util import radian_to_point, get_arc, create_phis, create_phi_transition, create_arcs, get_next_circle
+from hyperbolic_hexagon import HyperbolicHexagon
+from util import radian_to_point, get_arc, get_next_circle
+from hexagon_utils import create_phis, create_phi_transition
 
 
 class Try(Scene):
@@ -55,7 +58,7 @@ class EuclidianCircles(Scene):
         self.play(Create(radius2), FadeIn(radius_text.next_to(radius2)))
         self.play(Uncreate(radius2), Uncreate(radius_text), Uncreate(radius1))
     # radius with arc
-    # moving everything to the right  so we can continue with the horodisk
+    # moving everything to the right so we can continue with the horodisk
 
 
 class Horodisk(Scene):
@@ -66,8 +69,8 @@ class Horodisk(Scene):
         start_points = np.array([center, center, center, center])
         length = [1, 1, -3]  # 1 is 1 unit to the left, -3 is 3 units to the right, way of circles moving
 
-        angle1 = PI / 4
-        angle2 = 4 * PI / 3
+        angle1 = pi / 4
+        angle2 = 4 * pi / 3
         angles = [0, angle1, angle2]
 
         outer_circle = Circle(color=WHITE, radius=2).move_to(center)
@@ -122,7 +125,7 @@ class CircleWithArcs(Scene):
         circle = Circle()
         self.play(Create(circle))
 
-        phis = np.sort(np.random.uniform(0, 2 * PI, 6))
+        phis = np.sort(np.random.uniform(0, 2 * pi, 6))
         dot = Dot(radian_to_point(phis[0]), color=RED)
         self.add_foreground_mobject(dot)
         self.play(Create(dot))
@@ -136,7 +139,7 @@ class CircleWithArcs(Scene):
                 dot = Dot(point, color=RED)
                 self.add_foreground_mobject(dot)
                 self.play(Create(dot))
-            # bug: if two adjacent points have distance > PI, then the direction needs to be flipped
+            # bug: if two adjacent points have distance > pi, then the direction needs to be flipped
             arc = get_arc(phi_1, phi_2).reverse_direction()
             self.play(Create(arc))
 
@@ -154,12 +157,12 @@ class CircleWithArcsMoving(Scene):
         # phis = np.array([0, 1, 2, 3, 4, 5])
         transition = create_phi_transition(phi_old, phi_new, step_size=step_size)
 
-        arcs = create_arcs(transition[0])
-        self.add(arcs)
+        hexagon = HyperbolicHexagon(transition[0])
+        self.add(hexagon)
 
         for t in range(1, step_size):
-            arcs_new = create_arcs(transition[t])
-            self.play(Transform(arcs, arcs_new), run_time=0.2, rate_func=lambda a: a)
+            hexagon_new = HyperbolicHexagon(transition[t])
+            self.play(Transform(hexagon, hexagon_new), run_time=0.2, rate_func=lambda a: a)
 
         # self.wait(duration=5)
 
@@ -239,6 +242,7 @@ def complex_mobius_transform(z, x, y, u):
 
 class SmallCircles(MovingCameraScene):
     def construct(self):
+        # todo DeprecationWarning
         self.camera.frame.set_width(8)
         circle = Circle()
         self.add(circle)
@@ -257,7 +261,7 @@ class SmallCircles(MovingCameraScene):
             new_center, new_radius = get_next_circle(new_center, new_radius, phis[i - 1], phis[i])
             self.add(Circle(radius=new_radius, color=BLUE).move_to(new_center))
 
-        self.add(create_arcs(phis))
+        self.add(HyperbolicHexagon(phis))
 
         self.add(get_arc(phis[0], phis[3]))
         self.add(get_arc(phis[1], phis[4]))

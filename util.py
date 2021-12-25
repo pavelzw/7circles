@@ -1,13 +1,13 @@
 import numpy as np
-from manim import PI
-from manim import Angle, TangentLine, ArcBetweenPoints, Circle, Group
+from math import pi
+from manim import Angle, TangentLine, ArcBetweenPoints, Circle
 
 
 def get_arc(phi_1, phi_2):
     assert phi_1 >= 0
-    assert phi_1 < 2 * PI
+    assert phi_1 < 2 * pi
     assert phi_2 >= 0
-    assert phi_2 < 2 * PI
+    assert phi_2 < 2 * pi
 
     if phi_1 >= phi_2:
         tmp = phi_2
@@ -22,32 +22,18 @@ def get_arc(phi_1, phi_2):
     r = np.linalg.norm(middle - point_1)
 
     # gets angle between two tangents
-    angle = Angle(TangentLine(Circle(), alpha=phi_1 / (2 * PI)),
-                  TangentLine(Circle(), alpha=phi_2 / (2 * PI)))
+    angle = Angle(TangentLine(Circle(), alpha=phi_1 / (2 * pi)),
+                  TangentLine(Circle(), alpha=phi_2 / (2 * pi)))
 
     ang = angle.get_value(degrees=False)
-    if phi_2 - phi_1 < PI:
+    if phi_2 - phi_1 < pi:
         arc = ArcBetweenPoints(start=point_2, end=point_1, angle=-ang, radius=r)
     else:
         arc = ArcBetweenPoints(start=point_1, end=point_2, angle=-ang, radius=r)
     return arc
 
 
-def create_arcs(phis):
-    # create hyperbolic hexagon
-    arcs = []
-    for i in range(phis.shape[0]):
-        phi_1 = phis[i]
-        phi_2 = phis[(i + 1) % 6]
-        point = radian_to_point(phi_2)
-        # bug: if two adjacent points have distance > PI, then the direction needs to be flipped
-        arc = get_arc(phi_1, phi_2).reverse_direction()
-        arcs.append(arc)
-    arcs = Group(arcs[0], arcs[1], arcs[2], arcs[3], arcs[4], arcs[5])
-    return arcs
-
-
-def get_intersections_of_circles(c0, r0, c1, r1):
+def get_intersections_of_circles(c0: np.array, r0: float, c1: np.array, r1: float):
     # circle 1: center c0, radius r0
     # circle 2: center c1, radius r1
 
@@ -88,17 +74,6 @@ def radian_to_point(angle):
     return np.array((np.cos(angle), np.sin(angle), 0))
 
 
-def create_phis(min_dist=0.4):
-    phis = np.sort(np.random.uniform(0, 2 * PI, 6))
-    while np.min(np.abs(np.roll(phis, shift=1) - phis)) < min_dist or phis[0] < phis[5] - 2 * PI + min_dist:
-        phis = np.sort(np.random.uniform(0, 2 * PI, 6))
-
-    new_phi = get_last_phi(phis[:-1])
-    phis[-1] = new_phi + 2 * PI if new_phi < 0 else new_phi
-
-    return phis
-
-
 def get_circle_middle(phi_1, phi_2):
     if np.sin(phi_2) == 0:  # phi_2 != 0, PI because else we divide by 0
         tmp = phi_2
@@ -137,14 +112,6 @@ def get_intersection(p1, p2, p3, p4):
     return np.array([intersection1, intersection2, 0])
 
 
-def create_phi_transition(phi_old, phi_new, step_size=10):
-    assert phi_old.shape == phi_new.shape
-    transition = np.empty(shape=(step_size, phi_old.shape[0]))
-    for t in range(step_size):
-        transition[t] = phi_old * (1 - t / step_size) + phi_new * t / step_size
-    return transition
-
-
 def get_intersection_line_unit_circle(start_point, direction):
     # solves (x + at)^2 + (y + bt)^2 = 1
     # with x^2 + y^2 = 1
@@ -153,16 +120,3 @@ def get_intersection_line_unit_circle(start_point, direction):
 
     t = - 2 * (a * x + b * y) / (a ** 2 + b ** 2)
     return start_point + t * direction
-
-
-def get_last_phi(phis):
-    assert phis.shape == (5,)
-    p0 = radian_to_point(phis[0])
-    p1 = radian_to_point(phis[1])
-    p2 = radian_to_point(phis[2])
-    p3 = radian_to_point(phis[3])
-    p4 = radian_to_point(phis[4])
-    intersection = get_intersection(p0, p3, p1, p4)
-    point_on_circle = get_intersection_line_unit_circle(p2, intersection - p2)
-    phi = np.arctan2(point_on_circle[1], point_on_circle[0])
-    return phi
