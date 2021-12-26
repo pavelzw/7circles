@@ -8,22 +8,6 @@ from geometry_util import radian_to_point
 from hexagon_util import create_phis, create_phi_transition
 
 
-class Try(Scene):
-    def construct(self):
-        circle3 = Circle(radius=0.5).move_to([-3, 0, 0])
-        line3 = Line(start=np.array([-3, 0, 0]), end=np.array([-3, 0, 0]) - np.array([0.75, 0, 0]))
-
-        circle2 = Circle().move_to([-3, 0, 0])
-        line2 = Line(start=np.array([-3, 0, 0]), end=np.array([-3, 0, 0]) - np.array([0.5, 0, 0]))
-
-        circle1 = Circle(radius=1.5).move_to([-3, 0, 0])
-        line1 = Line(start=np.array([-3, 0, 0]), end=np.array([-3, 0, 0]) - np.array([0.25, 0, 0]))
-
-        self.add(Circle(radius=2).move_to([-3, 0, 0]))
-        self.play(MoveAlongPath(circle3, line3), MoveAlongPath(circle2, line2),
-                  MoveAlongPath(circle1, line1))  # creates line
-
-
 class EuclidianCircles(Scene):
     def construct(self):
         # euclidian situation in center
