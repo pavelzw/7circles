@@ -4,7 +4,8 @@ from math import pi
 
 from hyperbolic_hexagon import HyperbolicHexagon, HyperbolicHexagonCircles, HyperbolicHexagonMainDiagonals, \
     ArcBetweenPointsOnUnitDisk
-from geometry_util import radian_to_point
+from geometry_util import radian_to_point, radian_to_point_with_radius, \
+    get_both_intersections_line_with_unit_circle_wolfram_alpha
 from hexagon_util import create_phis, create_phi_transition
 
 
@@ -103,6 +104,30 @@ def moving_line(start_points, end_points):
     line3 = Line(start=start_points[2], end=end_points[2])
     line4 = Line(start=start_points[3], end=end_points[3])
     return [line1, line2, line3, line4]
+
+
+class AlternatingPerimeter(Scene):
+    def construct(self):
+        circle = Circle()
+        self.add(circle)
+        radius = np.random.uniform(0.4, 0.7, 6)
+        phis = np.sort(np.random.uniform(0, 2 * pi, 6))
+        point1 = radian_to_point_with_radius(radius[0], phis[0])
+        point2 = radian_to_point_with_radius(radius[1], phis[1])
+
+        new_point1 = tf_poincare_to_klein(point1)  # punkte von poincare in klein modell
+        new_point2 = tf_poincare_to_klein(point2)
+        self.add(Dot(new_point1))
+        self.add(Dot(new_point2))
+        intersections = get_both_intersections_line_with_unit_circle_wolfram_alpha(new_point1, new_point2)
+        x, y = intersections[0], intersections[1]  # new intersections
+        a, b = intersections[2], intersections[3]
+        
+        self.add(Dot([x, y, 0], color=BLUE))
+        self.add(Dot([a, b, 0], color=GREEN))
+        # for i in range(0, 6):
+        #   dot = Dot(radian_to_point_with_radius(radius[i], phis[i]))
+        #  self.add(dot)
 
 
 class CircleWithArcs(Scene):
@@ -209,6 +234,25 @@ def tf_hem_to_poincare(point):
 
 def tf_klein_to_poincare(point):
     return tf_hem_to_poincare(tf_klein_to_hem(point))
+
+
+# all other transformation directions
+def tf_hem_to_klein(point):  # 3 coord to 2 coord
+    x = point[0]
+    y = point[1]
+    return np.array([x, y, 0])
+
+
+def tf_poincare_to_hem(point):  # 2 coord to 3 coord
+    x = point[0]
+    y = point[1]
+    new_coord = np.array([2 * x, 2 * y, 1 - (x ** 2) - (y ** 2)])
+    scalar = 1 / (1 + (x ** 2) + (y ** 2))
+    return scalar * new_coord
+
+
+def tf_poincare_to_klein(point):  # 2 coord to 2 coord
+    return tf_poincare_to_hem(tf_hem_to_klein(point))
 
 
 def mobius_transform(point, x, y, u):
