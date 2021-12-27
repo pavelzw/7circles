@@ -5,7 +5,7 @@ from math import pi
 from hyperbolic_hexagon import HyperbolicHexagon, HyperbolicHexagonCircles, HyperbolicHexagonMainDiagonals, \
     ArcBetweenPointsOnUnitDisk
 from geometry_util import radian_to_point, radian_to_point_with_radius, \
-    get_both_intersections_line_with_unit_circle_wolfram_alpha
+    get_both_intersections_line_with_unit_circle
 from hexagon_util import create_phis, create_phi_transition
 
 
@@ -106,28 +106,41 @@ def moving_line(start_points, end_points):
     return [line1, line2, line3, line4]
 
 
-class AlternatingPerimeter(Scene):
+class NonIdealHexagon(Scene):
     def construct(self):
         circle = Circle()
         self.add(circle)
         radius = np.random.uniform(0.4, 0.7, 6)
-        phis = np.sort(np.random.uniform(0, 2 * pi, 6))
-        point1 = radian_to_point_with_radius(radius[0], phis[0])
-        point2 = radian_to_point_with_radius(radius[1], phis[1])
+        phis = create_phis(min_dist=0.4)
+        first_point = radian_to_point_with_radius(radius[0], phis[0])
+        point1 = first_point
+        self.play(Create(Dot(point1)))
 
-        new_point1 = tf_poincare_to_klein(point1)  # punkte von poincare in klein modell
-        new_point2 = tf_poincare_to_klein(point2)
-        self.add(Dot(new_point1))
-        self.add(Dot(new_point2))
-        intersections = get_both_intersections_line_with_unit_circle_wolfram_alpha(new_point1, new_point2)
-        x, y = intersections[0], intersections[1]  # new intersections
-        a, b = intersections[2], intersections[3]
-        
-        self.add(Dot([x, y, 0], color=BLUE))
-        self.add(Dot([a, b, 0], color=GREEN))
-        # for i in range(0, 6):
-        #   dot = Dot(radian_to_point_with_radius(radius[i], phis[i]))
-        #  self.add(dot)
+        for i in range(0, 6):
+            if i == 5:
+                point1 = first_point
+                point2 = radian_to_point_with_radius(radius[5], phis[5])
+            else:
+                point2 = radian_to_point_with_radius(radius[i + 1], phis[i + 1])
+
+            self.play(Create(Dot(point2)))
+            klein_point1 = tf_poincare_to_klein(point1)  # transform points from poincare to klein model
+            klein_point2 = tf_poincare_to_klein(point2)
+            intersections = get_both_intersections_line_with_unit_circle(klein_point1, klein_point2)
+            x, y = intersections[0], intersections[1]  # new intersections, unclear which belongs to which pointi
+            a, b = intersections[2], intersections[3]
+
+            unit_point1 = np.arctan2(y, x)  # get polar coordinates of x,y and a,b
+            unit_point2 = np.arctan2(b, a)
+
+            if unit_point1 < 0:  # for assertion phi >= 0
+                unit_point1 = unit_point1 + 2 * pi
+            if unit_point2 < 0:
+                unit_point2 = unit_point2 + 2 * pi
+
+            point1 = point2
+            # ArcBetweenPointsOnUnitCircle
+            self.play(Create(ArcBetweenPointsOnUnitDisk(unit_point1, unit_point2, color=GREEN)))
 
 
 class CircleWithArcs(Scene):
