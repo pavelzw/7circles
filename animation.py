@@ -125,12 +125,11 @@ class NonIdealHexagon(Scene):
 
             klein_point1 = tf_poincare_to_klein(point1)  # transform points from poincare to klein model
             klein_point2 = tf_poincare_to_klein(point2)
-            intersections = get_both_intersections_line_with_unit_circle(klein_point1, klein_point2)
-            x, y = intersections[0], intersections[1]  # new intersections, unclear which belongs to which pointi
-            a, b = intersections[2], intersections[3]
+            intersections = get_both_intersections_line_with_unit_circle(klein_point1,
+                                                                         klein_point2)  # new intersections
 
-            unit_point1 = np.arctan2(y, x)  # get polar coordinates of x,y and a,b
-            unit_point2 = np.arctan2(b, a)
+            unit_point1 = np.arctan2(intersections[1], intersections[0])  # get polar coordinates of intersections
+            unit_point2 = np.arctan2(intersections[3], intersections[2])
 
             if unit_point1 < 0:  # for assertion phi >= 0
                 unit_point1 = unit_point1 + 2 * pi
