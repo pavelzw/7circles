@@ -4,8 +4,7 @@ from math import pi
 
 from hyperbolic_hexagon import HyperbolicHexagon, HyperbolicHexagonCircles, HyperbolicHexagonMainDiagonals, \
     ArcBetweenPointsOnUnitDisk
-from geometry_util import radian_to_point, radian_to_point_with_radius, \
-    get_both_intersections_line_with_unit_circle
+from geometry_util import radian_to_point, get_both_intersections_line_with_unit_circle
 from hexagon_util import create_phis, create_phi_transition
 
 
@@ -112,16 +111,16 @@ class NonIdealHexagon(Scene):
         self.add(circle)
         radius = np.random.uniform(0.4, 0.7, 6)
         phis = create_phis(min_dist=0.4)
-        first_point = radian_to_point_with_radius(radius[0], phis[0])
+        first_point = radian_to_point(phis[0], radius[0])
         point1 = first_point
         self.play(Create(Dot(point1)))
 
         for i in range(0, 6):
             if i == 5:
                 point1 = first_point
-                point2 = radian_to_point_with_radius(radius[5], phis[5])
+                point2 = radian_to_point(phis[5], radius[5])
             else:
-                point2 = radian_to_point_with_radius(radius[i + 1], phis[i + 1])
+                point2 = radian_to_point(phis[i + 1], radius[i + 1])
 
             self.play(Create(Dot(point2)))
             klein_point1 = tf_poincare_to_klein(point1)  # transform points from poincare to klein model

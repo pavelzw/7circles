@@ -38,11 +38,7 @@ def get_intersections_of_circles(c0: np.array, r0: float, c1: np.array, r1: floa
         return intersection1
 
 
-def radian_to_point(angle):
-    return np.array((np.cos(angle), np.sin(angle), 0))
-
-
-def radian_to_point_with_radius(radius, angle):
+def radian_to_point(angle, radius=1):
     return np.array((radius * np.cos(angle), radius * np.sin(angle), 0))
 
 
