@@ -80,7 +80,7 @@ def get_intersection_line_unit_circle(start_point, direction):
     return start_point + t * direction
 
 
-def get_both_intersections_line_with_unit_circle_wolfram_alpha(point1, point2):
+def get_both_intersections_line_with_unit_circle(point1, point2):
     # by wolfram alpha https://mathworld.wolfram.com/Circle-LineIntersection.html
     x1, y1, _ = point1
     x2, y2, _ = point2
@@ -88,7 +88,7 @@ def get_both_intersections_line_with_unit_circle_wolfram_alpha(point1, point2):
     dy = y2 - y1
     dr = np.sqrt((dx ** 2) + (dy ** 2))
     D = x1 * y2 - x2 * y1
-    if dy >= 0:
+    if dy >= 0:  # if condition because of signum function
         new_x1 = (D * dy + dx * np.sqrt((dr ** 2) - (D ** 2))) / (dr ** 2)
         new_x2 = (D * dy - dx * np.sqrt((dr ** 2) - (D ** 2))) / (dr ** 2)
     else:
