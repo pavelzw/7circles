@@ -42,6 +42,10 @@ def radian_to_point(angle):
     return np.array((np.cos(angle), np.sin(angle), 0))
 
 
+def radian_to_point_with_radius(radius, angle):
+    return np.array((radius * np.cos(angle), radius * np.sin(angle), 0))
+
+
 def get_circle_middle(phi_1, phi_2):
     if np.sin(phi_2) == 0:  # phi_2 != 0, PI because else we divide by 0
         tmp = phi_2
@@ -74,3 +78,23 @@ def get_intersection_line_unit_circle(start_point, direction):
 
     t = - 2 * (a * x + b * y) / (a ** 2 + b ** 2)
     return start_point + t * direction
+
+
+def get_both_intersections_line_with_unit_circle_wolfram_alpha(point1, point2):
+    # by wolfram alpha https://mathworld.wolfram.com/Circle-LineIntersection.html
+    x1, y1, _ = point1
+    x2, y2, _ = point2
+    dx = x2 - x1
+    dy = y2 - y1
+    dr = np.sqrt((dx ** 2) + (dy ** 2))
+    D = x1 * y2 - x2 * y1
+    if dy >= 0:
+        new_x1 = (D * dy + dx * np.sqrt((dr ** 2) - (D ** 2))) / (dr ** 2)
+        new_x2 = (D * dy - dx * np.sqrt((dr ** 2) - (D ** 2))) / (dr ** 2)
+    else:
+        new_x1 = (D * dy - dx * np.sqrt((dr ** 2) - (D ** 2))) / (dr ** 2)
+        new_x2 = (D * dy + dx * np.sqrt((dr ** 2) - (D ** 2))) / (dr ** 2)
+
+    new_y1 = (-D * dx + np.abs(dy) * np.sqrt((dr ** 2) - (D ** 2))) / (dr ** 2)
+    new_y2 = (-D * dx - np.abs(dy) * np.sqrt((dr ** 2) - (D ** 2))) / (dr ** 2)
+    return np.array([new_x1, new_y1, new_x2, new_y2])  # array mit 4 einträgen für 2 punkte
