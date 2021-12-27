@@ -109,7 +109,7 @@ class NonIdealHexagon(Scene):
     def construct(self):
         circle = Circle()
         self.add(circle)
-        radius = np.random.uniform(0.4, 0.7, 6)
+        radius = np.random.uniform(0.5, 0.7, 6)
         phis = create_phis(min_dist=0.4)
         first_point = radian_to_point(phis[0], radius[0])
         point1 = first_point
@@ -117,12 +117,12 @@ class NonIdealHexagon(Scene):
 
         for i in range(0, 6):
             if i == 5:
-                point1 = first_point
-                point2 = radian_to_point(phis[5], radius[5])
+                point1 = radian_to_point(phis[5], radius[5])
+                point2 = first_point
             else:
                 point2 = radian_to_point(phis[i + 1], radius[i + 1])
+                self.play(Create(Dot(point2)))
 
-            self.play(Create(Dot(point2)))
             klein_point1 = tf_poincare_to_klein(point1)  # transform points from poincare to klein model
             klein_point2 = tf_poincare_to_klein(point2)
             intersections = get_both_intersections_line_with_unit_circle(klein_point1, klein_point2)
@@ -136,10 +136,13 @@ class NonIdealHexagon(Scene):
                 unit_point1 = unit_point1 + 2 * pi
             if unit_point2 < 0:
                 unit_point2 = unit_point2 + 2 * pi
-
-            point1 = point2
             # ArcBetweenPointsOnUnitCircle
-            self.play(Create(ArcBetweenPointsOnUnitDisk(unit_point1, unit_point2, color=GREEN)))
+            radius1 = ArcBetweenPointsOnUnitDisk(unit_point1, unit_point2).radius
+            self.play(Create(ArcBetweenPoints(point2, point1, radius=radius1,
+                                              color=YELLOW).reverse_direction()))  # arcs in hexagon dont meet unit circle
+            # self.play(Create(ArcBetweenPointsOnUnitDisk(unit_point1, unit_point2,
+            #                                     color=GREEN).reverse_direction()))  # arcs in hexagon meet unit circle
+            point1 = point2
 
 
 class CircleWithArcs(Scene):
