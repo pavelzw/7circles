@@ -94,3 +94,54 @@ def get_both_intersections_line_with_unit_circle(point1, point2):
     new_y1 = (-D * dx + np.abs(dy) * np.sqrt((dr ** 2) - (D ** 2))) / (dr ** 2)
     new_y2 = (-D * dx - np.abs(dy) * np.sqrt((dr ** 2) - (D ** 2))) / (dr ** 2)
     return np.array([new_x1, new_y1, new_x2, new_y2])  # array mit 4 einträgen für 2 punkte
+
+
+def tf_klein_to_hem(point):
+    x = point[0]
+    y = point[1]
+    assert x ** 2 + y ** 2 <= 1
+    return np.array([x, y, np.sqrt(1 - (x ** 2) - (y ** 2))])
+
+
+def tf_hem_to_poincare(point):
+    x = point[0]
+    y = point[1]
+    z = point[2]
+    return np.array([x / (1 + z), y / (1 + z), 0.])
+
+
+def tf_klein_to_poincare(point):
+    return tf_hem_to_poincare(tf_klein_to_hem(point))
+
+
+# all other transformation directions
+def tf_hem_to_klein(point):  # 3 coord to 2 coord
+    x = point[0]
+    y = point[1]
+    return np.array([x, y, 0])
+
+
+def tf_poincare_to_hem(point):  # 2 coord to 3 coord
+    x = point[0]
+    y = point[1]
+    new_coord = np.array([2 * x, 2 * y, 1 - (x ** 2) - (y ** 2)])
+    scalar = 1 / (1 + (x ** 2) + (y ** 2))
+    return scalar * new_coord
+
+
+def tf_poincare_to_klein(point):  # 2 coord to 2 coord
+    return tf_poincare_to_hem(tf_hem_to_klein(point))
+
+
+def mobius_transform(point, x, y, u):
+    res = complex_mobius_transform(complex(point[0], point[1]), x, y, u)
+    # print(res)
+    return np.array([np.real(res), np.imag(res), point[2]])
+
+
+def complex_mobius_transform(z, x, y, u):
+    a = complex(x, y)
+    b = complex(u, np.sqrt(-pow(u, 2) + pow(x, 2) + pow(y, 2) - 1))
+    # if absolute(z) == 1:
+    #    return complex(0, 0)
+    return np.divide(np.add(np.multiply(a, z), np.conj(b)), np.add(np.multiply(b, z), np.conj(a)))

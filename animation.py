@@ -3,8 +3,9 @@ import numpy as np
 from math import pi
 
 from hyperbolic_hexagon import HyperbolicHexagon, HyperbolicHexagonCircles, HyperbolicHexagonMainDiagonals, \
-    ArcBetweenPointsOnUnitDisk
-from geometry_util import radian_to_point, get_both_intersections_line_with_unit_circle
+    ArcBetweenPointsOnUnitDisk, NonIdealHexagon
+from geometry_util import radian_to_point, get_both_intersections_line_with_unit_circle, mobius_transform, \
+    tf_klein_to_poincare
 from hexagon_util import create_phis, create_phi_transition
 
 
@@ -105,43 +106,15 @@ def moving_line(start_points, end_points):
     return [line1, line2, line3, line4]
 
 
-class NonIdealHexagon(Scene):
+class NonIdealHexagonAnimation(Scene):
     def construct(self):
         circle = Circle()
         self.add(circle)
         radius = np.random.uniform(0.5, 0.7, 6)
-        phis = create_phis(min_dist=0.4)
-        first_point = radian_to_point(phis[0], radius[0])
-        point1 = first_point
-        self.play(Create(Dot(point1)))
-
-        for i in range(0, 6):
-            if i == 5:
-                point1 = radian_to_point(phis[5], radius[5])
-                point2 = first_point
-            else:
-                point2 = radian_to_point(phis[i + 1], radius[i + 1])
-                self.play(Create(Dot(point2)))
-
-            klein_point1 = tf_poincare_to_klein(point1)  # transform points from poincare to klein model
-            klein_point2 = tf_poincare_to_klein(point2)
-            intersections = get_both_intersections_line_with_unit_circle(klein_point1,
-                                                                         klein_point2)  # new intersections
-
-            unit_point1 = np.arctan2(intersections[1], intersections[0])  # get polar coordinates of intersections
-            unit_point2 = np.arctan2(intersections[3], intersections[2])
-
-            if unit_point1 < 0:  # for assertion phi >= 0
-                unit_point1 = unit_point1 + 2 * pi
-            if unit_point2 < 0:
-                unit_point2 = unit_point2 + 2 * pi
-            # ArcBetweenPointsOnUnitCircle
-            radius1 = ArcBetweenPointsOnUnitDisk(unit_point1, unit_point2).radius
-            self.play(Create(ArcBetweenPoints(point2, point1, radius=radius1,
-                                              color=YELLOW).reverse_direction()))  # arcs in hexagon dont meet unit circle
-            # self.play(Create(ArcBetweenPointsOnUnitDisk(unit_point1, unit_point2,
-            #                                     color=GREEN).reverse_direction()))  # arcs in hexagon meet unit circle
-            point1 = point2
+        phis = create_phis(min_dist=0.6)
+        hexagon = NonIdealHexagon(radius, phis, YELLOW, True)
+        self.play(Create(hexagon), run_time=5)
+        self.wait(2)
 
 
 class CircleWithArcs(Scene):
@@ -230,57 +203,6 @@ class LineTransform(Scene):
             self.play(*animations[1])
             for i in range(2, n):
                 self.play(*animations[i], run_time=1, rate_func=(lambda x: x))
-
-
-def tf_klein_to_hem(point):
-    x = point[0]
-    y = point[1]
-    assert x ** 2 + y ** 2 <= 1
-    return np.array([x, y, np.sqrt(1 - (x ** 2) - (y ** 2))])
-
-
-def tf_hem_to_poincare(point):
-    x = point[0]
-    y = point[1]
-    z = point[2]
-    return np.array([x / (1 + z), y / (1 + z), 0.])
-
-
-def tf_klein_to_poincare(point):
-    return tf_hem_to_poincare(tf_klein_to_hem(point))
-
-
-# all other transformation directions
-def tf_hem_to_klein(point):  # 3 coord to 2 coord
-    x = point[0]
-    y = point[1]
-    return np.array([x, y, 0])
-
-
-def tf_poincare_to_hem(point):  # 2 coord to 3 coord
-    x = point[0]
-    y = point[1]
-    new_coord = np.array([2 * x, 2 * y, 1 - (x ** 2) - (y ** 2)])
-    scalar = 1 / (1 + (x ** 2) + (y ** 2))
-    return scalar * new_coord
-
-
-def tf_poincare_to_klein(point):  # 2 coord to 2 coord
-    return tf_poincare_to_hem(tf_hem_to_klein(point))
-
-
-def mobius_transform(point, x, y, u):
-    res = complex_mobius_transform(complex(point[0], point[1]), x, y, u)
-    # print(res)
-    return np.array([np.real(res), np.imag(res), point[2]])
-
-
-def complex_mobius_transform(z, x, y, u):
-    a = complex(x, y)
-    b = complex(u, np.sqrt(-pow(u, 2) + pow(x, 2) + pow(y, 2) - 1))
-    # if absolute(z) == 1:
-    #    return complex(0, 0)
-    return np.divide(np.add(np.multiply(a, z), np.conj(b)), np.add(np.multiply(b, z), np.conj(a)))
 
 
 class SmallCircles(MovingCameraScene):
