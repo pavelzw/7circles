@@ -112,6 +112,7 @@ class NonIdealHexagonAnimation(Scene):
         self.add(circle)
         radius = np.random.uniform(0.5, 0.7, 6)
         phis = create_phis(min_dist=0.6)
+
         hexagon = NonIdealHexagon(radius, phis)
         self.play(Create(hexagon), run_time=5)
         self.wait(2)
@@ -144,8 +145,31 @@ class AlternatingPerimeter(Scene):
         radius = np.random.uniform(0.5, 0.7, 6)
         phis = create_phis(min_dist=0.6)
         hexagon = NonIdealHexagon(radius, phis, alternating_perimeter=True)
+
+        hexagon = NonIdealHexagon(radius, phis, YELLOW)
+
         self.play(Create(hexagon), run_time=5)
         self.wait(2)
+
+
+class TransformingNonIdealIntoIdeal(Scene):
+    def construct(self):
+        circle = Circle()
+        self.add(circle)
+        radius = np.random.uniform(0.5, 0.7, 6)
+        phis = create_phis(min_dist=0.6)
+
+        step_size = 10
+        # phis = np.array([0, 1, 2, 3, 4, 5])
+        transition = create_radius_transition(radius=radius, step_size=step_size)
+        hexagon = NonIdealHexagon(transition[0], phis, YELLOW)
+        self.add(hexagon)
+
+        for t in range(1, step_size):
+            hexagon_new = NonIdealHexagon(transition[t], phis, YELLOW)
+            self.play(Transform(hexagon, hexagon_new), run_time=0.2, rate_func=lambda a: a)
+
+        # self.wait(duration=5)
 
 
 class CircleWithArcs(Scene):
