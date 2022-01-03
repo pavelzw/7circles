@@ -22,3 +22,12 @@ def create_phi_transition(phi_old: HexagonAngles, phi_new: HexagonAngles, step_s
         step = HexagonAngles(step_variable_part)
         transition[t] = step
     return transition
+
+
+def create_radius_transition(radius, step_size=10):
+    transition = np.empty(shape=(step_size, radius.shape[0]))
+
+    for t in range(step_size):
+        step_variable_part = radius * (1 - t / step_size) + 1 * t / step_size
+        transition[t] = step_variable_part
+    return transition
