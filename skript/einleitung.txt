@@ -8,8 +8,44 @@ Teasern was kommen wird:
 "Unser Ziel für heute ist, den 7-Kreise-Satz zu beweisen."
 
 Formulierung des Satzes:
-	Wenn man einen Kreis hat und sechs in diesem Kreis liegenden innere Kreise C1,...,C6 sodass sich je zwei nebeneinanderliegende Kreise in einem Punkt berühren und jeder innere Kreise den äußeren Kreis in einem Punkt berührt. Dann bilden die Berührungspunkte mit dem äußeren Kreis ein Hexagon. Verbindet man gegenüberliegende Punkte des Hexagons, dann schneiden sich die drei Geraden immer in einem Punkt.
+	Wenn man einen Kreis hat und sechs in diesem Kreis liegenden innere Kreise C1,...,C6 sodass sich 
+	je zwei nebeneinanderliegende Kreise in einem Punkt berühren und jeder innere Kreise den äußeren Kreis in einem Punkt berührt. 
+	Dann bilden die Berührungspunkte mit dem äußeren Kreis ein Hexagon. Verbindet man gegenüberliegende Punkte des Hexagons, 
+	dann schneiden sich die drei Geraden immer in einem Punkt.
 	(Währenddessen Animation laufen lassen).
 	
 Um diesen Satz zu zeigen werden wir die Problemstellung zuerst einmal umformulieren.
 Um die nötige Sprache dafür einzuführen müssen wir uns aber zuerst mit hyperbolischer Geometrie vertraut machen.
+Axiomatisch gesehen unterscheidet sich hyperbolischer Raum vom euklidischen Raum dadurch, dass das Parallelenaxiom nicht gilt.
+Das Parallelenaxiom sagt aus, dass zu jeder Gerade g und jedem Punkt P, der nicht auf dieser Gerade liegt genau eine 
+zu g parallele Gerade h existiert, die durch P verläuft.
+
+"Parallel" heißt hier einfach, dass sich die Geraden nicht schneiden.
+
+In hyperbolischer Geometrie hat man nun aber, dass es zu jeder solchen Gerade g und jedem nicht auf g liegendem Punkt P
+mehrere (sogar unendlich viele) Geraden gibt, die durch P verlaufen und zu g parallel sind.
+Einen solchen Raum können wir natürlich nicht direkt darstellen, da die euklidische Natur des zweidimensionalen Bildschirms das nicht
+zulässt.
+Um den hyperbolischen Raum zumindest angenähert trotzdem darstellen zu können gibt es verschiedene Modelle - Abbildungen vom hyperbolischen Raum in den euklidischen Raum.
+Zwei dieser Modelle werden wir euch jetzt kurz genauer vorstellen.
+
+Zuerst einmal gibt es das Poincare-Modell:
+Die Leinwand, auf der sich hier alles abspielt ist die Einheitsscheibe.
+Die Geodätischen also lokal kürzesten Wege sind hier Kreisbögen, die den Einheitskreis im rechten Winkel schneiden.
+Damit lässt sich auch recht schnell einsehen, dass das Parallelenaxiom hier nicht gilt:
+Zu jedem Kreisbogen und jedem Punkt außerhalb des Kreisbogens lassen sich natürlich viele andere Kreisbögen finden, die durch diesen Punkt
+aber nicht durch den ersten Kreisbogen verlaufen.
+Etwas irreführend ist, dass der hyperbolische Raum im Poincare-Modell beschränkt aussieht. Tatsächlich ist dem aber nicht so:
+Umso weiter man sich dem Rand nähert, desto größer wird die Strecke die man zurücklegt. Der gesamte Rand der Einheitsscheibe liegt im Unendlichen.
+In diesem Bild (Blende Bild mit Dreiecktessellation ein) haben sogar alle Dreiecke die gleiche Größe und Form.
+Man sieht also, dass das Poincare-Modell nur eine verzerrte Darstellung liefert.
+
+Ganz ähnlich sieht auch das Klein-Modell aus.
+Der große Unterschied zum Poincare-Modell ist, dass die Geodätischen hier gerade Linien sind.
+Auch hier kann man schnell Einsehen, dass das Parallelenaxiom nicht gilt.
+
+Um zwischen dem Klein- und Poincaremodell zu wechseln können wir jetzt relativ einfache Abbildungen benutzen.
+Diese erlauben uns, Punkte der beiden Modelle miteinander zu identifizieren.
+
+
+Zuerst einmal ist es wichtig zu wissen, dass sich hyperbolischer Raum unintuitiv verhält, wenn man unseren euklidischen Raum gewohnt ist.
