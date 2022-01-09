@@ -201,43 +201,40 @@ class CircleWithArcsMoving(Scene):
 
 class LineTransform(Scene):
     def construct(self):
-        m = 2
         phis_a = []
         phis_b = []
-        lines = [[] for _ in range(m)]
+        lines = []
+        for i in np.arange(0, 3, 1):
+            phis_a.append(radian_to_point(i))
+            phis_b.append(radian_to_point(i + 3))
 
-        for j in range(m):
-            for i in np.arange(0, 3, 1):
-                phis_a.append(radian_to_point(i))
-                phis_b.append(radian_to_point(i + 3))
+        for p in phis_a:
+            for q in phis_b:
+                lines.append(Line(start=p, end=q, shade_in_3d=False, stroke_width=0.5))
 
-            for p in phis_a:
-                for q in phis_b:
-                    lines[j].append(Line(start=p, end=q, shade_in_3d=False, stroke_width=0.3))
+        for line in lines:
+            line.insert_n_curves(1000)
 
-            for line in lines[j]:
-                line.insert_n_curves(1000)
+        circle = Circle(shade_in_3d=True)
+        self.add(circle, ThreeDAxes())
 
-            circle = Circle(shade_in_3d=True)
-            self.add(circle, ThreeDAxes())
+        # self.set_camera_orientation(phi=75 * DEGREES, theta=30 * DEGREES)
 
-            # self.set_camera_orientation(phi=75 * DEGREES, theta=30 * DEGREES)
+        n = 5
+        animations = [[] for _ in range(n)]
 
-            n = 5
-            animations = [[] for _ in range(n)]
-
-            for line in lines[j]:
-                animations[0].append(Create(line))
-                animations[1].append(ApplyPointwiseFunction(lambda x: tf_klein_to_poincare(0.9999 * x), line))
-                for i in range(2, n):
-                    for k in lines:
-                        for h in k:
-                            animations[i].append(ApplyPointwiseFunction(lambda x: mobius_transform(x, 1.01, 0., 0.), h))
-
-            self.play(*animations[0])
-            self.play(*animations[1])
+        for line in lines:
+            animations[0].append(Create(line))
+            animations[1].append(ApplyPointwiseFunction(lambda x: tf_klein_to_poincare(0.9999 * x), line))
             for i in range(2, n):
-                self.play(*animations[i], run_time=1, rate_func=(lambda x: x))
+                for k in lines:
+                    for h in k:
+                        animations[i].append(ApplyPointwiseFunction(lambda x: mobius_transform(x, 1.01, 0., 0.), h))
+
+        self.play(*animations[0])
+        self.play(*animations[1])
+        for i in range(2, n):
+            self.play(*animations[i], run_time=1, rate_func=(lambda x: x))
 
 
 class SmallCircles(MovingCameraScene):
