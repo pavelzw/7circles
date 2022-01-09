@@ -8,8 +8,8 @@ Teasern was kommen wird:
 "Unser Ziel für heute ist, den 7-Kreise-Satz zu beweisen."
 
 Formulierung des Satzes:
-	Wenn man einen Kreis hat und sechs in diesem Kreis liegenden innere Kreise C1,...,C6 sodass sich 
-	je zwei nebeneinanderliegende Kreise in einem Punkt berühren und jeder innere Kreise den äußeren Kreis in einem Punkt berührt. 
+	Wenn man einen Kreis hat und sechs in diesem Kreis liegenden innere Kreise C1,...,C6 sodass 
+	je zwei nebeneinanderliegende Kreise tangential sind (sich also in genau einem Punkt berühren) und jeder innere Kreise zum äußeren Kreis tangential ist. 
 	Dann bilden die Berührungspunkte mit dem äußeren Kreis ein Hexagon. Verbindet man gegenüberliegende Punkte des Hexagons, 
 	dann schneiden sich die drei Geraden immer in einem Punkt.
 	(Währenddessen Animation laufen lassen).
@@ -44,8 +44,17 @@ Ganz ähnlich sieht auch das Klein-Modell aus.
 Der große Unterschied zum Poincare-Modell ist, dass die Geodätischen hier gerade Linien sind.
 Auch hier kann man schnell Einsehen, dass das Parallelenaxiom nicht gilt.
 
-Um zwischen dem Klein- und Poincaremodell zu wechseln können wir jetzt relativ einfache Abbildungen benutzen.
-Diese erlauben uns, Punkte der beiden Modelle miteinander zu identifizieren.
+Da sowohl das Klein- und das Poincaremodell Abbildungen des hyperbolischen Raumes sind, kann man auch Abbildungen zwischen den beiden Modellen konstruieren.
+Mit dieser Abbildung kommen wir zum Beispiel vom Klein- ins Poincaremodell.
+Man sieht hier, dass die Abbildung punktweise agiert.
+Das heißt, wir können ganz einfach Geodätische aus dem Kleinmodell ins Poincaremodell überführen.
+Diese Einsicht führt uns zu unserer ersten Umformulierung der Problemstellung:
 
+Als Wiederholung: Wir wollen beweisen, dass...
 
-Zuerst einmal ist es wichtig zu wissen, dass sich hyperbolischer Raum unintuitiv verhält, wenn man unseren euklidischen Raum gewohnt ist.
+Den großen Kreis kann man sich als Einheitskreis definieren und die Ränder des Sechsecks sowie dessen Diagonalen als Geodätische im Kleinmodell.
+Ein solches Hexagon mit Punkten im Unendlichen nennen wir ab jetzt ein ideales Hexagon.
+Bildet man die Konstruktion jetzt auf das Poincare-Modell ab, schneiden sich die Diagonalen immer noch, da die Abbildung punktweise agiert.
+
+Es reicht jetzt also zu beweisen, dass sich die hyperbolichen Geodätischen zwischen gegenüberliegenden Punkten eines idealen Hexagons
+in einem Punkt schneiden, wenn die Ecken des Hexagons zu Tangentialpunkten sechs zueinander tangentialen Kreisen innerhalb der Einheitsscheibe korrespondieren.
