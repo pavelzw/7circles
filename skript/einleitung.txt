@@ -29,14 +29,16 @@ zulässt.
 Um den hyperbolischen Raum zumindest angenähert trotzdem darstellen zu können gibt es verschiedene Modelle - Abbildungen vom hyperbolischen Raum in den euklidischen Raum.
 Zwei dieser Modelle werden wir euch jetzt kurz genauer vorstellen.
 
+--Geodätische erklären im Euklidischen, um das nicht im Halbsatz einführen zu müssen.
+
 Zuerst einmal gibt es das Poincare-Modell:
 Die Leinwand, auf der sich hier alles abspielt ist die Einheitsscheibe.
-Die Geodätischen also lokal kürzesten Wege sind hier Kreisbögen, die den Einheitskreis im rechten Winkel schneiden.
+Die Geodätischen, also lokal kürzesten Wege sind hier Kreisbögen, die den Einheitskreis im rechten Winkel schneiden.
 Damit lässt sich auch recht schnell einsehen, dass das Parallelenaxiom hier nicht gilt:
-Zu jedem Kreisbogen und jedem Punkt außerhalb des Kreisbogens lassen sich natürlich viele andere Kreisbögen finden, die durch diesen Punkt
+Zu jedem Kreisbogen und jedem Punkt außerhalb des Kreisbogens lassen sich natürlich viele andere Kreisbögen finden, die durch diesen Punkt,
 aber nicht durch den ersten Kreisbogen verlaufen.
 Etwas irreführend ist, dass der hyperbolische Raum im Poincare-Modell beschränkt aussieht. Tatsächlich ist dem aber nicht so:
-Umso weiter man sich dem Rand nähert, desto größer wird die Strecke die man zurücklegt. Der gesamte Rand der Einheitsscheibe liegt im Unendlichen.
+Umso weiter man sich dem Rand nähert, desto größer wird die Strecke, die man zurücklegt. Der gesamte Rand der Einheitsscheibe liegt im Unendlichen.
 In diesem Bild (Blende Bild mit Dreiecktessellation ein) haben sogar alle Dreiecke die gleiche Größe und Form.
 Man sieht also, dass das Poincare-Modell nur eine verzerrte Darstellung liefert.
 

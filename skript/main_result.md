@@ -10,8 +10,8 @@ Knoten in der hyperbolischen Ebene. In unserem idealen Sechseck gibt es drei sem
 sowie drei semiideale Dreiecke, die das innere Dreieck schneiden - G_1, G_2 und G_3.
 
 Wir definieren uns nun eine ähnliche Größe wie den alternierenden Umfang. Wenn wir die Seiten eines semiidealen Dreiecks
-betrachten und jeweils disjunkte Horodisks (deutsch?) entfernen und nun die Seite, die die beiden Randpunkte verbindet,
-von den anderen beiden Seiten abziehen, kommen wir auf eine ähnliche Definition wie der alternierende Umfang.
+betrachten und jeweils disjunkte Horodisks entfernen und nun die Seite, die die beiden Randpunkte verbindet, von den
+anderen beiden Seiten abziehen, kommen wir auf eine ähnliche Definition wie der alternierende Umfang.
 [Bild einfügen]
 Da wir jeweils die gleiche Länge hinzufügen und wieder abziehen, hängt diese Größe nicht von den Horodisks, die wir
 wählen, ab.
@@ -33,6 +33,12 @@ _todo vllt. noch genauer erklären_
 
 _Recap Theorem 3.1_
 
+# todo verschönern
+
+Berührende Kreise bedeuten alternierenden Umfang 0 -> (Thm 3.1) Umfang von T_P ist 0 -> T_P ist ein einzelner Punkt
+
+##### EGAL
+
 Nun können wir damit die finale Formulierung des Sieben Kreise Satzes beweisen. Wir sagen, dass ein Hexagon eine
 Punktreflexionssymmetrie hat, falls es eine nichttriviale Isometrie gibt, die einen einzelnen Fixpunkt hat und unter
 welcher das Hexagon invariant bleibt.
@@ -49,3 +55,5 @@ Die folgenden drei Aussagen sind äquivalent:
 Um eine Äquivalenz zu zeigen, müssen wir drei Richtungen beweisen.
 
 1 -> 2:
+
+##### EGAL

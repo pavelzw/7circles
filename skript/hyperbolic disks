@@ -2,17 +2,18 @@ Nun betrachten wir nochmal genauer, wie sich Kreise, Radien und Abstände im hyp
 
 Hyperbolische Scheiben, die wir im Poincare Modell H^2 einbetten, sind genauso definiert, wie euklidische Scheiben/Kreise
     -> Definition B(z_0,r)
-Was hyperbolische Scheiben von euklidischen Scheiben unterscheidet ist die eben definierte Distanzfunktion.
+Was hyperbolische Scheiben von euklidischen Scheiben unterscheidet ist die eben definierte Distanzfunktion. (kurz angeben)
 So können wir uns das Verhalten von Radien und Abstände in beiden Modellen genauer anschauen
     -> gegenüber Stellung, erst euklidisch, wie man es kennt, dann hyperbolisch, dann gleichzeitig laufen lassen.
 Euklidische Kreise funktionieren wie bekannt.
 Im Zentrum des H^2 verhalten sich auch hyperbolische Kreise gleich, doch ändern wir das hyperb Zentrum,
     so verändert sich auch das Verhalten der hypb Kreise.
     -> hyperb Kreise
-Da hyberbolische Isometrien die Länge erhalten im hyperb Raum, sehen wir, dass die Menge der hypb Disks identisch zu der der eukl sind (?)
+(Da hyberbolische Isometrien die Länge erhalten im hyperb Raum, sehen wir, dass die Menge der hypb Disks identisch zu der der eukl sind (?))
 
 Doch die eukl und hypb Zentren sowie Radien unterscheiden sich im allgemeinen.
-(Achtung: verschiebungen wie im Video sind keine hyperbl Isometrien)
+(Achtung: verschiebungen wie im Video sind keine hyperbl Isometrien) also hyperbolische größe nimmt zu
+ >> radius ausrechnen über distanzfunktion
 
 Bewegen wir das hyp Zentrum und schauen uns die zugehörigen konzentrischen Kreise an, so konvergiert der Radius gegen unendlich für zentrum -> Rand
 
