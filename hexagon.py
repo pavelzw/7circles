@@ -5,7 +5,7 @@ from manim import *
 from manim import Group, BLUE, Circle, WHITE, ArcBetweenPoints, Angle, TangentLine
 
 from geometry_util import radian_to_point, get_intersection, get_intersection_line_unit_circle, \
-    get_intersections_of_circles, get_circle_middle
+    get_intersection_of_two_tangent_circles, get_circle_middle
 
 
 class HexagonAngles(np.ndarray):
@@ -40,24 +40,27 @@ class Hexagon(VMobject, Group, ABC):
         self.edges = []
 
 
-class HexagonCircles(Group, ABC):
+class HexagonCircles(VMobject, Group, ABC):
     def __init__(self, hexagon: Hexagon, first_circle_radius: float, color=BLUE, **kwargs):
         super().__init__(**kwargs)
         phis = hexagon.phis
         p0 = radian_to_point(phis[0])
         first_circle_center = p0 * (1 - first_circle_radius)
         self.add(Circle(radius=first_circle_radius, color=color).move_to(first_circle_center))
+        self.circles = []
 
         new_center, new_radius = first_circle_center, first_circle_radius
         for i in range(1, 6):
             new_center, new_radius = self._get_next_circle(new_center, new_radius, phis[i - 1], phis[i])
-            self.add(Circle(radius=new_radius, color=color).move_to(new_center))
+            new_circle = Circle(radius=new_radius, color=color).move_to(new_center)
+            self.circles.append(new_circle)
+            self.add(new_circle)
 
     @staticmethod
     def _get_next_circle(center, radius, phi_old, phi_new):
         arc = ArcBetweenPointsOnUnitDisk(phi_old, phi_new)
         arc_center = get_circle_middle(phi_old, phi_new)
-        intersection = get_intersections_of_circles(center, radius, arc_center, arc.radius)
+        intersection = get_intersection_of_two_tangent_circles(center, radius, arc_center, arc.radius)
         assert intersection is not None
         middle_between_phi_new_and_intersection = (intersection + radian_to_point(phi_new)) / 2
         direction = intersection - radian_to_point(phi_new)
@@ -68,7 +71,7 @@ class HexagonCircles(Group, ABC):
         return center_of_circle, np.linalg.norm(center_of_circle - radian_to_point(phi_new))
 
 
-class HyperbolicHexagonMainDiagonals(Group, ABC):
+class HexagonMainDiagonals(Group, ABC):
     def __init__(self, hexagon: Hexagon, color=WHITE, **kwargs):
         super().__init__(**kwargs)
         phis = hexagon.phis

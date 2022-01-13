@@ -1,7 +1,8 @@
 import numpy as np
+from manim import Circle, Point
 
 
-def get_intersections_of_circles(c0: np.array, r0: float, c1: np.array, r1: float):
+def get_intersection_of_two_tangent_circles(c0: np.array, r0: float, c1: np.array, r1: float):
     # circle 1: center c0, radius r0
     # circle 2: center c1, radius r1
 
@@ -36,6 +37,16 @@ def get_intersections_of_circles(c0: np.array, r0: float, c1: np.array, r1: floa
         if np.abs(np.linalg.norm(intersection1) - 1) < 0.0001:
             return intersection2
         return intersection1
+
+
+def get_intersections_of_n_tangent_circles(circles: [Circle]):
+    intersections = []
+    n = len(circles)
+    for i in range(n):
+        Point(intersections.append(get_intersection_of_two_tangent_circles(
+            circles[i].center, circles[i].radius, circles[(i + 1) % n].center, circles[(i + 1) % n].radius)
+        ))
+    return intersections
 
 
 def radian_to_point(angle, radius=1):

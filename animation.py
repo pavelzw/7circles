@@ -1,12 +1,11 @@
 from math import pi
 
-import numpy as np
 from manim import *
 
 from euclidean_hexagon import EuclideanHexagon
 from geometry_util import radian_to_point, mobius_transform, \
-    tf_klein_to_poincare
-from hexagon import HexagonCircles, HyperbolicHexagonMainDiagonals, ArcBetweenPointsOnUnitDisk
+    tf_klein_to_poincare, get_intersections_of_n_tangent_circles
+from hexagon import HexagonCircles, HexagonMainDiagonals, ArcBetweenPointsOnUnitDisk
 from hexagon_util import create_phis, create_phi_transition, create_radius_transition
 from hyperbolic_hexagon import HyperbolicHexagon, NonIdealHexagon
 
@@ -250,7 +249,7 @@ class SmallCircles(MovingCameraScene):
         first_circle_radius = .25
         hexagon = HyperbolicHexagon(phis)
         hexagon_circles = HexagonCircles(hexagon, first_circle_radius)
-        hexagon_diagonals = HyperbolicHexagonMainDiagonals(hexagon)
+        hexagon_diagonals = HexagonMainDiagonals(hexagon)
         self.add(hexagon)
         self.add(hexagon_circles)
         self.add(hexagon_diagonals)
@@ -265,8 +264,11 @@ class SevenCircles(Scene):
         first_circle_radius = .25
 
         hexagon = EuclideanHexagon(phis)
-        # hexagon_circles = HyperbolicHexagonCircles(hexagon, first_circle_radius)
+        hexagon_circles = HexagonCircles(hexagon, first_circle_radius)
+        circle_intersections = get_intersections_of_n_tangent_circles(hexagon_circles.circles)
 
         self.play(FadeIn(circle))
+        self.play(Create(hexagon_circles, run_time=5))
+        self.play(Create(circle_intersections, run_time=5))
         self.play(Create(hexagon, run_time=5))
         self.wait(1)
