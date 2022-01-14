@@ -1,10 +1,11 @@
 import numpy as np
-from manim import Circle, Point
+from manim import Circle, Dot, WHITE, GREEN
 
 
 def get_intersection_of_two_tangent_circles(c0: np.array, r0: float, c1: np.array, r1: float):
     # circle 1: center c0, radius r0
     # circle 2: center c1, radius r1
+    eps = 0.00001
 
     x0, y0, _ = c0
     x1, y1, _ = c1
@@ -12,17 +13,20 @@ def get_intersection_of_two_tangent_circles(c0: np.array, r0: float, c1: np.arra
     d = np.sqrt((x1 - x0) ** 2 + (y1 - y0) ** 2)
 
     # non intersecting
-    if d > r0 + r1:
+    if d - eps > r0 + r1:
         raise ValueError(f'Circles non intersecting\n{c0}\n{r0}\n{c1}\n{r1}')
     # One circle within other
-    if d < abs(r0 - r1):
-        raise ValueError('One circle within other\n{c0}\n{r0}\n{c1}\n{r1}')
+    # if d < abs(r0 - r1):
+    #    raise ValueError('One circle within other\n{c0}\n{r0}\n{c1}\n{r1}')
     # coincident circles
     if d == 0 and r0 == r1:
         raise ValueError('Coincident circles\n{c0}\n{r0}\n{c1}\n{r1}')
     else:
         a = (r0 ** 2 - r1 ** 2 + d ** 2) / (2 * d)
-        h = np.sqrt(r0 ** 2 - a ** 2)
+        h = 0
+        tmp = r0 ** 2 - a ** 2
+        if tmp >= 0:
+            h = np.sqrt(r0 ** 2 - a ** 2)
         x2 = x0 + a * (x1 - x0) / d
         y2 = y0 + a * (y1 - y0) / d
         x3 = x2 + h * (y1 - y0) / d
@@ -43,9 +47,19 @@ def get_intersections_of_n_tangent_circles(circles: [Circle]):
     intersections = []
     n = len(circles)
     for i in range(n):
-        Point(intersections.append(get_intersection_of_two_tangent_circles(
-            circles[i].center, circles[i].radius, circles[(i + 1) % n].center, circles[(i + 1) % n].radius)
-        ))
+        point = get_intersection_of_two_tangent_circles(
+            circles[i].get_center(), circles[i].radius, circles[(i + 1) % n].get_center(), circles[(i + 1) % n].radius
+        )
+        intersections.append(Dot(point, color=GREEN, radius=0.05))
+    return intersections
+
+
+def get_intersections_of_circles_with_unit_circle(circles: [Circle]):
+    intersections = []
+    n = len(circles)
+    for i in range(n):
+        point = get_intersection_of_two_tangent_circles(circles[i].get_center(), circles[i].radius, [0., 0., 0.], 1.)
+        intersections.append(Dot(point, color=WHITE, radius=0.05))
     return intersections
 
 

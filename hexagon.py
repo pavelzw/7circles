@@ -46,8 +46,9 @@ class HexagonCircles(VMobject, Group, ABC):
         phis = hexagon.phis
         p0 = radian_to_point(phis[0])
         first_circle_center = p0 * (1 - first_circle_radius)
-        self.add(Circle(radius=first_circle_radius, color=color).move_to(first_circle_center))
-        self.circles = []
+        first_circle = Circle(radius=first_circle_radius, color=color).move_to(first_circle_center)
+        self.add(first_circle)
+        self.circles = [first_circle]
 
         new_center, new_radius = first_circle_center, first_circle_radius
         for i in range(1, 6):

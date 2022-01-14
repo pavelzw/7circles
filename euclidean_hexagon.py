@@ -46,3 +46,12 @@ class LineBetweenPointsOnUnitDisk(Line, ABC):
             super().__init__(start=point2, end=point1, color=color)
         else:
             super().__init__(start=point1, end=point2, color=color)
+
+
+def get_diagonals(hexagon: EuclideanHexagon):
+    diagonals = []
+    phis = hexagon.phis
+    for i in range(3):
+        diagonals.append(LineBetweenPointsOnUnitDisk(phis[i], phis[i + 3]))
+
+    return diagonals
