@@ -91,6 +91,10 @@ def get_intersection(p1, p2, p3, p4):
     return np.array([intersection1, intersection2, 0])
 
 
+def get_intersection_from_angles(phi1, phi2, phi3, phi4):
+    return get_intersection(radian_to_point(phi1), radian_to_point(phi2), radian_to_point(phi3), radian_to_point(phi4))
+
+
 def get_intersection_line_unit_circle(start_point, direction):
     # solves (x + at)^2 + (y + bt)^2 = 1
     # with x^2 + y^2 = 1

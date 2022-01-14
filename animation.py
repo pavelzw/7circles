@@ -4,7 +4,8 @@ from manim import *
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import radian_to_point, mobius_transform, \
-    tf_klein_to_poincare, get_intersections_of_n_tangent_circles, get_intersections_of_circles_with_unit_circle
+    tf_klein_to_poincare, get_intersections_of_n_tangent_circles, get_intersections_of_circles_with_unit_circle, \
+    get_intersection_from_angles
 from hexagon import HexagonCircles, HexagonMainDiagonals, ArcBetweenPointsOnUnitDisk
 from hexagon_util import create_phis, create_phi_transition, create_radius_transition
 from hyperbolic_hexagon import HyperbolicHexagon, NonIdealHexagon
@@ -268,6 +269,7 @@ class SevenCircles(Scene):
         inner_intersections = get_intersections_of_n_tangent_circles(hexagon_circles.circles)
         outer_intersections = get_intersections_of_circles_with_unit_circle(hexagon_circles.circles)
         diagonals = get_diagonals(hexagon)
+        diagonal_intersection = Dot(get_intersection_from_angles(phis[0], phis[3], phis[1], phis[4]), color=YELLOW)
 
         self.play(FadeIn(circle))
         self.play(Create(hexagon_circles, run_time=5))
@@ -278,4 +280,7 @@ class SevenCircles(Scene):
         self.play(Create(hexagon, run_time=5))
         for x in diagonals:
             self.play(Create(x), run_time=1)
+        self.play(Create(diagonal_intersection))
+        self.wait(1)
+        self.play(Flash(diagonal_intersection))
         self.wait(1)
