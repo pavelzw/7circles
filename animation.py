@@ -183,7 +183,19 @@ class TransformingNonIdealIntoIdeal(Scene):
             hexagon_new = NonIdealHexagon(transition[t], phis)
             self.play(Transform(hexagon, hexagon_new), run_time=0.2, rate_func=lambda a: a)
 
+            # measuring hyp distance between two moving points,
+            # BUG: interpolation still pretty shitty
+            point1_new = radian_to_point(phis[0], radius[0] * (1 - t / step_size) + 1 * t / step_size)
+            point2_new = radian_to_point(phis[1], radius[1] * (1 - t / step_size) + 1 * t / step_size)
+            distance = hyperbolic_distance_function(point1_new, point2_new)
+            print(distance)
         # self.wait(duration=5)
+        # try of hyperbolic distance, works alright. convergent to infinity?
+        # point1 = radian_to_point(0, 0.9)
+        # point2 = radian_to_point(PI / 4, 0.9)
+        # self.add(Dot([point1]), Dot([point2]))
+        # distance = hyperbolic_distance_function(point1, point2)
+        # print(distance)
 
 
 class AlternatingPerimeter(Scene):
