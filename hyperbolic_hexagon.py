@@ -18,7 +18,7 @@ class HyperbolicHexagon(Hexagon, Group, ABC):
             phi1 = phis[i]
             phi2 = phis[(i + 1) % 6]
             # bug: if two adjacent points have distance > PI, then the direction needs to be flipped
-            arc = ArcBetweenPointsOnUnitDisk(phi1, phi2).reverse_direction()
+            arc = ArcBetweenPointsOnUnitDisk(phi1, phi2, **kwargs).reverse_direction()
             arcs.append(arc)
         self.add(arcs[0], arcs[1], arcs[2], arcs[3], arcs[4], arcs[5])
 

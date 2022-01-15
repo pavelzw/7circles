@@ -1,27 +1,34 @@
 from abc import ABC
 from math import pi
 
-from manim import *
-from manim import Group, BLUE, Circle, WHITE, ArcBetweenPoints, Angle, TangentLine
+import numpy as np
+from manim import Group, BLUE, Circle, WHITE, ArcBetweenPoints, Angle, TangentLine, VMobject, VGroup
 
 from geometry_util import radian_to_point, get_intersection, get_intersection_line_unit_circle, \
     get_intersection_of_two_tangent_circles, get_circle_middle
 
 
-class HexagonAngles(np.ndarray):
+class HexagonAngles(np.ndarray, ABC):
     def __new__(cls, phis, *args, **kwargs):
-        assert phis.shape[0] == 5
-        obj = np.empty(shape=(6,)).view(cls)
-        obj[:5] = phis
-        new_phi = cls._get_last_phi(phis)
-        obj[-1] = new_phi + 2 * pi if new_phi < 0 else new_phi
-        return obj
+        if phis.shape[0] == 5:
+            # one angle is missing -> calculate angle s.t. the main diagonals intersect
+            obj = np.empty(shape=(6,)).view(IntersectingHexagonAngles)
+            obj[:5] = phis
+            new_phi = IntersectingHexagonAngles.get_last_phi(phis)
+            obj[-1] = new_phi + 2 * pi if new_phi < 0 else new_phi
+            return obj
+        if phis.shape[0] == 6:
+            obj = np.empty(shape=(6,)).view(NonIntersectingHexagonAngles)
+            obj[:6] = phis
+            return obj
 
+
+class IntersectingHexagonAngles(HexagonAngles):
     def variable_angles(self) -> np.ndarray:
         return np.array(self[:5])
 
     @staticmethod
-    def _get_last_phi(phis: np.ndarray):
+    def get_last_phi(phis: np.ndarray):
         assert phis.shape == (5,)
         p0 = radian_to_point(phis[0])
         p1 = radian_to_point(phis[1])
@@ -32,6 +39,10 @@ class HexagonAngles(np.ndarray):
         point_on_circle = get_intersection_line_unit_circle(p2, intersection - p2)
         phi = np.arctan2(point_on_circle[1], point_on_circle[0])
         return phi
+
+
+class NonIntersectingHexagonAngles(HexagonAngles):
+    ...
 
 
 class Hexagon(VMobject, Group, ABC):
@@ -72,13 +83,14 @@ class HexagonCircles(VMobject, Group, ABC):
         return center_of_circle, np.linalg.norm(center_of_circle - radian_to_point(phi_new))
 
 
-class HexagonMainDiagonals(Group, ABC):
+class HexagonMainDiagonals(VGroup, ABC):
     def __init__(self, hexagon: Hexagon, color=WHITE, **kwargs):
         super().__init__(**kwargs)
         phis = hexagon.phis
-        self.add(ArcBetweenPointsOnUnitDisk(phis[0], phis[3], color=color))
-        self.add(ArcBetweenPointsOnUnitDisk(phis[1], phis[4], color=color))
-        self.add(ArcBetweenPointsOnUnitDisk(phis[2], phis[5], color=color))
+        arc1 = ArcBetweenPointsOnUnitDisk(phis[0], phis[3], color=color, **kwargs)
+        arc2 = ArcBetweenPointsOnUnitDisk(phis[1], phis[4], color=color, **kwargs)
+        arc3 = ArcBetweenPointsOnUnitDisk(phis[2], phis[5], color=color, **kwargs)
+        self.add(arc1, arc2, arc3)
 
 
 class ArcBetweenPointsOnUnitDisk(ArcBetweenPoints, ABC):
@@ -106,6 +118,6 @@ class ArcBetweenPointsOnUnitDisk(ArcBetweenPoints, ABC):
 
         ang = angle.get_value(degrees=False)
         if phi2 - phi1 < pi:
-            super().__init__(start=point2, end=point1, angle=-ang, radius=r, color=color)
+            super().__init__(start=point2, end=point1, angle=-ang, radius=r, color=color, **kwargs)
         else:
-            super().__init__(start=point1, end=point2, angle=-ang, radius=r, color=color)
+            super().__init__(start=point1, end=point2, angle=-ang, radius=r, color=color, **kwargs)
