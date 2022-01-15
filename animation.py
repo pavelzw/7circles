@@ -5,7 +5,7 @@ from manim import *
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import radian_to_point, mobius_transform, \
     tf_klein_to_poincare, get_intersections_of_n_tangent_circles, get_intersections_of_circles_with_unit_circle, \
-    get_intersection_from_angles
+    get_intersection_from_angles, hyperbolic_distance_function
 from hexagon import HexagonCircles, HexagonMainDiagonals, ArcBetweenPointsOnUnitDisk
 from hexagon_util import create_phis, create_phi_transition, create_radius_transition
 from hyperbolic_hexagon import HyperbolicHexagon, NonIdealHexagon
@@ -119,6 +119,13 @@ class NonIdealHexagonAnimation(Scene):
         self.play(Create(hexagon), run_time=5)
         self.wait(2)
 
+        # try of hyperbolic distance, works alright. convergent to infinity?
+        point1 = radian_to_point(0, 0.9)
+        point2 = radian_to_point(PI / 4, 0.9)
+        self.add(Dot([point1]), Dot([point2]))
+        distance = hyperbolic_distance_function(point1, point2)
+        print(distance)
+
 
 class TransformingNonIdealIntoIdeal(Scene):
     def construct(self):
@@ -148,9 +155,9 @@ class AlternatingPerimeter(Scene):
         phis = create_phis(min_dist=0.6)
         hexagon = NonIdealHexagon(radius, phis, alternating_perimeter=True)
 
-        hexagon = NonIdealHexagon(radius, phis, YELLOW)
+        # hexagon = NonIdealHexagon(radius, phis, YELLOW)
 
-        self.play(Create(hexagon), run_time=5)
+        self.play(Create(hexagon), run_time=8)
         self.wait(2)
 
 

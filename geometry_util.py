@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 from manim import Circle, Dot, WHITE, GREEN
 
@@ -174,3 +176,35 @@ def complex_mobius_transform(z, x, y, u):
     # if absolute(z) == 1:
     #    return complex(0, 0)
     return np.divide(np.add(np.multiply(a, z), np.conj(b)), np.add(np.multiply(b, z), np.conj(a)))
+
+
+def hyperbolic_distance_function(b, c):  # b and c points on plane
+    klein_point1 = tf_poincare_to_klein(b)  # transform points from poincare to klein model
+    klein_point2 = tf_poincare_to_klein(c)
+    intersections = get_both_intersections_line_with_unit_circle(klein_point1,
+                                                                 klein_point2)  # new intersections
+    d = (intersections[0], intersections[1])  # a = a1 + i* a2
+    a = (intersections[2], intersections[3])
+
+    ac = abs_complex(a, c)
+    bd = abs_complex(b, d)
+    ab = abs_complex(a, b)
+    cd = abs_complex(c, d)
+
+    # BUG: are they always ordered a,b,c,d now?
+    if ac > ab and bd > cd:  # wikipedia assertion
+        log_argument = ac * bd / (ab * cd)
+    else:  # switch a and d
+        log_argument = cd * ab / (bd * ac)
+
+    distance = math.log(log_argument)
+    return distance
+
+
+def abs_complex(x, y):
+    # calculates |x-y|
+    x1, x2 = x[0], x[1]
+    y1, y2 = y[0], y[1]
+    root_term1 = (x1 - y1) ** 2
+    root_term2 = (x2 - y2) ** 2
+    return math.sqrt(root_term1 + root_term2)

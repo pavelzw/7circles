@@ -6,7 +6,7 @@ Ein Hyperbolisches Vieleck ist wieder wie im euklidischen definiert, mit dem Unt
  die die Ecken verbinden, nicht Geraden sind, sondern unsere bekannten Kreissegmente. (Benedikt wiederholungsanimation)
 Die Ecken des Vielecks können überall in der hyperbolischen Ebene liegen.
 Falls Die Ecken allesamt auf dH^2 liegen, so nennen wir unser Polygon ideal
-Auch im hyperbolischen Vieleck kann man den Umfang definieren, wie im euklischen als die Summe der Länge der Seiten.
+Auch im hyperbolischen Vieleck kann man den Umfang definieren, wie im euklidischen als die Summe der Länge der Seiten.
  Zu beachten ist nur wieder, dass wir den hyperbolischen Abstand der Eckpunkte messen.
 
 Bei Sechsecken kann man durch die gerade Anzahl an Ecken außerdem einen alternierenden Umfang definieren.
