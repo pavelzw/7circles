@@ -1,8 +1,8 @@
-import random
 from math import pi
 
-from manim import *
-from manim.utils.color import Colors
+import numpy as np
+from manim import Scene, Square, Circle, Dot, Group, Text, Create, FadeIn, FadeOut, MoveAlongPath, Line, WHITE, BLUE, \
+    Arc, GREEN_B, Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Uncreate
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import radian_to_point, mobius_transform, \
@@ -123,7 +123,7 @@ class NonIdealHexagonAnimation(Scene):
 
         # try of hyperbolic distance, works alright. convergent to infinity?
         point1 = radian_to_point(0, 0.9)
-        point2 = radian_to_point(PI / 4, 0.9)
+        point2 = radian_to_point(pi / 4, 0.9)
         self.add(Dot([point1]), Dot([point2]))
         distance = hyperbolic_distance_function(point1, point2)
         print(distance)
@@ -145,7 +145,7 @@ class HexagonWithSixDisks(Scene):
         # case for first circle
         end_point = radian_to_point(phis[5], radius[5])
         circle_radius = min(abs_complex(last_point, point), abs_complex(last_point, end_point)) / 2.1
-        circle = Circle(arc_center=last_point, radius=circle_radius, color=Colors.green_b.value, fill_opacity=0.5)
+        circle = Circle(arc_center=last_point, radius=circle_radius, color=GREEN_B, fill_opacity=0.5)
         self.add(circle)
 
         for k in range(2, 6):  # from 2 to 5
@@ -155,14 +155,14 @@ class HexagonWithSixDisks(Scene):
             distance_present_next = abs_complex(point, next_point)
             # circles might touch the unit circle
             circle_radius = min(distance_present_next, distance_last_present) / 2.2
-            circle = Circle(arc_center=point, radius=circle_radius, color=Colors.green_b.value, fill_opacity=0.5)
+            circle = Circle(arc_center=point, radius=circle_radius, color=GREEN_B, fill_opacity=0.5)
             self.add(circle)
 
             last_point = point
             point = next_point
 
         # circle for last point
-        circle = Circle(arc_center=point, radius=circle_radius, color=Colors.green_b.value, fill_opacity=0.5)
+        circle = Circle(arc_center=point, radius=circle_radius, color=GREEN_B, fill_opacity=0.5)
         self.add(circle)
 
 
