@@ -13,9 +13,9 @@ from hexagon_util import create_phis, create_phi_transition, create_radius_trans
 from hyperbolic_hexagon import HyperbolicHexagon, NonIdealHexagon
 
 
-class EuclidianCircles(Scene):
+class EuclideanCircles(Scene):
     def construct(self):
-        # euclidian situation in center
+        # euclidean situation in center
         eucl_center = np.array([0, 0, 0])
         new_center = np.array([4, 0, 0])
         point1 = eucl_center - np.array([1, 0, 0])
@@ -26,7 +26,7 @@ class EuclidianCircles(Scene):
         square = Square(side_length=4).move_to(eucl_center)
         circle = Circle(radius=1).move_to(eucl_center)
         dot = Dot().move_to(eucl_center)
-        text = Text('Euclidian Center', font_size=15).next_to(dot)
+        text = Text('Euclidean Center', font_size=15).next_to(dot)
         group = Group(circle, dot)
         self.play(Create(square))
         self.play(Create(dot))
