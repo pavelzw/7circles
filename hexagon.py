@@ -2,10 +2,11 @@ from abc import ABC
 from math import pi
 
 import numpy as np
-from manim import Group, BLUE, Circle, WHITE, ArcBetweenPoints, Angle, TangentLine, VMobject, VGroup
+from manim import Group, BLUE, Circle, WHITE, ArcBetweenPoints, Angle, TangentLine, VMobject, VGroup, Dot
 
 from geometry_util import radian_to_point, get_intersection, get_intersection_line_unit_circle, \
-    get_intersection_of_two_tangent_circles, get_circle_middle
+    get_intersection_not_on_circle_of_two_tangent_circles, get_circle_middle, \
+    get_intersection_in_unit_circle_of_two_tangent_circles
 
 
 class HexagonAngles(np.ndarray, ABC):
@@ -72,7 +73,7 @@ class HexagonCircles(VMobject, Group, ABC):
     def _get_next_circle(center, radius, phi_old, phi_new):
         arc = ArcBetweenPointsOnUnitDisk(phi_old, phi_new)
         arc_center = get_circle_middle(phi_old, phi_new)
-        intersection = get_intersection_of_two_tangent_circles(center, radius, arc_center, arc.radius)
+        intersection = get_intersection_not_on_circle_of_two_tangent_circles(center, radius, arc_center, arc.radius)
         assert intersection is not None
         middle_between_phi_new_and_intersection = (intersection + radian_to_point(phi_new)) / 2
         direction = intersection - radian_to_point(phi_new)
@@ -87,10 +88,23 @@ class HexagonMainDiagonals(VGroup, ABC):
     def __init__(self, hexagon: Hexagon, color=WHITE, **kwargs):
         super().__init__(**kwargs)
         phis = hexagon.phis
-        arc1 = ArcBetweenPointsOnUnitDisk(phis[0], phis[3], color=color, **kwargs)
-        arc2 = ArcBetweenPointsOnUnitDisk(phis[1], phis[4], color=color, **kwargs)
-        arc3 = ArcBetweenPointsOnUnitDisk(phis[2], phis[5], color=color, **kwargs)
-        self.add(arc1, arc2, arc3)
+        self.arc1 = ArcBetweenPointsOnUnitDisk(phis[0], phis[3], color=color, **kwargs)
+        self.arc2 = ArcBetweenPointsOnUnitDisk(phis[1], phis[4], color=color, **kwargs)
+        self.arc3 = ArcBetweenPointsOnUnitDisk(phis[2], phis[5], color=color, **kwargs)
+        self.add(self.arc1, self.arc2, self.arc3)
+
+
+class IntersectionTriangle(VGroup, ABC):
+    def __init__(self, diagonals: HexagonMainDiagonals, **kwargs):
+        super().__init__(**kwargs)
+        c1, r1 = diagonals.arc1.circle_center, diagonals.arc1.radius
+        c2, r2 = diagonals.arc2.circle_center, diagonals.arc2.radius
+        c3, r3 = diagonals.arc3.circle_center, diagonals.arc3.radius
+        intersection1 = get_intersection_in_unit_circle_of_two_tangent_circles(c2, r2, c3, r3)
+        intersection2 = get_intersection_in_unit_circle_of_two_tangent_circles(c1, r1, c3, r3)
+        intersection3 = get_intersection_in_unit_circle_of_two_tangent_circles(c1, r1, c2, r2)
+        print(intersection1, intersection2, intersection3)
+        self.add(Dot(intersection1), Dot(intersection2), Dot(intersection3))
 
 
 class ArcBetweenPointsOnUnitDisk(ArcBetweenPoints, ABC):
@@ -109,8 +123,8 @@ class ArcBetweenPointsOnUnitDisk(ArcBetweenPoints, ABC):
         point1 = radian_to_point(phi1)
         point2 = radian_to_point(phi2)
 
-        middle = get_circle_middle(phi1, phi2)
-        r = np.linalg.norm(middle - point1)
+        self.circle_center = get_circle_middle(phi1, phi2)
+        radius = np.linalg.norm(self.circle_center - point1)
 
         # gets angle between two tangents
         angle = Angle(TangentLine(Circle(), alpha=phi1 / (2 * pi)),
@@ -118,6 +132,6 @@ class ArcBetweenPointsOnUnitDisk(ArcBetweenPoints, ABC):
 
         ang = angle.get_value(degrees=False)
         if phi2 - phi1 < pi:
-            super().__init__(start=point2, end=point1, angle=-ang, radius=r, color=color, **kwargs)
+            super().__init__(start=point2, end=point1, angle=-ang, radius=radius, color=color, **kwargs)
         else:
-            super().__init__(start=point1, end=point2, angle=-ang, radius=r, color=color, **kwargs)
+            super().__init__(start=point1, end=point2, angle=-ang, radius=radius, color=color, **kwargs)

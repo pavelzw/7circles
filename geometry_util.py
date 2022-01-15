@@ -4,7 +4,7 @@ import numpy as np
 from manim import Circle, Dot, WHITE, GREEN
 
 
-def get_intersection_of_two_tangent_circles(c0: np.array, r0: float, c1: np.array, r1: float):
+def get_both_intersection_of_two_tangent_circles(c0: np.array, r0: float, c1: np.array, r1: float):
     # circle 1: center c0, radius r0
     # circle 2: center c1, radius r1
     eps = 0.00001
@@ -40,16 +40,28 @@ def get_intersection_of_two_tangent_circles(c0: np.array, r0: float, c1: np.arra
         # we only want the one intersection with ||.|| < 1
         intersection1 = np.array((x3, y3, 0))
         intersection2 = np.array((x4, y4, 0))
-        if np.abs(np.linalg.norm(intersection1) - 1) < 0.0001:
-            return intersection2
+        return intersection1, intersection2
+
+
+def get_intersection_not_on_circle_of_two_tangent_circles(c0: np.array, r0: float, c1: np.array, r1: float):
+    intersection1, intersection2 = get_both_intersection_of_two_tangent_circles(c0, r0, c1, r1)
+    if np.abs(np.linalg.norm(intersection1) - 1) < 0.0001:
+        return intersection2
+    return intersection1
+
+
+def get_intersection_in_unit_circle_of_two_tangent_circles(c0: np.array, r0: float, c1: np.array, r1: float):
+    intersection1, intersection2 = get_both_intersection_of_two_tangent_circles(c0, r0, c1, r1)
+    if np.linalg.norm(intersection1) < 1:
         return intersection1
+    return intersection2
 
 
 def get_intersections_of_n_tangent_circles(circles: [Circle]):
     intersections = []
     n = len(circles)
     for i in range(n):
-        point = get_intersection_of_two_tangent_circles(
+        point = get_intersection_not_on_circle_of_two_tangent_circles(
             circles[i].get_center(), circles[i].radius, circles[(i + 1) % n].get_center(), circles[(i + 1) % n].radius
         )
         intersections.append(Dot(point, color=GREEN, radius=0.05))
@@ -60,7 +72,8 @@ def get_intersections_of_circles_with_unit_circle(circles: [Circle]):
     intersections = []
     n = len(circles)
     for i in range(n):
-        point = get_intersection_of_two_tangent_circles(circles[i].get_center(), circles[i].radius, [0., 0., 0.], 1.)
+        point = get_intersection_not_on_circle_of_two_tangent_circles(circles[i].get_center(), circles[i].radius,
+                                                                      [0., 0., 0.], 1.)
         intersections.append(Dot(point, color=WHITE, radius=0.05))
     return intersections
 
