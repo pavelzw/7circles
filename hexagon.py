@@ -2,7 +2,8 @@ from abc import ABC
 from math import pi
 
 import numpy as np
-from manim import Group, BLUE, Circle, WHITE, ArcBetweenPoints, Angle, TangentLine, VMobject, VGroup, Dot
+from manim import Group, BLUE, Circle, WHITE, ArcBetweenPoints, Angle, TangentLine, VMobject, VGroup, \
+    Polygon
 
 from geometry_util import radian_to_point, get_intersection, get_intersection_line_unit_circle, \
     get_intersection_not_on_circle_of_two_tangent_circles, get_circle_middle, \
@@ -94,17 +95,16 @@ class HexagonMainDiagonals(VGroup, ABC):
         self.add(self.arc1, self.arc2, self.arc3)
 
 
-class IntersectionTriangle(VGroup, ABC):
+class IntersectionTriangle(Polygon, ABC):
+    # technically not an actual polygon but since the triangle is small, it is approximately the same
     def __init__(self, diagonals: HexagonMainDiagonals, **kwargs):
-        super().__init__(**kwargs)
         c1, r1 = diagonals.arc1.circle_center, diagonals.arc1.radius
         c2, r2 = diagonals.arc2.circle_center, diagonals.arc2.radius
         c3, r3 = diagonals.arc3.circle_center, diagonals.arc3.radius
         intersection1 = get_intersection_in_unit_circle_of_two_tangent_circles(c2, r2, c3, r3)
         intersection2 = get_intersection_in_unit_circle_of_two_tangent_circles(c1, r1, c3, r3)
         intersection3 = get_intersection_in_unit_circle_of_two_tangent_circles(c1, r1, c2, r2)
-        print(intersection1, intersection2, intersection3)
-        self.add(Dot(intersection1), Dot(intersection2), Dot(intersection3))
+        super(IntersectionTriangle, self).__init__(intersection1, intersection2, intersection3, **kwargs)
 
 
 class ArcBetweenPointsOnUnitDisk(ArcBetweenPoints, ABC):
