@@ -201,7 +201,7 @@ def hyperbolic_distance_function(b, c):  # b and c points on plane
     return distance
 
 
-def abs_complex(x, y):
+def abs_complex(x, y, z=0):
     # calculates |x-y|
     x1, x2 = x[0], x[1]
     y1, y2 = y[0], y[1]

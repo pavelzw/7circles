@@ -5,11 +5,7 @@ import numpy as np
 from hyperbolic_hexagon import HexagonAngles
 
 
-def create_phis(min_dist=0.4) -> HexagonAngles:
-    return create_phis(min_dist, max_dist=1.5)
-
-
-def create_phis(min_dist=0.4, max_dist=1.5) -> HexagonAngles:
+def create_phis(min_dist=0.4, max_dist=-1) -> HexagonAngles:
     variable_phis = np.sort(np.random.uniform(0, 2 * pi, 5))
     while np.min(np.abs(np.roll(variable_phis, shift=1) - variable_phis)) < min_dist \
             or np.max(np.abs(np.roll(variable_phis, shift=1) - variable_phis)) < max_dist \

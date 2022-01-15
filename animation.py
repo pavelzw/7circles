@@ -1,11 +1,13 @@
+import random
 from math import pi
 
 from manim import *
+from manim.utils.color import Colors
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import radian_to_point, mobius_transform, \
     tf_klein_to_poincare, get_intersections_of_n_tangent_circles, get_intersections_of_circles_with_unit_circle, \
-    get_intersection_from_angles, hyperbolic_distance_function
+    get_intersection_from_angles, hyperbolic_distance_function, abs_complex
 from hexagon import HexagonCircles, HexagonMainDiagonals, ArcBetweenPointsOnUnitDisk
 from hexagon_util import create_phis, create_phi_transition, create_radius_transition
 from hyperbolic_hexagon import HyperbolicHexagon, NonIdealHexagon
@@ -125,6 +127,43 @@ class NonIdealHexagonAnimation(Scene):
         self.add(Dot([point1]), Dot([point2]))
         distance = hyperbolic_distance_function(point1, point2)
         print(distance)
+
+
+class HexagonWithSixDisks(Scene):
+    def construct(self):
+        circle = Circle(color=WHITE)
+        self.add(circle)
+        radius = np.random.uniform(0.5, 0.7, 6)
+        phis = create_phis(min_dist=0.8)
+
+        hexagon = NonIdealHexagon(radius, phis)
+        self.add(hexagon)
+
+        last_point = radian_to_point(phis[0], radius[0])
+        point = radian_to_point(phis[1], radius[1])
+
+        # case for first circle
+        end_point = radian_to_point(phis[5], radius[5])
+        circle_radius = min(abs_complex(last_point, point), abs_complex(last_point, end_point)) / 2.1
+        circle = Circle(arc_center=last_point, radius=circle_radius, color=Colors.green_b.value, fill_opacity=0.5)
+        self.add(circle)
+
+        for k in range(2, 6):  # from 2 to 5
+            next_point = radian_to_point(phis[k], radius[k])
+
+            distance_last_present = abs_complex(last_point, point)
+            distance_present_next = abs_complex(point, next_point)
+            # circles might touch the unit circle
+            circle_radius = min(distance_present_next, distance_last_present) / 2.2
+            circle = Circle(arc_center=point, radius=circle_radius, color=Colors.green_b.value, fill_opacity=0.5)
+            self.add(circle)
+
+            last_point = point
+            point = next_point
+
+        # circle for last point
+        circle = Circle(arc_center=point, radius=circle_radius, color=Colors.green_b.value, fill_opacity=0.5)
+        self.add(circle)
 
 
 class TransformingNonIdealIntoIdeal(Scene):
