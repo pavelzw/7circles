@@ -2,7 +2,7 @@ from abc import ABC
 from math import pi
 
 import numpy as np
-from manim import Group, BLUE, YELLOW, ArcBetweenPoints, Dot, VGroup
+from manim import Group, BLUE, YELLOW, ArcBetweenPoints, Dot, VGroup, WHITE
 
 from geometry_util import radian_to_point, get_both_intersections_line_with_unit_circle, tf_poincare_to_klein
 from hexagon import Hexagon, HexagonAngles, ArcBetweenPointsOnUnitDisk
@@ -32,8 +32,8 @@ class NonIdealHexagon(VGroup, ABC):
         super().__init__(*mobjects, **kwargs)
         first_point = radian_to_point(phis[0], radius[0])
         point1 = first_point
-        self.add(Dot(point1))
-        color1 = YELLOW
+        self.add(Dot(point1, radius=0.04))
+        color1 = WHITE
         color2 = BLUE
 
         self.hexagon_points = []
@@ -45,7 +45,7 @@ class NonIdealHexagon(VGroup, ABC):
             else:
                 point2 = radian_to_point(phis[i + 1], radius[i + 1])
                 self.hexagon_points.append(point2)
-                self.add(Dot(point2))
+                self.add(Dot(point2, radius=0.04))
 
             klein_point1 = tf_poincare_to_klein(point1)  # transform points from poincare to klein model
             klein_point2 = tf_poincare_to_klein(point2)
@@ -63,16 +63,18 @@ class NonIdealHexagon(VGroup, ABC):
             radius1 = ArcBetweenPointsOnUnitDisk(unit_point1, unit_point2).radius
             if arcs_meeting_circle:
                 self.add(ArcBetweenPointsOnUnitDisk(unit_point1, unit_point2,
-                                                    color=color1).reverse_direction())  # arcs in hexagon meet unit circle
+                                                    color=color1,
+                                                    **kwargs).reverse_direction())  # arcs in hexagon meet unit circle
             else:
                 if alternating_perimeter:
                     if i % 2 == 0:
                         self.add(ArcBetweenPoints(point2, point1, radius=radius1,
-                                                  color=color1).reverse_direction())  # arcs in hexagon dont meet unit circle
+                                                  color=color1,
+                                                  **kwargs).reverse_direction())  # arcs in hexagon dont meet unit circle
                     else:
                         self.add(ArcBetweenPoints(point2, point1, radius=radius1,
-                                                  color=color2).reverse_direction())
+                                                  color=color2, **kwargs).reverse_direction())
                 else:
                     self.add(ArcBetweenPoints(point2, point1, radius=radius1,
-                                              color=color1).reverse_direction())
+                                              color=color1, **kwargs).reverse_direction())
             point1 = point2

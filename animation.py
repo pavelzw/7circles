@@ -131,6 +131,7 @@ class NonIdealHexagonAnimation(Scene):
         print(distance)
 
 
+# MovingCameraScene anstatt Scene
 class HexagonWithSixDisks(Scene):
     def construct(self):
         circle = Circle(color=WHITE)
@@ -138,7 +139,7 @@ class HexagonWithSixDisks(Scene):
         radius = np.random.uniform(0.5, 0.7, 6)
         phis = create_phis(min_dist=0.8)
 
-        hexagon = NonIdealHexagon(radius, phis)
+        hexagon = NonIdealHexagon(radius, phis, stroke_width=4)
         self.add(hexagon)
 
         last_point = radian_to_point(phis[0], radius[0])
@@ -146,7 +147,7 @@ class HexagonWithSixDisks(Scene):
 
         # case for first circle
         end_point = radian_to_point(phis[5], radius[5])
-        circle_radius = min(abs_complex(last_point, point), abs_complex(last_point, end_point)) / 2.1
+        circle_radius = min(abs_complex(last_point, point), abs_complex(last_point, end_point)) / 2.2
         circle = Circle(arc_center=last_point, radius=circle_radius, color=GREEN_B, fill_opacity=0.5)
         self.add(circle)
 
@@ -155,8 +156,9 @@ class HexagonWithSixDisks(Scene):
 
             distance_last_present = abs_complex(last_point, point)
             distance_present_next = abs_complex(point, next_point)
+            distance_present_unit = 1 - np.linalg.norm(point)
             # circles might touch the unit circle
-            circle_radius = min(distance_present_next, distance_last_present) / 2.2
+            circle_radius = min(distance_present_next / 2.2, distance_last_present / 2.2, distance_present_unit)
             circle = Circle(arc_center=point, radius=circle_radius, color=GREEN_B, fill_opacity=0.5)
             self.add(circle)
 
