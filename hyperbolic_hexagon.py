@@ -36,12 +36,15 @@ class NonIdealHexagon(VGroup, ABC):
         color1 = YELLOW
         color2 = BLUE
 
+        self.hexagon_points = []
         for i in range(0, 6):
             if i == 5:
                 point1 = radian_to_point(phis[5], radius[5])
                 point2 = first_point
+                self.hexagon_points.append(point1)
             else:
                 point2 = radian_to_point(phis[i + 1], radius[i + 1])
+                self.hexagon_points.append(point2)
                 self.add(Dot(point2))
 
             klein_point1 = tf_poincare_to_klein(point1)  # transform points from poincare to klein model

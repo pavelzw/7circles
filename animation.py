@@ -1,8 +1,10 @@
+import math
 from math import pi
 
 import numpy as np
 from manim import Scene, Square, Circle, Dot, Group, Text, Create, FadeIn, FadeOut, MoveAlongPath, Line, WHITE, BLUE, \
-    Arc, GREEN_B, Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Uncreate
+    Arc, GREEN_B, Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Uncreate, \
+    VGroup, DecimalNumber, ReplacementTransform, RIGHT, always, f_always, Tex, LEFT
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import radian_to_point, mobius_transform, \
@@ -173,29 +175,36 @@ class TransformingNonIdealIntoIdeal(Scene):
         radius = np.random.uniform(0.5, 0.7, 6)
         phis = create_phis(min_dist=0.6)
 
-        step_size = 10
+        step_size = 100
         # phis = np.array([0, 1, 2, 3, 4, 5])
         transition = create_radius_transition(radius=radius, step_size=step_size)
         hexagon = NonIdealHexagon(transition[0], phis)
         self.add(hexagon)
 
-        for t in range(1, step_size):
+        distance_text, distance_number = label = VGroup(
+            Tex(r'$\mathrm{dist}(P_1, P_2)=$', font_size=35),
+            DecimalNumber(np.exp(hyperbolic_distance_function(hexagon.hexagon_points[0], hexagon.hexagon_points[1])),
+                          num_decimal_places=2, show_ellipsis=True, group_with_commas=False, font_size=35))
+        label.move_to([2, 0, 0], aligned_edge=LEFT)
+        self.add(label)
+        for t in range(1, step_size - 1):
             hexagon_new = NonIdealHexagon(transition[t], phis)
-            self.play(Transform(hexagon, hexagon_new), run_time=0.2, rate_func=lambda a: a)
+            distance = np.exp(
+                hyperbolic_distance_function(hexagon_new.hexagon_points[0], hexagon_new.hexagon_points[1]))
+            distance_number.font_size = 35
+            label.arrange()
+            label.move_to([2, 0, 0], aligned_edge=LEFT)
+            self.play(Transform(hexagon, hexagon_new),
+                      distance_number.animate.set_value(distance), run_time=0.05,
+                      rate_func=lambda a: a)
 
-            # measuring hyp distance between two moving points,
-            # BUG: interpolation still pretty shitty
-            point1_new = radian_to_point(phis[0], radius[0] * (1 - t / step_size) + 1 * t / step_size)
-            point2_new = radian_to_point(phis[1], radius[1] * (1 - t / step_size) + 1 * t / step_size)
-            distance = hyperbolic_distance_function(point1_new, point2_new)
+            # hexagon_new.hexagon_points # liste von den punkten
             print(distance)
-        # self.wait(duration=5)
-        # try of hyperbolic distance, works alright. convergent to infinity?
-        # point1 = radian_to_point(0, 0.9)
-        # point2 = radian_to_point(PI / 4, 0.9)
-        # self.add(Dot([point1]), Dot([point2]))
-        # distance = hyperbolic_distance_function(point1, point2)
-        # print(distance)
+        hexagon_new = NonIdealHexagon(transition[-1], phis)
+        self.play(Transform(hexagon, hexagon_new),
+                  Transform(distance_number, Tex(r'$\infty$').next_to(distance_text)), run_time=0.05,
+                  rate_func=lambda a: a)
+        self.wait(duration=3)
 
 
 class AlternatingPerimeter(Scene):
