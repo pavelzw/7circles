@@ -1,11 +1,10 @@
 import math
 
 import numpy as np
-from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut, VGroup, Dot
+from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut
 
 from geometry_util import radian_to_point
-from hexagon import HexagonMainDiagonals, IntersectionTriangle, HexagonAngles, HyperbolicArcBetweenPoints, \
-    HyperbolicTriangle
+from hexagon import HexagonMainDiagonals, IntersectionTriangle, HexagonAngles, HyperbolicTriangle
 from hyperbolic_hexagon import HyperbolicHexagon
 
 
@@ -15,7 +14,7 @@ class Scene1(MovingCameraScene):
         timings = [5,  # hexagon
                    6,  # diagonals
                    2,  # triangle
-                   5,  # wait
+                   10,  # wait
                    10,  # proposition
                    5,  # wait
                    ]
@@ -54,10 +53,9 @@ class Scene1(MovingCameraScene):
         proposition = Tex(r'Für jedes ideale Hexagon $P$ ist der '
                           r'alternierende Umfang \\ bis auf das Vorzeichen '
                           r'genau zweimal der Umfang \\ von dem Dreieck $T_P$, '
-                          r'das durch die geodätischen Diagonalen \\ aufgespannt wird.')
-        proposition.scale(0.3)
+                          r'das durch die geodätischen Diagonalen \\ aufgespannt wird.', font_size=20)
         self.play(Write(proposition,
-                        run_time=timings.pop()))
+                        run_time=timings.pop(), stroke_width=.5))
 
         self.wait(timings.pop())
 
