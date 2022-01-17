@@ -7,7 +7,7 @@ from manim import Group, BLUE, Circle, WHITE, ArcBetweenPoints, VMobject, VGroup
 from geometry_util import radian_to_point, get_intersection, get_intersection_line_unit_circle, \
     get_intersection_not_on_circle_of_two_tangent_circles, get_circle_middle, \
     get_intersection_in_unit_circle_of_two_tangent_circles, tf_poincare_to_klein, \
-    get_both_intersections_line_with_unit_circle
+    get_both_intersections_line_with_unit_circle, point_to_radian
 
 
 class HexagonAngles(np.ndarray, ABC):
@@ -39,7 +39,7 @@ class IntersectingHexagonAngles(HexagonAngles):
         p4 = radian_to_point(phis[4])
         intersection = get_intersection(p0, p3, p1, p4)
         point_on_circle = get_intersection_line_unit_circle(p2, intersection - p2)
-        phi = np.arctan2(point_on_circle[1], point_on_circle[0])
+        phi = point_to_radian(point_on_circle)[0]
         return phi
 
 
@@ -140,8 +140,8 @@ class HyperbolicArcBetweenPoints(ArcBetweenPoints, ABC):
             intersection2 = tmp
 
         # get polar coordinates of intersections
-        phi1 = np.arctan2(intersection1[1], intersection1[0])
-        phi2 = np.arctan2(intersection2[1], intersection2[0])
+        phi1, _ = point_to_radian(intersection1)
+        phi2, _ = point_to_radian(intersection2)
 
         if phi1 < 0:  # for assertion phi >= 0
             phi1 += 2 * pi
