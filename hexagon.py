@@ -2,13 +2,12 @@ from abc import ABC
 from math import pi
 
 import numpy as np
-from manim import Group, BLUE, Circle, ArcBetweenPoints, VMobject, VGroup
+from manim import Group, BLUE, Circle, VMobject, VGroup
 
 from geometry_util import polar_to_point, get_intersection, get_intersection_line_unit_circle, \
-    get_intersection_not_on_circle_of_two_tangent_circles, get_circle_middle, \
-    get_intersection_in_unit_circle_of_two_tangent_circles, tf_poincare_to_klein, \
-    get_both_intersections_line_with_unit_circle, point_to_polar
-from hyperbolic_polygon import HyperbolicPolygon
+    get_intersection_not_on_circle_of_two_tangent_circles, get_intersection_in_unit_circle_of_two_tangent_circles, \
+    point_to_polar
+from hyperbolic_polygon import HyperbolicPolygon, HyperbolicArcBetweenPoints
 
 
 class HexagonAngles(np.ndarray, ABC):
@@ -102,57 +101,3 @@ class IntersectionTriangle(HyperbolicPolygon, ABC):
         intersection2 = get_intersection_in_unit_circle_of_two_tangent_circles(c1, r1, c3, r3)
         intersection3 = get_intersection_in_unit_circle_of_two_tangent_circles(c1, r1, c2, r2)
         super(IntersectionTriangle, self).__init__([intersection1, intersection2, intersection3], **kwargs)
-
-
-class HyperbolicArcBetweenPoints(ArcBetweenPoints, ABC):
-    """
-    ArcBetweenPoints that is a geodesic in the Poincaré model, i.e.,
-    the arc connecting the two points intersects the unit sphere orthogonally.
-    """
-
-    @classmethod
-    def from_angles(cls, phi1, phi2, **kwargs):
-        return cls(polar_to_point(phi1), polar_to_point(phi2), **kwargs)
-
-    def __init__(self, p1: np.ndarray, p2: np.ndarray, arcs_meeting_circle=False, **kwargs):
-        klein_point1 = tf_poincare_to_klein(p1)  # transform points from poincare to klein model
-        klein_point2 = tf_poincare_to_klein(p2)
-
-        intersection1, intersection2 = get_both_intersections_line_with_unit_circle(klein_point1, klein_point2)
-
-        if np.linalg.norm(intersection1 - p2) < np.linalg.norm(intersection1 - p1):
-            tmp = intersection1
-            intersection1 = intersection2
-            intersection2 = tmp
-
-        # get polar coordinates of intersections
-        phi1, _ = point_to_polar(intersection1)
-        phi2, _ = point_to_polar(intersection2)
-
-        if phi1 < 0:  # for assertion phi >= 0
-            phi1 += 2 * pi
-        if phi2 < 0:
-            phi2 += 2 * pi
-
-        # calculate radius of arc
-        self.circle_center = get_circle_middle(phi1, phi2)
-        radius = np.linalg.norm(self.circle_center - intersection1)
-
-        diff = phi2 - phi1
-        if diff < 0:
-            diff += 2 * pi
-        if diff < pi:
-            if arcs_meeting_circle:
-                super(HyperbolicArcBetweenPoints, self).__init__(polar_to_point(phi2),
-                                                                 polar_to_point(phi1),
-                                                                 radius=radius, **kwargs)
-            else:
-                super(HyperbolicArcBetweenPoints, self).__init__(p2, p1, radius=radius, **kwargs)
-            self.reverse_direction()
-        else:
-            if arcs_meeting_circle:
-                super(HyperbolicArcBetweenPoints, self).__init__(polar_to_point(phi1),
-                                                                 polar_to_point(phi2),
-                                                                 radius=radius, **kwargs)
-            else:
-                super(HyperbolicArcBetweenPoints, self).__init__(p1, p2, radius=radius, **kwargs)
