@@ -2,8 +2,7 @@ from abc import ABC
 from math import pi
 
 import numpy as np
-from manim import Group, BLUE, Circle, WHITE, ArcBetweenPoints, Angle, TangentLine, VMobject, VGroup, \
-    Polygon, RED, Dot, RED_A, BLUE_A
+from manim import Group, BLUE, Circle, WHITE, ArcBetweenPoints, VMobject, VGroup
 
 from geometry_util import radian_to_point, get_intersection, get_intersection_line_unit_circle, \
     get_intersection_not_on_circle_of_two_tangent_circles, get_circle_middle, \
@@ -73,9 +72,10 @@ class HexagonCircles(VMobject, Group, ABC):
 
     @staticmethod
     def _get_next_circle(center, radius, phi_old, phi_new):
-        arc = ArcBetweenPointsOnUnitDisk(phi_old, phi_new)
-        arc_center = get_circle_middle(phi_old, phi_new)
-        intersection = get_intersection_not_on_circle_of_two_tangent_circles(center, radius, arc_center, arc.radius)
+        arc = HyperbolicArcBetweenPoints.from_angles(phi_old, phi_new)
+        intersection = get_intersection_not_on_circle_of_two_tangent_circles(center, radius, arc.circle_center,
+                                                                             arc.radius)
+
         assert intersection is not None
         middle_between_phi_new_and_intersection = (intersection + radian_to_point(phi_new)) / 2
         direction = intersection - radian_to_point(phi_new)
@@ -90,23 +90,10 @@ class HexagonMainDiagonals(VGroup, ABC):
     def __init__(self, hexagon: Hexagon, color=WHITE, **kwargs):
         super().__init__(**kwargs)
         phis = hexagon.phis
-        self.arc1 = ArcBetweenPointsOnUnitDisk(phis[0], phis[3], color=color, **kwargs)
-        self.arc2 = ArcBetweenPointsOnUnitDisk(phis[1], phis[4], color=color, **kwargs)
-        self.arc3 = ArcBetweenPointsOnUnitDisk(phis[2], phis[5], color=color, **kwargs)
+        self.arc1 = HyperbolicArcBetweenPoints.from_angles(phis[0], phis[3], color=color, **kwargs)
+        self.arc2 = HyperbolicArcBetweenPoints.from_angles(phis[1], phis[4], color=color, **kwargs)
+        self.arc3 = HyperbolicArcBetweenPoints.from_angles(phis[2], phis[5], color=color, **kwargs)
         self.add(self.arc1, self.arc2, self.arc3)
-
-
-class IntersectionTriangle(Polygon, ABC):
-    # technically not an actual polygon but since the triangle is small, it is approximately the same
-    def __init__(self, diagonals: HexagonMainDiagonals, **kwargs):
-        c1, r1 = diagonals.arc1.circle_center, diagonals.arc1.radius
-        c2, r2 = diagonals.arc2.circle_center, diagonals.arc2.radius
-        c3, r3 = diagonals.arc3.circle_center, diagonals.arc3.radius
-        intersection1 = get_intersection_in_unit_circle_of_two_tangent_circles(c2, r2, c3, r3)
-        intersection2 = get_intersection_in_unit_circle_of_two_tangent_circles(c1, r1, c3, r3)
-        intersection3 = get_intersection_in_unit_circle_of_two_tangent_circles(c1, r1, c2, r2)
-        # todo make hyperbolic triangle, not euclidean triangle
-        super(IntersectionTriangle, self).__init__(intersection1, intersection2, intersection3, **kwargs)
 
 
 class HyperbolicTriangle(VGroup, ABC):
@@ -118,7 +105,28 @@ class HyperbolicTriangle(VGroup, ABC):
         self.add(arc1, arc2, arc3)
 
 
+class IntersectionTriangle(HyperbolicTriangle, ABC):
+    # technically not an actual polygon but since the triangle is small, it is approximately the same
+    def __init__(self, diagonals: HexagonMainDiagonals, **kwargs):
+        c1, r1 = diagonals.arc1.circle_center, diagonals.arc1.radius
+        c2, r2 = diagonals.arc2.circle_center, diagonals.arc2.radius
+        c3, r3 = diagonals.arc3.circle_center, diagonals.arc3.radius
+        intersection1 = get_intersection_in_unit_circle_of_two_tangent_circles(c2, r2, c3, r3)
+        intersection2 = get_intersection_in_unit_circle_of_two_tangent_circles(c1, r1, c3, r3)
+        intersection3 = get_intersection_in_unit_circle_of_two_tangent_circles(c1, r1, c2, r2)
+        super(IntersectionTriangle, self).__init__(intersection1, intersection2, intersection3, **kwargs)
+
+
 class HyperbolicArcBetweenPoints(ArcBetweenPoints, ABC):
+    """
+    ArcBetweenPoints that is a geodesic in the Poincaré model, i.e.,
+    the arc connecting the two points intersects the unit sphere orthogonally.
+    """
+
+    @classmethod
+    def from_angles(cls, phi1, phi2, **kwargs):
+        return cls(radian_to_point(phi1), radian_to_point(phi2), **kwargs)
+
     def __init__(self, p1: np.ndarray, p2: np.ndarray, arcs_meeting_circle=False, **kwargs):
         klein_point1 = tf_poincare_to_klein(p1)  # transform points from poincare to klein model
         klein_point2 = tf_poincare_to_klein(p2)
@@ -139,7 +147,9 @@ class HyperbolicArcBetweenPoints(ArcBetweenPoints, ABC):
         if phi2 < 0:
             phi2 += 2 * pi
 
-        radius = ArcBetweenPointsOnUnitDisk(phi1, phi2).radius
+        # calculate radius of arc
+        self.circle_center = get_circle_middle(phi1, phi2)
+        radius = np.linalg.norm(self.circle_center - intersection1)
 
         diff = phi2 - phi1
         if diff < 0:
@@ -159,33 +169,3 @@ class HyperbolicArcBetweenPoints(ArcBetweenPoints, ABC):
                                                                  radius=radius, **kwargs)
             else:
                 super(HyperbolicArcBetweenPoints, self).__init__(p1, p2, radius=radius, **kwargs)
-
-
-class ArcBetweenPointsOnUnitDisk(ArcBetweenPoints, ABC):
-    def __init__(self, phi1, phi2, color=WHITE, **kwargs):
-        assert phi1 >= 0
-        assert phi1 < 2 * pi
-        assert phi2 >= 0
-        assert phi2 < 2 * pi
-
-        if phi1 >= phi2:
-            tmp = phi2
-            phi2 = phi1
-            phi1 = tmp
-        assert phi1 < phi2
-
-        point1 = radian_to_point(phi1)
-        point2 = radian_to_point(phi2)
-
-        self.circle_center = get_circle_middle(phi1, phi2)
-        radius = np.linalg.norm(self.circle_center - point1)
-
-        # gets angle between two tangents
-        angle = Angle(TangentLine(Circle(), alpha=phi1 / (2 * pi)),
-                      TangentLine(Circle(), alpha=phi2 / (2 * pi)))
-
-        ang = angle.get_value(degrees=False)
-        if phi2 - phi1 < pi:
-            super().__init__(start=point2, end=point1, angle=-ang, radius=radius, color=color, **kwargs)
-        else:
-            super().__init__(start=point1, end=point2, angle=-ang, radius=radius, color=color, **kwargs)

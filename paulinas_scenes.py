@@ -1,19 +1,15 @@
-import math
 from math import pi
 
 import numpy as np
 from manim import Scene, Square, Circle, Dot, Group, Text, Create, FadeIn, FadeOut, MoveAlongPath, Line, WHITE, BLUE, \
-    Arc, GREEN_B, Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Uncreate, \
-    VGroup, DecimalNumber, ReplacementTransform, RIGHT, always, f_always, Tex, LEFT, UP
+    GREEN_B, Transform, MovingCameraScene, Uncreate, \
+    VGroup, DecimalNumber, RIGHT, Tex, LEFT, UP
 
-from euclidean_hexagon import EuclideanHexagon, get_diagonals
-from geometry_util import radian_to_point, mobius_transform, \
-    tf_klein_to_poincare, get_intersections_of_n_tangent_circles, get_intersections_of_circles_with_unit_circle, \
-    get_intersection_from_angles, hyperbolic_distance_function, abs_complex, create_min_circle_radius, moving_circle, \
+from geometry_util import radian_to_point, hyperbolic_distance_function, create_min_circle_radius, moving_circle, \
     moving_line
-from hexagon import HexagonCircles, HexagonMainDiagonals, ArcBetweenPointsOnUnitDisk
-from hexagon_util import create_phis, create_phi_transition, create_radius_transition
-from hyperbolic_hexagon import HyperbolicHexagon, NonIdealHexagon
+
+from hexagon_util import create_phis, create_radius_transition
+from hyperbolic_hexagon import NonIdealHexagon
 
 
 class EuclideanCircles(Scene):
@@ -234,6 +230,7 @@ class TransformingHexagonWithDisks(MovingCameraScene):
         #  num_decimal_places=2, show_ellipsis=True, group_with_commas=False, font_size=35))
         # label.move_to([2, 0, 0], aligned_edge=LEFT)
         # self.add(label)
+        # todo s_1 in die mitte von p1, p2
 
         new_disk_group = VGroup()
         # transition of disks and hexagon

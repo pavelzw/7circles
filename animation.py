@@ -1,17 +1,16 @@
-import math
 from math import pi
 
 import numpy as np
 from manim import Scene, Square, Circle, Dot, Group, Text, Create, FadeIn, FadeOut, MoveAlongPath, Line, WHITE, BLUE, \
-    Arc, GREEN_B, Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Uncreate, \
-    VGroup, DecimalNumber, ReplacementTransform, RIGHT, always, f_always, Tex, LEFT, UP
+    GREEN_B, Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Uncreate, \
+    VGroup, DecimalNumber, RIGHT, Tex, LEFT, UP
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import radian_to_point, mobius_transform, \
     tf_klein_to_poincare, get_intersections_of_n_tangent_circles, get_intersections_of_circles_with_unit_circle, \
-    get_intersection_from_angles, hyperbolic_distance_function, abs_complex, create_min_circle_radius, moving_circle, \
+    get_intersection_from_angles, hyperbolic_distance_function, create_min_circle_radius, moving_circle, \
     moving_line
-from hexagon import HexagonCircles, HexagonMainDiagonals, ArcBetweenPointsOnUnitDisk
+from hexagon import HexagonCircles, HexagonMainDiagonals, HyperbolicArcBetweenPoints
 from hexagon_util import create_phis, create_phi_transition, create_radius_transition
 from hyperbolic_hexagon import HyperbolicHexagon, NonIdealHexagon
 
@@ -274,7 +273,7 @@ class CircleWithArcs(Scene):
                 self.add_foreground_mobject(dot)
                 self.play(Create(dot))
             # bug: if two adjacent points have distance > pi, then the direction needs to be flipped
-            arc = ArcBetweenPointsOnUnitDisk(phi1, phi2).reverse_direction()
+            arc = HyperbolicArcBetweenPoints.from_angles(phi1, phi2).reverse_direction()
             self.play(Create(arc))
 
         self.wait(duration=5)

@@ -5,7 +5,7 @@ import numpy as np
 from manim import Group, BLUE, YELLOW, ArcBetweenPoints, Dot, VGroup, WHITE
 
 from geometry_util import radian_to_point, get_both_intersections_line_with_unit_circle, tf_poincare_to_klein
-from hexagon import Hexagon, HexagonAngles, ArcBetweenPointsOnUnitDisk
+from hexagon import Hexagon, HexagonAngles, HyperbolicArcBetweenPoints
 
 
 class HyperbolicHexagon(Hexagon, Group, ABC):
@@ -18,7 +18,7 @@ class HyperbolicHexagon(Hexagon, Group, ABC):
             phi1 = phis[i]
             phi2 = phis[(i + 1) % 6]
             # bug: if two adjacent points have distance > PI, then the direction needs to be flipped
-            arc = ArcBetweenPointsOnUnitDisk(phi1, phi2, **kwargs).reverse_direction()
+            arc = HyperbolicArcBetweenPoints.from_angles(phi1, phi2, **kwargs)
             arcs.append(arc)
         self.add(arcs[0], arcs[1], arcs[2], arcs[3], arcs[4], arcs[5])
 
@@ -62,21 +62,19 @@ class NonIdealHexagon(VGroup, ABC):
             if unit_point2 < 0:
                 unit_point2 = unit_point2 + 2 * pi
             # ArcBetweenPointsOnUnitCircle
-            radius1 = ArcBetweenPointsOnUnitDisk(unit_point1, unit_point2).radius
+            radius1 = HyperbolicArcBetweenPoints.from_angles(unit_point1, unit_point2).radius
             if arcs_meeting_circle:
-                arc = ArcBetweenPointsOnUnitDisk(unit_point1, unit_point2, color=color1,
-                                                 **kwargs)  # arcs in hexagon meet unit circle
+                # arcs in hexagon meet unit circle
+                arc = HyperbolicArcBetweenPoints.from_angles(unit_point1, unit_point2, color=color1, **kwargs)
             else:
                 if alternating_perimeter:
                     if i % 2 == 0:
-                        arc = ArcBetweenPoints(point2, point1, radius=radius1,
-                                               color=color1, **kwargs)  # arcs in hexagon dont meet unit circle
+                        # arcs in hexagon dont meet unit circle
+                        arc = ArcBetweenPoints(point2, point1, radius=radius1, color=color1, **kwargs)
                     else:
-                        arc = ArcBetweenPoints(point2, point1, radius=radius1,
-                                               color=color2, **kwargs)
+                        arc = ArcBetweenPoints(point2, point1, radius=radius1, color=color2, **kwargs)
                 else:
-                    arc = ArcBetweenPoints(point2, point1, radius=radius1,
-                                           color=color1, **kwargs)
+                    arc = ArcBetweenPoints(point2, point1, radius=radius1, color=color1, **kwargs)
             self.add(arc.reverse_direction())
             self.hexagon_arcs.append(arc)
             point1 = point2

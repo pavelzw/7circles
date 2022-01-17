@@ -40,7 +40,6 @@ class Scene1(MovingCameraScene):
                              "gegenüberliegenden Seiten verbinden, sehen wir,")
 
         triangle = IntersectionTriangle(diagonals, color=BLUE, stroke_width=2)
-        triangle.set_fill(BLUE, opacity=0.5)
         self.play(Create(triangle),
                   run_time=timings.pop(),
                   subcaption="dass ein Dreieck in der Mitte entsteht.")
