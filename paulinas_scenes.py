@@ -162,7 +162,7 @@ class TransformingNonIdealIntoIdeal(Scene):
         hexagon = NonIdealHexagon(transition[0], phis)
         self.add(hexagon)
 
-        point1_text = Text('P1', font_size=20)  # maybe tex better
+        point1_text = Text('P1', font_size=20)  # ToDo. tex
         point2_text = Text('P2', font_size=20)
         distance_text, distance_number = label = VGroup(
             Tex(r'$\mathrm{dist}(P_1, P_2)=$', font_size=35),
@@ -225,11 +225,27 @@ class TransformingHexagonWithDisks(MovingCameraScene):
         circle = Circle(arc_center=point, radius=circle_radius[5], color=GREEN_B,
                         fill_opacity=0.5)  # circle for last point
         disks_group.add(circle)
-        self.add(disks_group)
+        self.play(Create(disks_group), run_time=3)
+
+        # length of S_k
+        s_1 = Text('S1')
+        # label = VGroup(Tex(r'$\mathrm{length}(S_1)=$', font_size=35), DecimalNumber(
+        #   hyperbolic_distance_function(hexagon.hexagon_points[0], ), hexagon.hexagon_points[1])),
+        #  num_decimal_places=2, show_ellipsis=True, group_with_commas=False, font_size=35))
+        # label.move_to([2, 0, 0], aligned_edge=LEFT)
+        # self.add(label)
+
         new_disk_group = VGroup()
+        # transition of disks and hexagon
         disk_transition = create_radius_transition(radius=radius, step_size=step_size, end_point=1 - circle_radius)
         for t in range(1, step_size):
             hexagon_new = NonIdealHexagon(transition[t], phis)
+            s_1.next_to((hexagon_new.hexagon_arcs[0]), RIGHT, font_size=20)
+
+            # s_1_length = hyperbolic_distance_function(, ) of intersection between arc and circle
+
+            # s_1 berechnung
+            self.add(s_1)
             for i in range(0, 6):
                 new_disk_group.add(
                     Circle(radius=circle_radius[i], arc_center=radian_to_point(phis[i], disk_transition[t][i]),

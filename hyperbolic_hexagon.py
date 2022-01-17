@@ -32,6 +32,7 @@ class NonIdealHexagon(VGroup, ABC):
         super().__init__(*mobjects, **kwargs)
         first_point = radian_to_point(phis[0], radius[0])
         point1 = first_point
+        self.hexagon_arcs = []
         self.hexagon_points = []
         self.hexagon_points.append(point1)
         self.add(Dot(point1, radius=0.04))
@@ -63,19 +64,19 @@ class NonIdealHexagon(VGroup, ABC):
             # ArcBetweenPointsOnUnitCircle
             radius1 = ArcBetweenPointsOnUnitDisk(unit_point1, unit_point2).radius
             if arcs_meeting_circle:
-                self.add(ArcBetweenPointsOnUnitDisk(unit_point1, unit_point2,
-                                                    color=color1,
-                                                    **kwargs).reverse_direction())  # arcs in hexagon meet unit circle
+                arc = ArcBetweenPointsOnUnitDisk(unit_point1, unit_point2, color=color1,
+                                                 **kwargs)  # arcs in hexagon meet unit circle
             else:
                 if alternating_perimeter:
                     if i % 2 == 0:
-                        self.add(ArcBetweenPoints(point2, point1, radius=radius1,
-                                                  color=color1,
-                                                  **kwargs).reverse_direction())  # arcs in hexagon dont meet unit circle
+                        arc = ArcBetweenPoints(point2, point1, radius=radius1,
+                                               color=color1, **kwargs)  # arcs in hexagon dont meet unit circle
                     else:
-                        self.add(ArcBetweenPoints(point2, point1, radius=radius1,
-                                                  color=color2, **kwargs).reverse_direction())
+                        arc = ArcBetweenPoints(point2, point1, radius=radius1,
+                                               color=color2, **kwargs)
                 else:
-                    self.add(ArcBetweenPoints(point2, point1, radius=radius1,
-                                              color=color1, **kwargs).reverse_direction())
+                    arc = ArcBetweenPoints(point2, point1, radius=radius1,
+                                           color=color1, **kwargs)
+            self.add(arc.reverse_direction())
+            self.hexagon_arcs.append(arc)
             point1 = point2
