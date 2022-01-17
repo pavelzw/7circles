@@ -2,12 +2,13 @@ from abc import ABC
 from math import pi
 
 import numpy as np
-from manim import Group, BLUE, Circle, WHITE, ArcBetweenPoints, VMobject, VGroup
+from manim import Group, BLUE, Circle, ArcBetweenPoints, VMobject, VGroup
 
 from geometry_util import polar_to_point, get_intersection, get_intersection_line_unit_circle, \
     get_intersection_not_on_circle_of_two_tangent_circles, get_circle_middle, \
     get_intersection_in_unit_circle_of_two_tangent_circles, tf_poincare_to_klein, \
     get_both_intersections_line_with_unit_circle, point_to_polar
+from hyperbolic_polygon import HyperbolicPolygon
 
 
 class HexagonAngles(np.ndarray, ABC):
@@ -47,16 +48,10 @@ class NonIntersectingHexagonAngles(HexagonAngles):
     ...
 
 
-class Hexagon(VMobject, Group, ABC):
-    def __init__(self, phis: HexagonAngles, **kwargs):
-        super().__init__(**kwargs)
-        self.edges = []
-
-
 class HexagonCircles(VMobject, Group, ABC):
     def __init__(self, hexagon, first_circle_radius: float, color=BLUE, **kwargs):
         super().__init__(**kwargs)
-        assert len(hexagon.polygon_points) == 6
+        assert len(hexagon) == 6
         phis = hexagon.phis
         p0 = polar_to_point(phis[0])
         first_circle_center = p0 * (1 - first_circle_radius)
@@ -88,26 +83,17 @@ class HexagonCircles(VMobject, Group, ABC):
 
 
 class HexagonMainDiagonals(VGroup, ABC):
-    def __init__(self, hexagon: Hexagon, color=WHITE, **kwargs):
+    def __init__(self, hexagon: HyperbolicPolygon, **kwargs):
         super().__init__(**kwargs)
+        assert len(hexagon) == 6
         phis = hexagon.phis
-        self.arc1 = HyperbolicArcBetweenPoints.from_angles(phis[0], phis[3], color=color, **kwargs)
-        self.arc2 = HyperbolicArcBetweenPoints.from_angles(phis[1], phis[4], color=color, **kwargs)
-        self.arc3 = HyperbolicArcBetweenPoints.from_angles(phis[2], phis[5], color=color, **kwargs)
+        self.arc1 = HyperbolicArcBetweenPoints.from_angles(phis[0], phis[3], **kwargs)
+        self.arc2 = HyperbolicArcBetweenPoints.from_angles(phis[1], phis[4], **kwargs)
+        self.arc3 = HyperbolicArcBetweenPoints.from_angles(phis[2], phis[5], **kwargs)
         self.add(self.arc1, self.arc2, self.arc3)
 
 
-class HyperbolicTriangle(VGroup, ABC):
-    def __init__(self, p1: np.ndarray, p2: np.ndarray, p3: np.ndarray, **kwargs):
-        super(HyperbolicTriangle, self).__init__(**kwargs)
-        arc1 = HyperbolicArcBetweenPoints(p1, p2, **kwargs)
-        arc2 = HyperbolicArcBetweenPoints(p2, p3, **kwargs)
-        arc3 = HyperbolicArcBetweenPoints(p3, p1, **kwargs)
-        self.add(arc1, arc2, arc3)
-
-
-class IntersectionTriangle(HyperbolicTriangle, ABC):
-    # technically not an actual polygon but since the triangle is small, it is approximately the same
+class IntersectionTriangle(HyperbolicPolygon, ABC):
     def __init__(self, diagonals: HexagonMainDiagonals, **kwargs):
         c1, r1 = diagonals.arc1.circle_center, diagonals.arc1.radius
         c2, r2 = diagonals.arc2.circle_center, diagonals.arc2.radius
@@ -115,7 +101,7 @@ class IntersectionTriangle(HyperbolicTriangle, ABC):
         intersection1 = get_intersection_in_unit_circle_of_two_tangent_circles(c2, r2, c3, r3)
         intersection2 = get_intersection_in_unit_circle_of_two_tangent_circles(c1, r1, c3, r3)
         intersection3 = get_intersection_in_unit_circle_of_two_tangent_circles(c1, r1, c2, r2)
-        super(IntersectionTriangle, self).__init__(intersection1, intersection2, intersection3, **kwargs)
+        super(IntersectionTriangle, self).__init__([intersection1, intersection2, intersection3], **kwargs)
 
 
 class HyperbolicArcBetweenPoints(ArcBetweenPoints, ABC):

@@ -23,6 +23,7 @@ class HyperbolicPolygon(VGroup, ABC):
             colors = [colors] * n
         if colors is None:
             colors = [WHITE] * n
+        assert len(colors) == n
         self.arcs = [HyperbolicArcBetweenPoints(points[i], points[(i + 1) % n], color=colors[i], **kwargs)
                      for i in range(n)]
 
@@ -42,3 +43,10 @@ class HyperbolicPolygon(VGroup, ABC):
     @property
     def phis(self):
         return [point_to_polar(point)[0] for point in self.polygon_points]
+
+    @property
+    def radii(self):
+        return [point_to_polar(point)[1] for point in self.polygon_points]
+
+    def __len__(self):
+        return len(self.polygon_points)

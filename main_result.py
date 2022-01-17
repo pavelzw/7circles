@@ -4,7 +4,7 @@ import numpy as np
 from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut, WHITE
 
 from geometry_util import polar_to_point
-from hexagon import HexagonMainDiagonals, IntersectionTriangle, HexagonAngles, HyperbolicTriangle
+from hexagon import HexagonMainDiagonals, IntersectionTriangle
 from hyperbolic_polygon import HyperbolicPolygon
 
 
@@ -84,5 +84,4 @@ class Scene2(MovingCameraScene):
         # p3 = np.array([1 / np.sqrt(2), 1 / np.sqrt(2), 0])
 
         self.play(Create(HyperbolicPolygon([p1, p2, p3], colors=[WHITE, BLUE, WHITE], stroke_width=2), run_time=3))
-        # self.play(Create(HyperbolicTriangle(p1, p2, p3, stroke_width=2)))
         self.wait(5)
