@@ -82,5 +82,5 @@ class Scene2(MovingCameraScene):
         # p2 = np.array([1, 0, 0])
         # p3 = np.array([1 / np.sqrt(2), 1 / np.sqrt(2), 0])
 
-        self.play(Create(HyperbolicTriangle(p1, p2, p3, stroke_width=2)), run_time=6)
+        self.play(Create(HyperbolicTriangle(p1, p2, p3, stroke_width=2)))
         self.wait(5)
