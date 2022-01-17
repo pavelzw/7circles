@@ -49,13 +49,13 @@ class NonIdealHexagon(VGroup, ABC):
                 self.hexagon_points.append(point2)
                 self.add(Dot(point2, radius=0.04))
 
+            # todo replace with HyperbolicArcBetweenPoints
             klein_point1 = tf_poincare_to_klein(point1)  # transform points from poincare to klein model
             klein_point2 = tf_poincare_to_klein(point2)
-            intersections = get_both_intersections_line_with_unit_circle(klein_point1,
-                                                                         klein_point2)  # new intersections
+            intersection1, intersection2 = get_both_intersections_line_with_unit_circle(klein_point1, klein_point2)
 
-            unit_point1 = np.arctan2(intersections[1], intersections[0])  # get polar coordinates of intersections
-            unit_point2 = np.arctan2(intersections[3], intersections[2])
+            unit_point1 = np.arctan2(intersection1[1], intersection1[0])  # get polar coordinates of intersections
+            unit_point2 = np.arctan2(intersection2[1], intersection2[0])
 
             if unit_point1 < 0:  # for assertion phi >= 0
                 unit_point1 = unit_point1 + 2 * pi

@@ -3,11 +3,12 @@ from math import pi
 
 import numpy as np
 from manim import Group, BLUE, Circle, WHITE, ArcBetweenPoints, Angle, TangentLine, VMobject, VGroup, \
-    Polygon
+    Polygon, RED, Dot, RED_A, BLUE_A
 
 from geometry_util import radian_to_point, get_intersection, get_intersection_line_unit_circle, \
     get_intersection_not_on_circle_of_two_tangent_circles, get_circle_middle, \
-    get_intersection_in_unit_circle_of_two_tangent_circles
+    get_intersection_in_unit_circle_of_two_tangent_circles, tf_poincare_to_klein, \
+    get_both_intersections_line_with_unit_circle
 
 
 class HexagonAngles(np.ndarray, ABC):
@@ -104,13 +105,77 @@ class IntersectionTriangle(Polygon, ABC):
         intersection1 = get_intersection_in_unit_circle_of_two_tangent_circles(c2, r2, c3, r3)
         intersection2 = get_intersection_in_unit_circle_of_two_tangent_circles(c1, r1, c3, r3)
         intersection3 = get_intersection_in_unit_circle_of_two_tangent_circles(c1, r1, c2, r2)
+        # todo make hyperbolic triangle, not euclidean triangle
         super(IntersectionTriangle, self).__init__(intersection1, intersection2, intersection3, **kwargs)
 
 
-class SemiIdealTriangle(VGroup, ABC):
-    def __init__(self):
-        super(SemiIdealTriangle, self).__init__()
-        
+class HyperbolicTriangle(VGroup, ABC):
+    def __init__(self, p1: np.ndarray, p2: np.ndarray, p3: np.ndarray, **kwargs):
+        super(HyperbolicTriangle, self).__init__(**kwargs)
+        arc1 = HyperbolicArcBetweenPoints(p1, p2, **kwargs)
+        arc2 = HyperbolicArcBetweenPoints(p2, p3, **kwargs)
+        arc3 = HyperbolicArcBetweenPoints(p3, p1, show_colors=True, **kwargs)
+        self.add(arc1, arc2, arc3)
+
+
+# class HyperbolicArcBetweenPoints(ArcBetweenPoints, ABC):
+class HyperbolicArcBetweenPoints(VGroup, ABC):
+    def __init__(self, p1: np.ndarray, p2: np.ndarray, arcs_meeting_circle=False, color1=RED, color2=BLUE,
+                 show_colors=False, **kwargs):
+        super(HyperbolicArcBetweenPoints, self).__init__()
+        klein_point1 = tf_poincare_to_klein(p1)  # transform points from poincare to klein model
+        klein_point2 = tf_poincare_to_klein(p2)
+
+        intersection1, intersection2 = get_both_intersections_line_with_unit_circle(klein_point1, klein_point2)
+
+        if np.linalg.norm(intersection1 - p2) < np.linalg.norm(intersection1 - p1):
+            tmp = intersection1
+            intersection1 = intersection2
+            intersection2 = tmp
+
+        # get polar coordinates of intersections
+        phi1 = np.arctan2(intersection1[1], intersection1[0])
+        phi2 = np.arctan2(intersection2[1], intersection2[0])
+
+        if show_colors:
+            self.add(Dot(p1, color=color1))
+            self.add(Dot(p2, color=color2))
+            self.add(Dot(radian_to_point(phi1), color=RED_A))
+            self.add(Dot(radian_to_point(phi2), color=BLUE_A))
+
+        if phi1 < 0:  # for assertion phi >= 0
+            phi1 += 2 * pi
+        if phi2 < 0:
+            phi2 += 2 * pi
+
+        radius = ArcBetweenPointsOnUnitDisk(phi1, phi2).radius
+
+        diff = phi2 - phi1
+        if diff < 0:
+            diff += 2 * pi
+        if diff < pi:
+            if arcs_meeting_circle:
+                self.add(ArcBetweenPoints(radian_to_point(phi2),
+                                          radian_to_point(phi1),
+                                          radius=radius, **kwargs))
+                # super(HyperbolicArcBetweenPoints, self).__init__(radian_to_point(phi2),
+                #                                                  radian_to_point(phi1),
+                #                                                  radius=radius, **kwargs)
+            else:
+                self.add(ArcBetweenPoints(p2, p1, radius=radius, **kwargs))
+                # super(HyperbolicArcBetweenPoints, self).__init__(p2, p1, radius=radius, **kwargs)
+        else:
+            if arcs_meeting_circle:
+                self.add(ArcBetweenPoints(radian_to_point(phi1),
+                                          radian_to_point(phi2),
+                                          radius=radius, **kwargs))
+                # super(HyperbolicArcBetweenPoints, self).__init__(radian_to_point(phi1),
+                #                                                  radian_to_point(phi2),
+                #                                                  radius=radius, **kwargs)
+            else:
+                self.add(ArcBetweenPoints(p1, p2, radius=radius, **kwargs))
+                # super(HyperbolicArcBetweenPoints, self).__init__(p1, p2, radius=radius, **kwargs)
+
 
 class ArcBetweenPointsOnUnitDisk(ArcBetweenPoints, ABC):
     def __init__(self, phi1, phi2, color=WHITE, **kwargs):

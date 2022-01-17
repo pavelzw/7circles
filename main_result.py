@@ -1,7 +1,11 @@
-import numpy as np
-from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut
+import math
 
-from hexagon import HexagonMainDiagonals, IntersectionTriangle, HexagonAngles
+import numpy as np
+from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut, VGroup, Dot
+
+from geometry_util import radian_to_point
+from hexagon import HexagonMainDiagonals, IntersectionTriangle, HexagonAngles, HyperbolicArcBetweenPoints, \
+    HyperbolicTriangle
 from hyperbolic_hexagon import HyperbolicHexagon
 
 
@@ -67,3 +71,16 @@ class Scene2(MovingCameraScene):
 
         circle = Circle()
         self.play(Create(circle))
+
+        phis = np.random.uniform(0, 2 * math.pi, 3)
+        p1 = radian_to_point(phis[0])
+        p2 = radian_to_point(phis[1])
+        p3 = radian_to_point(phis[2]) * np.random.uniform(0.3, .7)
+        print(p1, p2, p3)
+
+        # p1 = np.array([.2, 0.4, 0])
+        # p2 = np.array([1, 0, 0])
+        # p3 = np.array([1 / np.sqrt(2), 1 / np.sqrt(2), 0])
+
+        self.play(Create(HyperbolicTriangle(p1, p2, p3, stroke_width=2)), run_time=6)
+        self.wait(5)

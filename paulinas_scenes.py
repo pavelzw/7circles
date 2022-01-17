@@ -228,7 +228,7 @@ class TransformingHexagonWithDisks(MovingCameraScene):
         self.play(Create(disks_group), run_time=3)
 
         # length of S_k
-        s_1 = Text('S1')
+        s_1 = Tex(r'$S_1$')
         # label = VGroup(Tex(r'$\mathrm{length}(S_1)=$', font_size=35), DecimalNumber(
         #   hyperbolic_distance_function(hexagon.hexagon_points[0], ), hexagon.hexagon_points[1])),
         #  num_decimal_places=2, show_ellipsis=True, group_with_commas=False, font_size=35))
@@ -240,7 +240,7 @@ class TransformingHexagonWithDisks(MovingCameraScene):
         disk_transition = create_radius_transition(radius=radius, step_size=step_size, end_point=1 - circle_radius)
         for t in range(1, step_size):
             hexagon_new = NonIdealHexagon(transition[t], phis)
-            s_1.next_to((hexagon_new.hexagon_arcs[0]), RIGHT, font_size=20)
+            s_1.next_to((hexagon_new.hexagon_arcs[0]), RIGHT)
 
             # s_1_length = hyperbolic_distance_function(, ) of intersection between arc and circle
 

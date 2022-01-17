@@ -137,7 +137,7 @@ def get_both_intersections_line_with_unit_circle(point1, point2):
 
     new_y1 = (-D * dx + np.abs(dy) * np.sqrt((dr ** 2) - (D ** 2))) / (dr ** 2)
     new_y2 = (-D * dx - np.abs(dy) * np.sqrt((dr ** 2) - (D ** 2))) / (dr ** 2)
-    return np.array([new_x1, new_y1, new_x2, new_y2])  # array mit 4 einträgen für 2 punkte
+    return np.array([new_x1, new_y1, 0]), np.array([new_x2, new_y2, 0])
 
 
 def tf_klein_to_hem(point):
@@ -194,10 +194,10 @@ def complex_mobius_transform(z, x, y, u):
 def hyperbolic_distance_function(b, c):  # b and c points on plane
     klein_point1 = tf_poincare_to_klein(b)  # transform points from poincare to klein model
     klein_point2 = tf_poincare_to_klein(c)
-    intersections = get_both_intersections_line_with_unit_circle(klein_point1,
-                                                                 klein_point2)  # new intersections
-    d = (intersections[0], intersections[1])  # a = a1 + i* a2
-    a = (intersections[2], intersections[3])
+    intersection1, intersection2 = get_both_intersections_line_with_unit_circle(klein_point1, klein_point2)
+
+    d = (intersection1[0], intersection1[1])  # a = a1 + i* a2
+    a = (intersection2[0], intersection2[1])
 
     ac = abs_complex(a, c)
     bd = abs_complex(b, d)
