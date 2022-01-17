@@ -69,16 +69,16 @@ class HyperbolicPolygon(VGroup, ABC):
             radii = [1] * len(phis)
         return cls([polar_to_point(arc, radius=radius) for arc, radius in zip(phis, radii)], **kwargs)
 
-    def __init__(self, points: 'list[np.ndarray]', colors: 'list[str]' = None, add_dots=True, dot_radius=.04, **kwargs):
+    def __init__(self, points: 'list[np.ndarray]', color: 'list[str]' = None, add_dots=True, dot_radius=.04, **kwargs):
         super(HyperbolicPolygon, self).__init__()
 
         n = len(points)
-        if type(colors) == str:
-            colors = [colors] * n
-        if colors is None:
-            colors = [WHITE] * n
-        assert len(colors) == n
-        self.arcs = [HyperbolicArcBetweenPoints(points[i], points[(i + 1) % n], color=colors[i], **kwargs)
+        if type(color) == str:
+            color = [color] * n
+        if color is None:
+            color = [WHITE] * n
+        assert len(color) == n
+        self.arcs = [HyperbolicArcBetweenPoints(points[i], points[(i + 1) % n], color=color[i], **kwargs)
                      for i in range(n)]
 
         self.dots = []

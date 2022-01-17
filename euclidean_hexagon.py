@@ -9,7 +9,7 @@ from hyperbolic_polygon import polar_to_point
 
 class EuclideanHexagon(VGroup, ABC):
     def __init__(self, phis: HexagonAngles, **kwargs):
-        super().__init__(phis, **kwargs)
+        super().__init__(**kwargs)
 
         self._phis = phis
         self.edges = []

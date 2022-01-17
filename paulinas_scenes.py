@@ -259,7 +259,7 @@ class AlternatingPerimeter(Scene):
         self.add(circle)
         radius = np.random.uniform(0.5, 0.7, 6)
         phis = create_phis(min_dist=0.6)
-        hexagon = HyperbolicPolygon.from_polar(phis, radius, colors=[WHITE, BLUE, WHITE, BLUE, WHITE, BLUE])
+        hexagon = HyperbolicPolygon.from_polar(phis, radius, color=[WHITE, BLUE, WHITE, BLUE, WHITE, BLUE])
 
         self.play(Create(hexagon), run_time=8)
         self.wait(2)
