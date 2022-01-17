@@ -1,11 +1,11 @@
 import math
 
 import numpy as np
-from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut
+from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut, WHITE
 
 from geometry_util import radian_to_point
 from hexagon import HexagonMainDiagonals, IntersectionTriangle, HexagonAngles, HyperbolicTriangle
-from hyperbolic_hexagon import HyperbolicHexagon
+from hyperbolic_polygon import HyperbolicPolygon
 
 
 class Scene1(MovingCameraScene):
@@ -26,9 +26,13 @@ class Scene1(MovingCameraScene):
         self.play(Create(circle))
 
         # phis = create_phis_non_intersecting()
-        phis = HexagonAngles(np.array([1.80224806, 2.30601184, 2.77326535, 3.20993453, 4.48582486, 6.15595698]))
+        # phis = HexagonAngles(np.array([1.80224806, 2.30601184, 2.77326535, 3.20993453, 4.48582486, 6.15595698]))
+        phis = [1.80224806, 2.30601184, 2.77326535, 3.20993453, 4.48582486, 6.15595698]
         print(f'Phis = {phis}')
-        hexagon = HyperbolicHexagon(phis, stroke_width=2)
+        hexagon = HyperbolicPolygon.from_polar(phis, add_dots=False,
+                                               colors=[WHITE, BLUE, WHITE, BLUE, WHITE, BLUE],
+                                               stroke_width=2)
+        print(hexagon.phis)
         diagonals = HexagonMainDiagonals(hexagon, stroke_width=2)
 
         self.play(Create(hexagon),
@@ -79,5 +83,6 @@ class Scene2(MovingCameraScene):
         # p2 = np.array([1, 0, 0])
         # p3 = np.array([1 / np.sqrt(2), 1 / np.sqrt(2), 0])
 
-        self.play(Create(HyperbolicTriangle(p1, p2, p3, stroke_width=2)))
+        self.play(Create(HyperbolicPolygon([p1, p2, p3], colors=[WHITE, BLUE, WHITE], stroke_width=2), run_time=3))
+        # self.play(Create(HyperbolicTriangle(p1, p2, p3, stroke_width=2)))
         self.wait(5)

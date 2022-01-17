@@ -4,7 +4,7 @@ from math import pi
 from manim import *
 
 from hexagon import Hexagon
-from hyperbolic_hexagon import HexagonAngles, radian_to_point
+from hyperbolic_polygon import HexagonAngles, radian_to_point
 
 
 class EuclideanHexagon(Hexagon, Group, ABC):

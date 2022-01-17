@@ -2,8 +2,7 @@ from math import pi
 
 import numpy as np
 
-from hexagon import IntersectingHexagonAngles, NonIntersectingHexagonAngles
-from hyperbolic_hexagon import HexagonAngles
+from hexagon import IntersectingHexagonAngles, NonIntersectingHexagonAngles, HexagonAngles
 
 
 def create_phis(min_dist=0.4, max_dist=-1) -> IntersectingHexagonAngles:

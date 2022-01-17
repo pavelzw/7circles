@@ -82,6 +82,13 @@ def radian_to_point(angle, radius=1):
     return np.array((radius * np.cos(angle), radius * np.sin(angle), 0))
 
 
+def point_to_radian(point):
+    angle = np.arctan2(point[1], point[0])
+    if angle < 0:
+        angle += 2 * math.pi
+    return angle, np.linalg.norm(point)
+
+
 def get_circle_middle(phi_1, phi_2):
     if np.sin(phi_2) == 0:  # phi_2 != 0, PI because else we divide by 0
         tmp = phi_2

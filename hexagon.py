@@ -54,8 +54,9 @@ class Hexagon(VMobject, Group, ABC):
 
 
 class HexagonCircles(VMobject, Group, ABC):
-    def __init__(self, hexagon: Hexagon, first_circle_radius: float, color=BLUE, **kwargs):
+    def __init__(self, hexagon, first_circle_radius: float, color=BLUE, **kwargs):
         super().__init__(**kwargs)
+        assert len(hexagon.polygon_points) == 6
         phis = hexagon.phis
         p0 = radian_to_point(phis[0])
         first_circle_center = p0 * (1 - first_circle_radius)

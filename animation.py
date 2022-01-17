@@ -1,18 +1,16 @@
 from math import pi
 
 import numpy as np
-from manim import Scene, Square, Circle, Dot, Group, Text, Create, FadeIn, FadeOut, MoveAlongPath, Line, WHITE, BLUE, \
-    GREEN_B, Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Uncreate, \
-    VGroup, DecimalNumber, RIGHT, Tex, LEFT, UP
+from manim import Scene, Circle, Dot, Create, FadeIn, Line, \
+    Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import radian_to_point, mobius_transform, \
     tf_klein_to_poincare, get_intersections_of_n_tangent_circles, get_intersections_of_circles_with_unit_circle, \
-    get_intersection_from_angles, hyperbolic_distance_function, create_min_circle_radius, moving_circle, \
-    moving_line
+    get_intersection_from_angles
 from hexagon import HexagonCircles, HexagonMainDiagonals, HyperbolicArcBetweenPoints
-from hexagon_util import create_phis, create_phi_transition, create_radius_transition
-from hyperbolic_hexagon import HyperbolicHexagon, NonIdealHexagon
+from hexagon_util import create_phis, create_phi_transition
+from hyperbolic_polygon import HyperbolicPolygon
 
 
 class CircleWithArcs(Scene):
@@ -52,11 +50,11 @@ class CircleWithArcsMoving(Scene):
         # phis = np.array([0, 1, 2, 3, 4, 5])
         transition = create_phi_transition(phi_old, phi_new, step_size=step_size)
 
-        hexagon = HyperbolicHexagon(transition[0])
+        hexagon = HyperbolicPolygon.from_polar(transition[0])
         self.add(hexagon)
 
         for t in range(1, step_size):
-            hexagon_new = HyperbolicHexagon(transition[t])
+            hexagon_new = HyperbolicPolygon.from_polar(transition[t])
             self.play(Transform(hexagon, hexagon_new), run_time=0.2, rate_func=lambda a: a)
 
         # self.wait(duration=5)
@@ -109,7 +107,7 @@ class SmallCircles(MovingCameraScene):
         phis = create_phis(min_dist=.4)
 
         first_circle_radius = .25
-        hexagon = HyperbolicHexagon(phis)
+        hexagon = HyperbolicPolygon.from_polar(phis)
         hexagon_circles = HexagonCircles(hexagon, first_circle_radius)
         hexagon_diagonals = HexagonMainDiagonals(hexagon)
         self.add(hexagon)

@@ -9,7 +9,7 @@ from geometry_util import radian_to_point, hyperbolic_distance_function, create_
     moving_line
 
 from hexagon_util import create_phis, create_radius_transition
-from hyperbolic_hexagon import NonIdealHexagon
+from hyperbolic_polygon import HyperbolicPolygon
 
 
 class EuclideanCircles(Scene):
@@ -100,7 +100,7 @@ class NonIdealHexagonAnimation(Scene):
         radius = np.random.uniform(0.5, 0.7, 6)
         phis = create_phis(min_dist=0.6)
 
-        hexagon = NonIdealHexagon(radius, phis)
+        hexagon = HyperbolicPolygon.from_polar(phis, radius)
         self.play(Create(hexagon), run_time=5)
         self.wait(2)
 
@@ -120,12 +120,12 @@ class HexagonWithSixDisks(Scene):
         radius = np.random.uniform(0.5, 0.7, 6)
         phis = create_phis(min_dist=0.8)
 
-        hexagon = NonIdealHexagon(radius, phis, stroke_width=4)
+        hexagon = HyperbolicPolygon.from_polar(phis, radius, stroke_width=4)
         self.add(hexagon)
         # case for first circle
-        last_point = hexagon.hexagon_points[0]
-        point = hexagon.hexagon_points[1]
-        end_point = hexagon.hexagon_points[5]
+        last_point = hexagon.polygon_points[0]
+        point = hexagon.polygon_points[1]
+        end_point = hexagon.polygon_points[5]
 
         circle_radius = create_min_circle_radius(end_point, last_point, point)
         circle = Circle(arc_center=last_point, radius=circle_radius, color=GREEN_B, fill_opacity=0.5)
@@ -155,24 +155,24 @@ class TransformingNonIdealIntoIdeal(Scene):
         step_size = 50  # normally 100, but takes long
         # phis = np.array([0, 1, 2, 3, 4, 5])
         transition = create_radius_transition(radius=radius, step_size=step_size)
-        hexagon = NonIdealHexagon(transition[0], phis)
+        hexagon = HyperbolicPolygon.from_polar(phis, transition[0])
         self.add(hexagon)
 
         point1_text = Tex('$P_1$', font_size=30)
         point2_text = Tex('$P_2$', font_size=30)
         distance_text, distance_number = label = VGroup(
             Tex(r'$\mathrm{dist}(P_1, P_2)=$', font_size=35),
-            DecimalNumber(np.exp(hyperbolic_distance_function(hexagon.hexagon_points[0], hexagon.hexagon_points[1])),
+            DecimalNumber(np.exp(hyperbolic_distance_function(hexagon.polygon_points[0], hexagon.polygon_points[1])),
                           num_decimal_places=2, show_ellipsis=True, group_with_commas=False, font_size=35))
         label.move_to([2, 0, 0], aligned_edge=LEFT)
         self.add(label)
         for t in range(1, step_size - 1):
-            hexagon_new = NonIdealHexagon(transition[t], phis)
-            point1_text.next_to((hexagon_new.hexagon_points[1]), LEFT, UP)
-            point2_text.next_to((hexagon_new.hexagon_points[0]), RIGHT, UP)
+            hexagon_new = HyperbolicPolygon.from_polar(phis, transition[t])
+            point1_text.next_to((hexagon_new.polygon_points[1]), LEFT, UP)
+            point2_text.next_to((hexagon_new.polygon_points[0]), RIGHT, UP)
             self.add(point1_text, point2_text)
             distance = np.exp(
-                hyperbolic_distance_function(hexagon_new.hexagon_points[0], hexagon_new.hexagon_points[1]))
+                hyperbolic_distance_function(hexagon_new.polygon_points[0], hexagon_new.polygon_points[1]))
             distance_number.font_size = 35
             label.arrange()
             label.move_to([2, 0, 0], aligned_edge=LEFT)
@@ -180,7 +180,7 @@ class TransformingNonIdealIntoIdeal(Scene):
                       distance_number.animate.set_value(distance), run_time=0.05,
                       rate_func=lambda a: a)
 
-        hexagon_new = NonIdealHexagon(transition[-1], phis)
+        hexagon_new = HyperbolicPolygon.from_polar(phis, transition[-1])
         self.play(Transform(hexagon, hexagon_new),
                   Transform(distance_number, Tex(r'$\infty$').next_to(distance_text)), run_time=0.05,
                   rate_func=lambda a: a)
@@ -198,14 +198,14 @@ class TransformingHexagonWithDisks(MovingCameraScene):
         step_size = 50  # normally 100, but takes long
         # phis = np.array([0, 1, 2, 3, 4, 5])
         transition = create_radius_transition(radius=radius, step_size=step_size)
-        hexagon = NonIdealHexagon(transition[0], phis)
+        hexagon = HyperbolicPolygon.from_polar(phis, transition[0])
         self.add(hexagon)
         # creating 6 disks
-        last_point = hexagon.hexagon_points[0]
+        last_point = hexagon.polygon_points[0]
         first_point = last_point
 
-        point = hexagon.hexagon_points[1]
-        end_point = hexagon.hexagon_points[5]
+        point = hexagon.polygon_points[1]
+        end_point = hexagon.polygon_points[5]
         circle_radius[0] = create_min_circle_radius(end_point, last_point, point)
         circle = Circle(arc_center=last_point, radius=circle_radius[0], color=GREEN_B, fill_opacity=0.5)
         disks_group = VGroup()  # treating disks as a group
@@ -226,7 +226,7 @@ class TransformingHexagonWithDisks(MovingCameraScene):
         # length of S_k
         s_1 = Tex(r'$S_1$')
         # label = VGroup(Tex(r'$\mathrm{length}(S_1)=$', font_size=35), DecimalNumber(
-        #   hyperbolic_distance_function(hexagon.hexagon_points[0], ), hexagon.hexagon_points[1])),
+        #   hyperbolic_distance_function(hexagon.polygon_points[0], ), hexagon.polygon_points[1])),
         #  num_decimal_places=2, show_ellipsis=True, group_with_commas=False, font_size=35))
         # label.move_to([2, 0, 0], aligned_edge=LEFT)
         # self.add(label)
@@ -236,8 +236,8 @@ class TransformingHexagonWithDisks(MovingCameraScene):
         # transition of disks and hexagon
         disk_transition = create_radius_transition(radius=radius, step_size=step_size, end_point=1 - circle_radius)
         for t in range(1, step_size):
-            hexagon_new = NonIdealHexagon(transition[t], phis)
-            s_1.next_to((hexagon_new.hexagon_arcs[0]), RIGHT)
+            hexagon_new = HyperbolicPolygon.from_polar(phis, transition[t])
+            s_1.next_to((hexagon_new.arcs[0]), RIGHT)
 
             # s_1_length = hyperbolic_distance_function(, ) of intersection between arc and circle
 
@@ -259,9 +259,7 @@ class AlternatingPerimeter(Scene):
         self.add(circle)
         radius = np.random.uniform(0.5, 0.7, 6)
         phis = create_phis(min_dist=0.6)
-        hexagon = NonIdealHexagon(radius, phis, alternating_perimeter=True)
-
-        # hexagon = NonIdealHexagon(radius, phis, YELLOW)
+        hexagon = HyperbolicPolygon.from_polar(phis, radius, colors=[WHITE, BLUE, WHITE, BLUE, WHITE, BLUE])
 
         self.play(Create(hexagon), run_time=8)
         self.wait(2)
