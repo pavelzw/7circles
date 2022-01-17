@@ -1,5 +1,5 @@
 import numpy as np
-from manim import Create, Circle, MovingCameraScene, PURPLE, BLUE_A, BLUE, Text, Tex, Write
+from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut
 
 from hexagon import HexagonMainDiagonals, IntersectionTriangle, HexagonAngles
 from hyperbolic_hexagon import HyperbolicHexagon
@@ -44,6 +44,8 @@ class Scene1(MovingCameraScene):
 
         self.wait(timings.pop())
 
+        self.play(FadeOut(circle, triangle, hexagon, diagonals))
+
         self.clear()
         proposition = Tex(r'Für jedes ideale Hexagon $P$ ist der '
                           r'alternierende Umfang \\ bis auf das Vorzeichen '
@@ -54,3 +56,14 @@ class Scene1(MovingCameraScene):
                         run_time=timings.pop()))
 
         self.wait(timings.pop())
+
+
+class Scene2(MovingCameraScene):
+    def construct(self):
+        self.camera.frame.width = 6
+        timings = []
+        # timings = [.1, .1, .1, .1, .1, 10]
+        timings.reverse()
+
+        circle = Circle()
+        self.play(Create(circle))

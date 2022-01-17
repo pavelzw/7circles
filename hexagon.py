@@ -107,6 +107,11 @@ class IntersectionTriangle(Polygon, ABC):
         super(IntersectionTriangle, self).__init__(intersection1, intersection2, intersection3, **kwargs)
 
 
+class SemiIdealTriangle(VGroup, ABC):
+    def __init__(self):
+        super(SemiIdealTriangle, self).__init__()
+        
+
 class ArcBetweenPointsOnUnitDisk(ArcBetweenPoints, ABC):
     def __init__(self, phi1, phi2, color=WHITE, **kwargs):
         assert phi1 >= 0
