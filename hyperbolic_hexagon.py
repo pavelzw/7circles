@@ -32,11 +32,12 @@ class NonIdealHexagon(VGroup, ABC):
         super().__init__(*mobjects, **kwargs)
         first_point = radian_to_point(phis[0], radius[0])
         point1 = first_point
+        self.hexagon_points = []
+        self.hexagon_points.append(point1)
         self.add(Dot(point1, radius=0.04))
         color1 = WHITE
         color2 = BLUE
 
-        self.hexagon_points = []
         for i in range(0, 6):
             if i == 5:
                 point1 = radian_to_point(phis[5], radius[5])

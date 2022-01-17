@@ -4,12 +4,13 @@ from math import pi
 import numpy as np
 from manim import Scene, Square, Circle, Dot, Group, Text, Create, FadeIn, FadeOut, MoveAlongPath, Line, WHITE, BLUE, \
     Arc, GREEN_B, Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Uncreate, \
-    VGroup, DecimalNumber, ReplacementTransform, RIGHT, always, f_always, Tex, LEFT
+    VGroup, DecimalNumber, ReplacementTransform, RIGHT, always, f_always, Tex, LEFT, UP
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import radian_to_point, mobius_transform, \
     tf_klein_to_poincare, get_intersections_of_n_tangent_circles, get_intersections_of_circles_with_unit_circle, \
-    get_intersection_from_angles, hyperbolic_distance_function, abs_complex
+    get_intersection_from_angles, hyperbolic_distance_function, abs_complex, create_min_circle_radius, moving_circle, \
+    moving_line
 from hexagon import HexagonCircles, HexagonMainDiagonals, ArcBetweenPointsOnUnitDisk
 from hexagon_util import create_phis, create_phi_transition, create_radius_transition
 from hyperbolic_hexagon import HyperbolicHexagon, NonIdealHexagon
@@ -57,7 +58,7 @@ class Horodisk(Scene):
     def construct(self):
         # hyperbolic situation
         # points of position
-        center = [-4, 0, 0]
+        center = [0, 0, 0]
         start_points = np.array([center, center, center, center])
         length = [1, 1, -3]  # 1 is 1 unit to the left, -3 is 3 units to the right, way of circles moving
 
@@ -96,22 +97,6 @@ class Horodisk(Scene):
             self.wait(duration=1)
 
 
-def moving_circle(start_angle, end_angle, center):
-    arc1 = Arc(start_angle=start_angle, angle=end_angle).move_arc_center_to(center)  # creates eighth of circle
-    arc2 = Arc(start_angle=start_angle, angle=end_angle, radius=0.25).move_arc_center_to(center)
-    arc3 = Arc(start_angle=start_angle, angle=end_angle, radius=0.5).move_arc_center_to(center)
-    arc4 = Arc(start_angle=start_angle, angle=end_angle, radius=0.75).move_arc_center_to(center)
-    return [arc1, arc2, arc3, arc4]
-
-
-def moving_line(start_points, end_points):
-    line1 = Line(start=start_points[0], end=end_points[0])
-    line2 = Line(start=start_points[1], end=end_points[1])
-    line3 = Line(start=start_points[2], end=end_points[2])
-    line4 = Line(start=start_points[3], end=end_points[3])
-    return [line1, line2, line3, line4]
-
-
 class NonIdealHexagonAnimation(Scene):
     def construct(self):
         circle = Circle()
@@ -141,27 +126,21 @@ class HexagonWithSixDisks(Scene):
 
         hexagon = NonIdealHexagon(radius, phis, stroke_width=4)
         self.add(hexagon)
-
-        last_point = radian_to_point(phis[0], radius[0])
-        point = radian_to_point(phis[1], radius[1])
-
         # case for first circle
-        end_point = radian_to_point(phis[5], radius[5])
-        circle_radius = min(abs_complex(last_point, point), abs_complex(last_point, end_point)) / 2.2
+        last_point = hexagon.hexagon_points[0]
+        point = hexagon.hexagon_points[1]
+        end_point = hexagon.hexagon_points[5]
+
+        circle_radius = create_min_circle_radius(end_point, last_point, point)
         circle = Circle(arc_center=last_point, radius=circle_radius, color=GREEN_B, fill_opacity=0.5)
         self.add(circle)
 
         for k in range(2, 6):  # from 2 to 5
             next_point = radian_to_point(phis[k], radius[k])
 
-            distance_last_present = abs_complex(last_point, point)
-            distance_present_next = abs_complex(point, next_point)
-            distance_present_unit = 1 - np.linalg.norm(point)
-            # circles might touch the unit circle
-            circle_radius = min(distance_present_next / 2.2, distance_last_present / 2.2, distance_present_unit)
+            circle_radius = create_min_circle_radius(last_point, point, next_point)
             circle = Circle(arc_center=point, radius=circle_radius, color=GREEN_B, fill_opacity=0.5)
             self.add(circle)
-
             last_point = point
             point = next_point
 
@@ -177,12 +156,14 @@ class TransformingNonIdealIntoIdeal(Scene):
         radius = np.random.uniform(0.5, 0.7, 6)
         phis = create_phis(min_dist=0.6)
 
-        step_size = 100
+        step_size = 50  # normally 100, but takes long
         # phis = np.array([0, 1, 2, 3, 4, 5])
         transition = create_radius_transition(radius=radius, step_size=step_size)
         hexagon = NonIdealHexagon(transition[0], phis)
         self.add(hexagon)
 
+        point1_text = Text('P1', font_size=20)  # maybe tex better
+        point2_text = Text('P2', font_size=20)
         distance_text, distance_number = label = VGroup(
             Tex(r'$\mathrm{dist}(P_1, P_2)=$', font_size=35),
             DecimalNumber(np.exp(hyperbolic_distance_function(hexagon.hexagon_points[0], hexagon.hexagon_points[1])),
@@ -191,6 +172,9 @@ class TransformingNonIdealIntoIdeal(Scene):
         self.add(label)
         for t in range(1, step_size - 1):
             hexagon_new = NonIdealHexagon(transition[t], phis)
+            point1_text.next_to((hexagon_new.hexagon_points[1]), LEFT, UP)
+            point2_text.next_to((hexagon_new.hexagon_points[0]), RIGHT, UP)
+            self.add(point1_text, point2_text)
             distance = np.exp(
                 hyperbolic_distance_function(hexagon_new.hexagon_points[0], hexagon_new.hexagon_points[1]))
             distance_number.font_size = 35
@@ -200,12 +184,59 @@ class TransformingNonIdealIntoIdeal(Scene):
                       distance_number.animate.set_value(distance), run_time=0.05,
                       rate_func=lambda a: a)
 
-            # hexagon_new.hexagon_points # liste von den punkten
-            print(distance)
         hexagon_new = NonIdealHexagon(transition[-1], phis)
         self.play(Transform(hexagon, hexagon_new),
                   Transform(distance_number, Tex(r'$\infty$').next_to(distance_text)), run_time=0.05,
                   rate_func=lambda a: a)
+        self.wait(duration=3)
+
+
+class TransformingHexagonWithDisks(MovingCameraScene):
+    def construct(self):
+        circle = Circle()
+        self.add(circle)
+        radius = np.random.uniform(0.5, 0.7, 6)
+        phis = create_phis(min_dist=0.6)
+        circle_radius = np.zeros(shape=6)
+
+        step_size = 50  # normally 100, but takes long
+        # phis = np.array([0, 1, 2, 3, 4, 5])
+        transition = create_radius_transition(radius=radius, step_size=step_size)
+        hexagon = NonIdealHexagon(transition[0], phis)
+        self.add(hexagon)
+        # creating 6 disks
+        last_point = hexagon.hexagon_points[0]
+        first_point = last_point
+
+        point = hexagon.hexagon_points[1]
+        end_point = hexagon.hexagon_points[5]
+        circle_radius[0] = create_min_circle_radius(end_point, last_point, point)
+        circle = Circle(arc_center=last_point, radius=circle_radius[0], color=GREEN_B, fill_opacity=0.5)
+        disks_group = VGroup()  # treating disks as a group
+        disks_group.add(circle)
+        for k in range(2, 6):  # from 2 to 5
+            next_point = radian_to_point(phis[k], radius[k])
+            circle_radius[k - 1] = create_min_circle_radius(last_point, point, next_point)
+            circle = Circle(arc_center=point, radius=circle_radius[k - 1], color=GREEN_B, fill_opacity=0.5)
+            last_point = point
+            point = next_point
+            disks_group.add(circle)
+        circle_radius[5] = create_min_circle_radius(last_point, point, first_point)
+        circle = Circle(arc_center=point, radius=circle_radius[5], color=GREEN_B,
+                        fill_opacity=0.5)  # circle for last point
+        disks_group.add(circle)
+        self.add(disks_group)
+        new_disk_group = VGroup()
+        disk_transition = create_radius_transition(radius=radius, step_size=step_size, end_point=1 - circle_radius)
+        for t in range(1, step_size):
+            hexagon_new = NonIdealHexagon(transition[t], phis)
+            for i in range(0, 6):
+                new_disk_group.add(
+                    Circle(radius=circle_radius[i], arc_center=radian_to_point(phis[i], disk_transition[t][i]),
+                           color=GREEN_B, fill_opacity=0.5))
+            self.play(Transform(hexagon, hexagon_new), Transform(disks_group, new_disk_group), run_time=0.05,
+                      rate_func=lambda a: a)
+            new_disk_group = VGroup()  # nochmal leeren
         self.wait(duration=3)
 
 

@@ -37,10 +37,10 @@ def create_phi_transition(phi_old: IntersectingHexagonAngles, phi_new: Intersect
     return transition
 
 
-def create_radius_transition(radius, step_size=10):
+def create_radius_transition(radius, step_size=10, end_point=1):
     transition = np.empty(shape=(step_size, radius.shape[0]))
 
     for t in range(step_size):
-        step_variable_part = radius * (1 - t / step_size) + 1 * t / step_size
+        step_variable_part = radius * (1 - t / step_size) + end_point * t / step_size
         transition[t] = step_variable_part
     return transition

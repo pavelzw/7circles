@@ -1,7 +1,7 @@
 import math
 
 import numpy as np
-from manim import Circle, Dot, WHITE, GREEN
+from manim import Circle, Dot, WHITE, GREEN, Arc, Line
 
 
 def get_both_intersection_of_two_tangent_circles(c0: np.array, r0: float, c1: np.array, r1: float):
@@ -221,3 +221,29 @@ def abs_complex(x, y, z=0):
     root_term1 = (x1 - y1) ** 2
     root_term2 = (x2 - y2) ** 2
     return math.sqrt(root_term1 + root_term2)
+
+
+def create_min_circle_radius(last_point, point, next_point):
+    distance_last_present = abs_complex(last_point, point)
+    distance_present_next = abs_complex(point, next_point)
+    distance_present_unit = 1 - np.linalg.norm(point)
+    circle_radius = min(distance_present_next / 2.2, distance_last_present / 2.2, distance_present_unit / 1.5)
+    return circle_radius
+
+
+# for horodisks
+def moving_circle(start_angle, end_angle, center):
+    arc1 = Arc(start_angle=start_angle, angle=end_angle).move_arc_center_to(center)  # creates eighth of circle
+    arc2 = Arc(start_angle=start_angle, angle=end_angle, radius=0.25).move_arc_center_to(center)
+    arc3 = Arc(start_angle=start_angle, angle=end_angle, radius=0.5).move_arc_center_to(center)
+    arc4 = Arc(start_angle=start_angle, angle=end_angle, radius=0.75).move_arc_center_to(center)
+    return [arc1, arc2, arc3, arc4]
+
+
+# for horodisks
+def moving_line(start_points, end_points):
+    line1 = Line(start=start_points[0], end=end_points[0])
+    line2 = Line(start=start_points[1], end=end_points[1])
+    line3 = Line(start=start_points[2], end=end_points[2])
+    line4 = Line(start=start_points[3], end=end_points[3])
+    return [line1, line2, line3, line4]
