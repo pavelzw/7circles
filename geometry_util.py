@@ -78,11 +78,11 @@ def get_intersections_of_circles_with_unit_circle(circles: [Circle]):
     return intersections
 
 
-def radian_to_point(angle, radius=1):
+def polar_to_point(angle, radius=1):
     return np.array((radius * np.cos(angle), radius * np.sin(angle), 0))
 
 
-def point_to_radian(point):
+def point_to_polar(point):
     angle = np.arctan2(point[1], point[0])
     if angle < 0:
         angle += 2 * math.pi
@@ -114,7 +114,7 @@ def get_intersection(p1, p2, p3, p4):
 
 
 def get_intersection_from_angles(phi1, phi2, phi3, phi4):
-    return get_intersection(radian_to_point(phi1), radian_to_point(phi2), radian_to_point(phi3), radian_to_point(phi4))
+    return get_intersection(polar_to_point(phi1), polar_to_point(phi2), polar_to_point(phi3), polar_to_point(phi4))
 
 
 def get_intersection_line_unit_circle(start_point, direction):

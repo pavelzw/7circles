@@ -3,8 +3,8 @@ from abc import ABC
 import numpy as np
 from manim import Dot, VGroup, WHITE
 
-from geometry_util import radian_to_point, \
-    point_to_radian
+from geometry_util import polar_to_point, \
+    point_to_polar
 from hexagon import HyperbolicArcBetweenPoints
 
 
@@ -13,7 +13,7 @@ class HyperbolicPolygon(VGroup, ABC):
     def from_polar(cls, phis, radii=None, **kwargs):
         if radii is None:
             radii = [1] * len(phis)
-        return cls([radian_to_point(arc, radius=radius) for arc, radius in zip(phis, radii)], **kwargs)
+        return cls([polar_to_point(arc, radius=radius) for arc, radius in zip(phis, radii)], **kwargs)
 
     def __init__(self, points: 'list[np.ndarray]', colors: 'list[str]' = None, add_dots=True, dot_radius=.04, **kwargs):
         super(HyperbolicPolygon, self).__init__()
@@ -41,4 +41,4 @@ class HyperbolicPolygon(VGroup, ABC):
 
     @property
     def phis(self):
-        return [point_to_radian(point)[0] for point in self.polygon_points]
+        return [point_to_polar(point)[0] for point in self.polygon_points]

@@ -5,7 +5,7 @@ from manim import Scene, Circle, Dot, Create, FadeIn, Line, \
     Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
-from geometry_util import radian_to_point, mobius_transform, \
+from geometry_util import polar_to_point, mobius_transform, \
     tf_klein_to_poincare, get_intersections_of_n_tangent_circles, get_intersections_of_circles_with_unit_circle, \
     get_intersection_from_angles
 from hexagon import HexagonCircles, HexagonMainDiagonals, HyperbolicArcBetweenPoints
@@ -19,7 +19,7 @@ class CircleWithArcs(Scene):
         self.play(Create(circle))
 
         phis = np.sort(np.random.uniform(0, 2 * pi, 6))
-        dot = Dot(radian_to_point(phis[0]), color=RED)
+        dot = Dot(polar_to_point(phis[0]), color=RED)
         self.add_foreground_mobject(dot)
         self.play(Create(dot))
 
@@ -27,7 +27,7 @@ class CircleWithArcs(Scene):
         for i in range(phis.shape[0]):
             phi1 = phis[i]
             phi2 = phis[(i + 1) % 6]
-            point = radian_to_point(phi2)
+            point = polar_to_point(phi2)
             if i < phis.shape[0] - 1:
                 dot = Dot(point, color=RED)
                 self.add_foreground_mobject(dot)
@@ -66,8 +66,8 @@ class LineTransform(Scene):
         phis_b = []
         lines = []
         for i in np.arange(0, 3, 1):
-            phis_a.append(radian_to_point(i))
-            phis_b.append(radian_to_point(i + 3))
+            phis_a.append(polar_to_point(i))
+            phis_b.append(polar_to_point(i + 3))
 
         for p in phis_a:
             for q in phis_b:

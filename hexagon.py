@@ -4,10 +4,10 @@ from math import pi
 import numpy as np
 from manim import Group, BLUE, Circle, WHITE, ArcBetweenPoints, VMobject, VGroup
 
-from geometry_util import radian_to_point, get_intersection, get_intersection_line_unit_circle, \
+from geometry_util import polar_to_point, get_intersection, get_intersection_line_unit_circle, \
     get_intersection_not_on_circle_of_two_tangent_circles, get_circle_middle, \
     get_intersection_in_unit_circle_of_two_tangent_circles, tf_poincare_to_klein, \
-    get_both_intersections_line_with_unit_circle, point_to_radian
+    get_both_intersections_line_with_unit_circle, point_to_polar
 
 
 class HexagonAngles(np.ndarray, ABC):
@@ -32,14 +32,14 @@ class IntersectingHexagonAngles(HexagonAngles):
     @staticmethod
     def get_last_phi(phis: np.ndarray):
         assert phis.shape == (5,)
-        p0 = radian_to_point(phis[0])
-        p1 = radian_to_point(phis[1])
-        p2 = radian_to_point(phis[2])
-        p3 = radian_to_point(phis[3])
-        p4 = radian_to_point(phis[4])
+        p0 = polar_to_point(phis[0])
+        p1 = polar_to_point(phis[1])
+        p2 = polar_to_point(phis[2])
+        p3 = polar_to_point(phis[3])
+        p4 = polar_to_point(phis[4])
         intersection = get_intersection(p0, p3, p1, p4)
         point_on_circle = get_intersection_line_unit_circle(p2, intersection - p2)
-        phi = point_to_radian(point_on_circle)[0]
+        phi = point_to_polar(point_on_circle)[0]
         return phi
 
 
@@ -58,7 +58,7 @@ class HexagonCircles(VMobject, Group, ABC):
         super().__init__(**kwargs)
         assert len(hexagon.polygon_points) == 6
         phis = hexagon.phis
-        p0 = radian_to_point(phis[0])
+        p0 = polar_to_point(phis[0])
         first_circle_center = p0 * (1 - first_circle_radius)
         first_circle = Circle(radius=first_circle_radius, color=color).move_to(first_circle_center)
         self.add(first_circle)
@@ -78,13 +78,13 @@ class HexagonCircles(VMobject, Group, ABC):
                                                                              arc.radius)
 
         assert intersection is not None
-        middle_between_phi_new_and_intersection = (intersection + radian_to_point(phi_new)) / 2
-        direction = intersection - radian_to_point(phi_new)
+        middle_between_phi_new_and_intersection = (intersection + polar_to_point(phi_new)) / 2
+        direction = intersection - polar_to_point(phi_new)
         orthogonal_direction = np.array([-direction[1], direction[0], 0])
-        center_of_circle = get_intersection(radian_to_point(phi_new), np.array([0, 0, 0]),
+        center_of_circle = get_intersection(polar_to_point(phi_new), np.array([0, 0, 0]),
                                             middle_between_phi_new_and_intersection,
                                             orthogonal_direction + middle_between_phi_new_and_intersection)
-        return center_of_circle, np.linalg.norm(center_of_circle - radian_to_point(phi_new))
+        return center_of_circle, np.linalg.norm(center_of_circle - polar_to_point(phi_new))
 
 
 class HexagonMainDiagonals(VGroup, ABC):
@@ -126,7 +126,7 @@ class HyperbolicArcBetweenPoints(ArcBetweenPoints, ABC):
 
     @classmethod
     def from_angles(cls, phi1, phi2, **kwargs):
-        return cls(radian_to_point(phi1), radian_to_point(phi2), **kwargs)
+        return cls(polar_to_point(phi1), polar_to_point(phi2), **kwargs)
 
     def __init__(self, p1: np.ndarray, p2: np.ndarray, arcs_meeting_circle=False, **kwargs):
         klein_point1 = tf_poincare_to_klein(p1)  # transform points from poincare to klein model
@@ -140,8 +140,8 @@ class HyperbolicArcBetweenPoints(ArcBetweenPoints, ABC):
             intersection2 = tmp
 
         # get polar coordinates of intersections
-        phi1, _ = point_to_radian(intersection1)
-        phi2, _ = point_to_radian(intersection2)
+        phi1, _ = point_to_polar(intersection1)
+        phi2, _ = point_to_polar(intersection2)
 
         if phi1 < 0:  # for assertion phi >= 0
             phi1 += 2 * pi
@@ -157,16 +157,16 @@ class HyperbolicArcBetweenPoints(ArcBetweenPoints, ABC):
             diff += 2 * pi
         if diff < pi:
             if arcs_meeting_circle:
-                super(HyperbolicArcBetweenPoints, self).__init__(radian_to_point(phi2),
-                                                                 radian_to_point(phi1),
+                super(HyperbolicArcBetweenPoints, self).__init__(polar_to_point(phi2),
+                                                                 polar_to_point(phi1),
                                                                  radius=radius, **kwargs)
             else:
                 super(HyperbolicArcBetweenPoints, self).__init__(p2, p1, radius=radius, **kwargs)
             self.reverse_direction()
         else:
             if arcs_meeting_circle:
-                super(HyperbolicArcBetweenPoints, self).__init__(radian_to_point(phi1),
-                                                                 radian_to_point(phi2),
+                super(HyperbolicArcBetweenPoints, self).__init__(polar_to_point(phi1),
+                                                                 polar_to_point(phi2),
                                                                  radius=radius, **kwargs)
             else:
                 super(HyperbolicArcBetweenPoints, self).__init__(p1, p2, radius=radius, **kwargs)

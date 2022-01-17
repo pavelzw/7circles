@@ -5,7 +5,7 @@ from manim import Scene, Square, Circle, Dot, Group, Text, Create, FadeIn, FadeO
     GREEN_B, Transform, MovingCameraScene, Uncreate, \
     VGroup, DecimalNumber, RIGHT, Tex, LEFT, UP
 
-from geometry_util import radian_to_point, hyperbolic_distance_function, create_min_circle_radius, moving_circle, \
+from geometry_util import polar_to_point, hyperbolic_distance_function, create_min_circle_radius, moving_circle, \
     moving_line
 
 from hexagon_util import create_phis, create_radius_transition
@@ -105,8 +105,8 @@ class NonIdealHexagonAnimation(Scene):
         self.wait(2)
 
         # try of hyperbolic distance, works alright. convergent to infinity?
-        point1 = radian_to_point(0, 0.9)
-        point2 = radian_to_point(pi / 4, 0.9)
+        point1 = polar_to_point(0, 0.9)
+        point2 = polar_to_point(pi / 4, 0.9)
         self.add(Dot([point1]), Dot([point2]))
         distance = hyperbolic_distance_function(point1, point2)
         print(distance)
@@ -132,7 +132,7 @@ class HexagonWithSixDisks(Scene):
         self.add(circle)
 
         for k in range(2, 6):  # from 2 to 5
-            next_point = radian_to_point(phis[k], radius[k])
+            next_point = polar_to_point(phis[k], radius[k])
 
             circle_radius = create_min_circle_radius(last_point, point, next_point)
             circle = Circle(arc_center=point, radius=circle_radius, color=GREEN_B, fill_opacity=0.5)
@@ -211,7 +211,7 @@ class TransformingHexagonWithDisks(MovingCameraScene):
         disks_group = VGroup()  # treating disks as a group
         disks_group.add(circle)
         for k in range(2, 6):  # from 2 to 5
-            next_point = radian_to_point(phis[k], radius[k])
+            next_point = polar_to_point(phis[k], radius[k])
             circle_radius[k - 1] = create_min_circle_radius(last_point, point, next_point)
             circle = Circle(arc_center=point, radius=circle_radius[k - 1], color=GREEN_B, fill_opacity=0.5)
             last_point = point
@@ -245,7 +245,7 @@ class TransformingHexagonWithDisks(MovingCameraScene):
             self.add(s_1)
             for i in range(0, 6):
                 new_disk_group.add(
-                    Circle(radius=circle_radius[i], arc_center=radian_to_point(phis[i], disk_transition[t][i]),
+                    Circle(radius=circle_radius[i], arc_center=polar_to_point(phis[i], disk_transition[t][i]),
                            color=GREEN_B, fill_opacity=0.5))
             self.play(Transform(hexagon, hexagon_new), Transform(disks_group, new_disk_group), run_time=0.05,
                       rate_func=lambda a: a)

@@ -3,7 +3,7 @@ import math
 import numpy as np
 from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut, WHITE
 
-from geometry_util import radian_to_point
+from geometry_util import polar_to_point
 from hexagon import HexagonMainDiagonals, IntersectionTriangle, HexagonAngles, HyperbolicTriangle
 from hyperbolic_polygon import HyperbolicPolygon
 
@@ -74,9 +74,9 @@ class Scene2(MovingCameraScene):
         self.play(Create(circle))
 
         phis = np.random.uniform(0, 2 * math.pi, 3)
-        p1 = radian_to_point(phis[0])
-        p2 = radian_to_point(phis[1])
-        p3 = radian_to_point(phis[2]) * np.random.uniform(0.3, .7)
+        p1 = polar_to_point(phis[0])
+        p2 = polar_to_point(phis[1])
+        p3 = polar_to_point(phis[2]) * np.random.uniform(0.3, .7)
         print(p1, p2, p3)
 
         # p1 = np.array([.2, 0.4, 0])

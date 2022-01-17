@@ -4,7 +4,7 @@ from math import pi
 from manim import *
 
 from hexagon import Hexagon
-from hyperbolic_polygon import HexagonAngles, radian_to_point
+from hyperbolic_polygon import HexagonAngles, polar_to_point
 
 
 class EuclideanHexagon(Hexagon, Group, ABC):
@@ -39,8 +39,8 @@ class LineBetweenPointsOnUnitDisk(Line, ABC):
             phi1 = tmp
         assert phi1 < phi2
 
-        point1 = radian_to_point(phi1)
-        point2 = radian_to_point(phi2)
+        point1 = polar_to_point(phi1)
+        point2 = polar_to_point(phi2)
 
         if phi2 - phi1 < pi:
             super().__init__(start=point2, end=point1, color=color)
