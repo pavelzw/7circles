@@ -35,7 +35,7 @@ class CircleWithArcs(Scene):
                 self.add_foreground_mobject(dot)
                 self.play(Create(dot))
             # bug: if two adjacent points have distance > pi, then the direction needs to be flipped
-            arc = HyperbolicArcBetweenPoints.from_angles(phi1, phi2).reverse_direction()
+            arc = HyperbolicArcBetweenPoints.from_angles(phi1, phi2)
             self.play(Create(arc))
 
         self.wait(duration=5)

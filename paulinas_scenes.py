@@ -158,8 +158,8 @@ class TransformingNonIdealIntoIdeal(Scene):
         hexagon = NonIdealHexagon(transition[0], phis)
         self.add(hexagon)
 
-        point1_text = Text('P1', font_size=20)  # ToDo. tex
-        point2_text = Text('P2', font_size=20)
+        point1_text = Tex('$P_1$', font_size=30)
+        point2_text = Tex('$P_2$', font_size=30)
         distance_text, distance_number = label = VGroup(
             Tex(r'$\mathrm{dist}(P_1, P_2)=$', font_size=35),
             DecimalNumber(np.exp(hyperbolic_distance_function(hexagon.hexagon_points[0], hexagon.hexagon_points[1])),
