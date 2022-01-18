@@ -1,5 +1,6 @@
 from abc import ABC
 from math import pi
+from typing import Union
 
 import numpy as np
 from manim import Dot, VGroup, WHITE, ArcBetweenPoints
@@ -69,7 +70,8 @@ class HyperbolicPolygon(VGroup, ABC):
             radii = [1] * len(phis)
         return cls([polar_to_point(arc, radius=radius) for arc, radius in zip(phis, radii)], **kwargs)
 
-    def __init__(self, points: 'list[np.ndarray]', color: 'list[str]' = None, add_dots=True, dot_radius=.04, **kwargs):
+    def __init__(self, points: 'list[np.ndarray]', color: Union['list[str]', str] = None, add_dots=True, dot_radius=.04,
+                 **kwargs):
         super(HyperbolicPolygon, self).__init__()
 
         n = len(points)
