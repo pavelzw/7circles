@@ -52,7 +52,7 @@ def get_intersection_not_on_circle_of_two_tangent_circles(c0: np.array, r0: floa
 
 def get_intersection_in_unit_circle_of_two_tangent_circles(c0: np.array, r0: float, c1: np.array, r1: float):
     intersection1, intersection2 = get_both_intersection_of_two_tangent_circles(c0, r0, c1, r1)
-    if np.linalg.norm(intersection1) < 1:
+    if np.linalg.norm(intersection1) < 1 - .01:
         return intersection1
     return intersection2
 

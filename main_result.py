@@ -1,7 +1,7 @@
 from tkinter import CENTER
 
 from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut, WHITE, FadeIn, YELLOW, GREEN, Uncreate, \
-    UP, RED, VGroup, LEFT, DOWN, Dot, RIGHT, TransformFromCopy
+    UP, RED, VGroup, LEFT, DOWN, Dot, RIGHT, TransformFromCopy, Transform
 from pyglet.window.mouse import MIDDLE
 
 from geometry_util import polar_to_point, get_intersection_in_unit_circle_of_two_tangent_circles
@@ -167,6 +167,7 @@ class Scene3(MovingCameraScene):
         circle2_center = (1 - circle2_radius) * p2
         circle1 = Circle(radius=circle1_radius, color=GREEN, fill_opacity=.5).move_to(circle1_center)
         circle2 = Circle(radius=circle2_radius, color=GREEN, fill_opacity=.5).move_to(circle2_center)
+        self.add_foreground_mobjects(circle1, circle2)
         self.play(Create(circle1), Create(circle2),
                   subcaption="Wenn wir disjunkte Horodisks von den beiden idealen Knoten des Dreiecks entfernen, ")
 
@@ -199,12 +200,12 @@ class Scene3(MovingCameraScene):
 
         # können wir uns die Größe A(V) definieren.
 
-        formula0, formula1, plus1, formula2, plus2, formula3 = formula = VGroup(Tex("$A(V) = $", font_size=15),
-                                                                                Tex("$L_1'$", color=BLUE, font_size=15),
-                                                                                Tex("$+$", font_size=15),
-                                                                                Tex("$L_2'$", color=BLUE, font_size=15),
-                                                                                Tex("$+$", font_size=15),
-                                                                                Tex("$L_3'$", color=RED, font_size=15))
+        formula0, formula1, plus, formula2, minus, formula3 = formula = VGroup(Tex("$A(V) = $", font_size=15),
+                                                                               Tex("$L_1'$", color=BLUE, font_size=15),
+                                                                               Tex("$+$", font_size=15),
+                                                                               Tex("$L_2'$", color=BLUE, font_size=15),
+                                                                               Tex("$-$", font_size=15),
+                                                                               Tex("$L_3'$", color=RED, font_size=15))
         # todo align by center in VGroup?
         formula.move_to([0, -1.4, 0])
         formula.arrange(buff=.05, center=False)
@@ -213,12 +214,49 @@ class Scene3(MovingCameraScene):
                             duration=4)
         self.play(Write(formula0))
         self.play(TransformFromCopy(l1_prime_label, formula1))
-        self.play(Write(plus1), TransformFromCopy(l2_prime_label, formula2))
-        self.play(Write(plus2), TransformFromCopy(l3_prime_label, formula3))
+        self.play(Write(plus), TransformFromCopy(l2_prime_label, formula2))
+        self.play(Write(minus), TransformFromCopy(l3_prime_label, formula3))
 
         # todo insert alternating perimeter image?
 
         # todo diese hängt nicht mehr davon ab, wie wir diese Kreise wählen, da wir jeweils dieselbe Strecke
         #      dazuaddieren und abziehen -> animiere circles größer werdend, arcs verändernd
 
+        # change small circle radius
+        step_size_one_direction = 10
+        # forward and back
+        circle1_radii_transition = [circle1_radius * (
+                1 - t / step_size_one_direction) + .1 * t / step_size_one_direction for t in
+                                    range(step_size_one_direction)] + [
+                                       circle1_radius * t / step_size_one_direction + .1 * (
+                                               1 - t / step_size_one_direction) for t
+                                       in range(step_size_one_direction + 1)]
+        print(circle1_radii_transition)
+        num_steps = 2 * step_size_one_direction + 1
+
+        self.add_subcaption("A(V) hängt auch nicht von der Größe der einzelnen Kreise ab, da jeweils das gleiche "
+                            "dazuaddiert wird, was auch abgezogen wird.", duration=3)
+        for t in range(num_steps):
+            radius = circle1_radii_transition[t]
+            center = triangle.polygon_points[0] * (1 - radius)
+            new_circle = Circle(radius, color=GREEN, fill_opacity=.5) \
+                .move_to(center)
+
+            # L3'
+            arc = triangle.arcs[0]
+            intersection1 = get_intersection_in_unit_circle_of_two_tangent_circles(center, radius,
+                                                                                   arc.circle_center, arc.radius)
+            intersection2 = get_intersection_in_unit_circle_of_two_tangent_circles(circle2_center, circle2_radius,
+                                                                                   arc.circle_center, arc.radius)
+            new_l3_prime = HyperbolicArcBetweenPoints(intersection1, intersection2, color=RED)
+
+            # L2'
+            arc = triangle.arcs[2]
+            intersection = get_intersection_in_unit_circle_of_two_tangent_circles(center, radius,
+                                                                                  arc.circle_center, arc.radius)
+            new_l2_prime = HyperbolicArcBetweenPoints(intersection, triangle.polygon_points[2], color=BLUE)
+
+            # total runtime 2 seconds
+            self.play(Transform(circle1, new_circle), Transform(l2_prime, new_l2_prime),
+                      Transform(l3_prime, new_l3_prime), rate_func=lambda a: a, run_time=3 / num_steps)
         self.wait(5)
