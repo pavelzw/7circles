@@ -1,8 +1,5 @@
-from tkinter import CENTER
-
 from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut, WHITE, FadeIn, YELLOW, GREEN, Uncreate, \
-    UP, RED, VGroup, LEFT, DOWN, Dot, RIGHT, TransformFromCopy, Transform
-from pyglet.window.mouse import MIDDLE
+    UP, RED, VGroup, LEFT, DOWN, Dot, RIGHT, TransformFromCopy, Transform, Flash, MathTex
 
 from geometry_util import polar_to_point, get_intersection_in_unit_circle_of_two_tangent_circles
 from hexagon import HexagonMainDiagonals, IntersectionTriangle
@@ -15,7 +12,8 @@ class Scene1(MovingCameraScene):
         timings = [5,  # hexagon
                    6,  # diagonals
                    2,  # triangle
-                   10,  # wait
+                   5,  # wait
+                   6,  # colored_hexagon
                    10,  # proposition
                    5,  # wait
                    ]
@@ -31,33 +29,46 @@ class Scene1(MovingCameraScene):
         phis = [1.80224806, 2.30601184, 2.77326535, 3.20993453, 4.48582486, 6.15595698]
         print(f'Phis = {phis}')
         hexagon = HyperbolicPolygon.from_polar(phis, add_dots=False, stroke_width=2)
+        hexagon_label = MathTex('P', font_size=15).move_to([-.05, .8, 0])
         print(hexagon.phis)
         diagonals = HexagonMainDiagonals(hexagon, stroke_width=2)
 
         self.play(Create(hexagon),
                   run_time=timings.pop(),
                   subcaption="Betrachten wir nun einmal ein ideales Hexagon.")
+        self.play(Write(hexagon_label))
         self.play(Create(diagonals),
                   run_time=timings.pop(),
                   subcaption="Wenn wir bei diesem Hexagon nun die "
                              "gegenüberliegenden Seiten verbinden, sehen wir,")
 
-        triangle = IntersectionTriangle(diagonals, color=BLUE, add_dots=False, stroke_width=2)
-        self.play(Create(triangle),
+        triangle = IntersectionTriangle(diagonals, color=GREEN, add_dots=False, stroke_width=2)
+        triangle_label = MathTex('T_P', color=GREEN, font_size=15).move_to([-.2, .25, 0])
+        self.play(Create(triangle), Write(triangle_label),
                   run_time=timings.pop(),
                   subcaption="dass ein Dreieck in der Mitte entsteht.")
+        self.play(Flash(triangle, color=GREEN, line_stroke_width=2))
 
         self.wait(timings.pop())
 
-        self.play(FadeOut(circle, triangle, hexagon, diagonals))
+        self.play(self.camera.frame.animate.set(width=4).move_to([.8, 0, 0]))
 
-        self.clear()
-        proposition = Tex(r'Für jedes ideale Hexagon $P$ ist der '
-                          r'alternierende Umfang \\ bis auf das Vorzeichen '
-                          r'genau zweimal der Umfang \\ von dem Dreieck $T_P$, '
-                          r'das durch die geodätischen Diagonalen \\ aufgespannt wird.', font_size=20)
-        self.play(Write(proposition,
-                        run_time=timings.pop(), stroke_width=.5))
+        hexagon_colored = HyperbolicPolygon.from_polar(phis, color=[RED, BLUE, RED, BLUE, RED, BLUE],
+                                                       add_dots=False, stroke_width=2)
+        self.add_subcaption("Wir zeigen nun den folgenden Satz: Für jedes ideale Hexagon gilt, dass der "
+                            "alternierende Umfang bis auf das Vorzeichen genau zweimal dem Umfang von "
+                            "dem Dreieck T_P entspricht", duration=10)
+        self.play(Create(hexagon_colored), run_time=timings.pop())
+        self.remove(hexagon)
+
+        proposition = Tex(r'Für jedes ideale Hexagon $P$ gilt:', font_size=11).move_to([1.9, .1, 0])
+        formula = altper, equal, per = VGroup(MathTex(r'\mathrm{altPer}(P)', font_size=11),
+                                              MathTex(r'= \pm 2 \cdot ', font_size=11),
+                                              MathTex(r'\mathrm{Per}(T_P)', font_size=11)).arrange(buff=.05)
+        formula.next_to(proposition, .5 * DOWN)
+        self.play(Write(proposition))
+        self.play(TransformFromCopy(VGroup(*hexagon_colored.arcs), altper))
+        self.play(Write(equal), TransformFromCopy(triangle, per))
 
         self.wait(timings.pop())
 
@@ -218,9 +229,6 @@ class Scene3(MovingCameraScene):
         self.play(Write(minus), TransformFromCopy(l3_prime_label, formula3))
 
         # todo insert alternating perimeter image?
-
-        # todo diese hängt nicht mehr davon ab, wie wir diese Kreise wählen, da wir jeweils dieselbe Strecke
-        #      dazuaddieren und abziehen -> animiere circles größer werdend, arcs verändernd
 
         # change small circle radius
         step_size_one_direction = 10
