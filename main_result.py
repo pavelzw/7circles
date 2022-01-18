@@ -1,8 +1,12 @@
-from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut, WHITE, FadeIn, YELLOW, GREEN
+from tkinter import CENTER
+
+from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut, WHITE, FadeIn, YELLOW, GREEN, Uncreate, \
+    UP, RED, VGroup, LEFT, DOWN, Dot, RIGHT, TransformFromCopy
+from pyglet.window.mouse import MIDDLE
 
 from geometry_util import polar_to_point, get_intersection_in_unit_circle_of_two_tangent_circles
 from hexagon import HexagonMainDiagonals, IntersectionTriangle
-from hyperbolic_polygon import HyperbolicPolygon
+from hyperbolic_polygon import HyperbolicPolygon, HyperbolicArcBetweenPoints
 
 
 class Scene1(MovingCameraScene):
@@ -134,5 +138,87 @@ class Scene2(MovingCameraScene):
         self.play(FadeOut(g1), FadeIn(g2), Write(g2_label), subcaption="G2 ")
         self.play(FadeOut(g2), FadeIn(g3), Write(g3_label), subcaption="sowie G3.")
         self.play(FadeOut(g3))
+
+        self.wait(5)
+
+
+class Scene3(MovingCameraScene):
+    def construct(self):
+        self.camera.frame.width = 6
+        timings = []
+        # timings = [.1, .1, .1, .1, .1, 10]
+        timings.reverse()
+
+        circle = Circle()
+        self.add_foreground_mobject(circle)
+        self.add(circle)
+
+        p1 = polar_to_point(.2)
+        p2 = polar_to_point(2.1)
+        p3 = polar_to_point(5) * 0.3
+        print(p1, p2, p3)
+        triangle = HyperbolicPolygon([p1, p2, p3], add_dots=False)
+        self.play(Create(triangle), subcaption="Wir definieren uns eine ähnliche Größe wie den alternierenden Umfang "
+                                               "für hyperbolische Dreiecke.")
+
+        circle1_radius = .2
+        circle1_center = (1 - circle1_radius) * p1
+        circle2_radius = .15
+        circle2_center = (1 - circle2_radius) * p2
+        circle1 = Circle(radius=circle1_radius, color=GREEN, fill_opacity=.5).move_to(circle1_center)
+        circle2 = Circle(radius=circle2_radius, color=GREEN, fill_opacity=.5).move_to(circle2_center)
+        self.play(Create(circle1), Create(circle2),
+                  subcaption="Wenn wir disjunkte Horodisks von den beiden idealen Knoten des Dreiecks entfernen, ")
+
+        # L1'
+        arc = triangle.arcs[1]
+        intersection = get_intersection_in_unit_circle_of_two_tangent_circles(circle2_center, circle2_radius,
+                                                                              arc.circle_center, arc.radius)
+        l1_prime = HyperbolicArcBetweenPoints(intersection, triangle.polygon_points[2], color=BLUE)
+        l1_prime_label = Tex("$L_1'$", color=BLUE, font_size=20).move_to([-.3, .1, 0])
+        self.play(Create(l1_prime), Write(l1_prime_label), subcaption="erhalten wir die Längen L_1',")
+
+        # L2'
+        arc = triangle.arcs[2]
+        intersection = get_intersection_in_unit_circle_of_two_tangent_circles(circle1_center, circle1_radius,
+                                                                              arc.circle_center, arc.radius)
+        l2_prime = HyperbolicArcBetweenPoints(intersection, triangle.polygon_points[2], color=BLUE)
+        l2_prime_label = Tex("$L_2'$", color=BLUE, font_size=20).move_to([.4, -.25, 0])
+        self.play(Create(l2_prime), Write(l2_prime_label), subcaption="L_2'")
+
+        # L3' is on the connection between the ideal points
+        arc = triangle.arcs[0]
+        intersection1 = get_intersection_in_unit_circle_of_two_tangent_circles(circle1_center, circle1_radius,
+                                                                               arc.circle_center, arc.radius)
+        intersection2 = get_intersection_in_unit_circle_of_two_tangent_circles(circle2_center, circle2_radius,
+                                                                               arc.circle_center, arc.radius)
+        l3_prime = HyperbolicArcBetweenPoints(intersection1, intersection2, color=RED)
+        l3_prime_label = Tex("$L_3'$", color=RED, font_size=20).move_to([.2, .55, 0])
+        self.play(Create(l3_prime), Write(l3_prime_label),
+                  subcaption="Und L_3' als Verbindung zwischen den idealen Punkten.")
+
+        # können wir uns die Größe A(V) definieren.
+
+        formula0, formula1, plus1, formula2, plus2, formula3 = formula = VGroup(Tex("$A(V) = $", font_size=15),
+                                                                                Tex("$L_1'$", color=BLUE, font_size=15),
+                                                                                Tex("$+$", font_size=15),
+                                                                                Tex("$L_2'$", color=BLUE, font_size=15),
+                                                                                Tex("$+$", font_size=15),
+                                                                                Tex("$L_3'$", color=RED, font_size=15))
+        # todo align by center in VGroup?
+        formula.move_to([0, -1.4, 0])
+        formula.arrange(buff=.05, center=False)
+        self.add_subcaption("Jetzt können wir uns den alternierenden Umfang eines semiidealen Dreiecks definieren, "
+                            "indem wir die beiden blauen Längen aufeinander addieren und die rote abziehen.",
+                            duration=4)
+        self.play(Write(formula0))
+        self.play(TransformFromCopy(l1_prime_label, formula1))
+        self.play(Write(plus1), TransformFromCopy(l2_prime_label, formula2))
+        self.play(Write(plus2), TransformFromCopy(l3_prime_label, formula3))
+
+        # todo insert alternating perimeter image?
+
+        # todo diese hängt nicht mehr davon ab, wie wir diese Kreise wählen, da wir jeweils dieselbe Strecke
+        #      dazuaddieren und abziehen -> animiere circles größer werdend, arcs verändernd
 
         self.wait(5)

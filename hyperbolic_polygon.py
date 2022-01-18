@@ -80,28 +80,40 @@ class HyperbolicPolygon(VGroup, ABC):
         if color is None:
             color = [WHITE] * n
         assert len(color) == n
-        self.arcs = [HyperbolicArcBetweenPoints(points[i], points[(i + 1) % n], color=color[i], **kwargs)
-                     for i in range(n)]
+        self._arcs = [HyperbolicArcBetweenPoints(points[i], points[(i + 1) % n], color=color[i], **kwargs)
+                      for i in range(n)]
 
-        self.dots = []
+        self._dots = []
 
         if add_dots:
-            self.dots.append(Dot(points[0], radius=dot_radius))
-            self.add(self.dots[-1])
+            self._dots.append(Dot(points[0], radius=dot_radius))
+            self.add(self._dots[-1])
         for i in range(n):
             if add_dots and i < n - 1:
-                self.dots.append(Dot(points[i + 1], radius=dot_radius))
-                self.add(self.dots[-1])
+                self._dots.append(Dot(points[i + 1], radius=dot_radius))
+                self.add(self._dots[-1])
             self.add(self.arcs[i])
 
-        self.polygon_points = points
+        self._polygon_points = points
 
     @property
-    def phis(self):
+    def dots(self) -> 'list[Dot]':
+        return self._dots
+
+    @property
+    def arcs(self) -> 'list[HyperbolicArcBetweenPoints]':
+        return self._arcs
+    
+    @property
+    def polygon_points(self) -> 'list[np.ndarray]':
+        return self._polygon_points
+
+    @property
+    def phis(self) -> 'list[float]':
         return [point_to_polar(point)[0] for point in self.polygon_points]
 
     @property
-    def radii(self):
+    def radii(self) -> 'list[float]':
         return [point_to_polar(point)[1] for point in self.polygon_points]
 
     def __len__(self):
