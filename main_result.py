@@ -1,5 +1,5 @@
 from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut, WHITE, FadeIn, YELLOW, GREEN, Uncreate, \
-    UP, RED, VGroup, LEFT, DOWN, Dot, RIGHT, TransformFromCopy, Transform, Flash, MathTex
+    UP, RED, VGroup, LEFT, DOWN, Dot, RIGHT, TransformFromCopy, Transform, Flash, MathTex, ReplacementTransform
 
 from geometry_util import polar_to_point, get_intersection_in_unit_circle_of_two_tangent_circles
 from hexagon import HexagonMainDiagonals, IntersectionTriangle
@@ -73,6 +73,32 @@ class Scene1(MovingCameraScene):
         self.wait(timings.pop())
 
 
+def get_y_g_triangles(hexagon: HyperbolicPolygon, diagonals: HexagonMainDiagonals):
+    c1, r1 = diagonals.arc1.circle_center, diagonals.arc1.radius
+    c2, r2 = diagonals.arc2.circle_center, diagonals.arc2.radius
+    c3, r3 = diagonals.arc3.circle_center, diagonals.arc3.radius
+    intersection1 = get_intersection_in_unit_circle_of_two_tangent_circles(c2, r2, c3, r3)
+    intersection2 = get_intersection_in_unit_circle_of_two_tangent_circles(c1, r1, c3, r3)
+    intersection3 = get_intersection_in_unit_circle_of_two_tangent_circles(c1, r1, c2, r2)
+
+    # y triangles
+    y1 = HyperbolicPolygon([hexagon.polygon_points[5], hexagon.polygon_points[0], intersection2],
+                           add_dots=False, color=YELLOW)
+    y2 = HyperbolicPolygon([hexagon.polygon_points[1], hexagon.polygon_points[2], intersection1],
+                           add_dots=False, color=YELLOW)
+    y3 = HyperbolicPolygon([hexagon.polygon_points[3], hexagon.polygon_points[4], intersection3],
+                           add_dots=False, color=YELLOW)
+
+    # g triangles
+    g1 = HyperbolicPolygon([hexagon.polygon_points[2], hexagon.polygon_points[3], intersection2],
+                           add_dots=False, color=GREEN)
+    g2 = HyperbolicPolygon([hexagon.polygon_points[4], hexagon.polygon_points[5], intersection1],
+                           add_dots=False, color=GREEN)
+    g3 = HyperbolicPolygon([hexagon.polygon_points[0], hexagon.polygon_points[1], intersection3],
+                           add_dots=False, color=GREEN)
+    return y1, y2, y3, g1, g2, g3
+
+
 class Scene2(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 6
@@ -109,38 +135,18 @@ class Scene2(MovingCameraScene):
         self.play(FadeIn(hexagon, diagonals), self.camera.frame.animate.set(width=4),
                   subcaption="In unserem idealen Sechseck gibt es drei semiideale Dreiecke")
 
-        c1, r1 = diagonals.arc1.circle_center, diagonals.arc1.radius
-        c2, r2 = diagonals.arc2.circle_center, diagonals.arc2.radius
-        c3, r3 = diagonals.arc3.circle_center, diagonals.arc3.radius
-        intersection1 = get_intersection_in_unit_circle_of_two_tangent_circles(c2, r2, c3, r3)
-        intersection2 = get_intersection_in_unit_circle_of_two_tangent_circles(c1, r1, c3, r3)
-        intersection3 = get_intersection_in_unit_circle_of_two_tangent_circles(c1, r1, c2, r2)
-
-        # y triangles
-        y1 = HyperbolicPolygon([hexagon.polygon_points[5], hexagon.polygon_points[0], intersection2],
-                               add_dots=False, color=YELLOW)
-        y2 = HyperbolicPolygon([hexagon.polygon_points[1], hexagon.polygon_points[2], intersection1],
-                               add_dots=False, color=YELLOW)
-        y3 = HyperbolicPolygon([hexagon.polygon_points[3], hexagon.polygon_points[4], intersection3],
-                               add_dots=False, color=YELLOW)
-        y1_label = Tex('$Y_1$', font_size=15).move_to([.5, 0, 0])
-        y2_label = Tex('$Y_2$', font_size=15).move_to([-.2, .55, 0])
-        y3_label = Tex('$Y_3$', font_size=15).move_to([-.35, -.25, 0])
+        y1, y2, y3, g1, g2, g3 = get_y_g_triangles(hexagon, diagonals)
+        y1_label = MathTex('Y_1', font_size=15).move_to([.5, 0, 0])
+        y2_label = MathTex('Y_2', font_size=15).move_to([-.2, .55, 0])
+        y3_label = MathTex('Y_3', font_size=15).move_to([-.35, -.25, 0])
+        g1_label = MathTex('G_1', font_size=15).move_to([-.3, .15, 0])
+        g2_label = MathTex('G_2', font_size=15).move_to([.1, -.2, 0])
+        g3_label = MathTex('G_3', font_size=15).move_to([.2, .25, 0])
         self.play(FadeIn(y1), Write(y1_label), subcaption="Y1, ")
         self.play(FadeOut(y1), FadeIn(y2), Write(y2_label), subcaption="Y2 ")
         self.play(FadeOut(y2), FadeIn(y3), Write(y3_label), subcaption="sowie Y3.")
         self.play(FadeOut(y3))
 
-        # g triangles
-        g1 = HyperbolicPolygon([hexagon.polygon_points[2], hexagon.polygon_points[3], intersection2],
-                               add_dots=False, color=GREEN)
-        g2 = HyperbolicPolygon([hexagon.polygon_points[4], hexagon.polygon_points[5], intersection1],
-                               add_dots=False, color=GREEN)
-        g3 = HyperbolicPolygon([hexagon.polygon_points[0], hexagon.polygon_points[1], intersection3],
-                               add_dots=False, color=GREEN)
-        g1_label = Tex('$G_1$', font_size=15).move_to([-.3, .15, 0])
-        g2_label = Tex('$G_2$', font_size=15).move_to([.1, -.2, 0])
-        g3_label = Tex('$G_3$', font_size=15).move_to([.2, .25, 0])
         self.add_subcaption("Auf den jeweils gegenüberliegenden Seiten gibt es "
                             "außerdem noch drei weitere semiideale Dreiecke, welche das innere Dreieck T_P schneiden.",
                             duration=3)
@@ -267,4 +273,52 @@ class Scene3(MovingCameraScene):
             # total runtime 2 seconds
             self.play(Transform(circle1, new_circle), Transform(l2_prime, new_l2_prime),
                       Transform(l3_prime, new_l3_prime), rate_func=lambda a: a, run_time=3 / num_steps)
+        self.wait(5)
+
+
+class Scene4(MovingCameraScene):
+    def construct(self):
+        self.camera.frame.width = 6
+        timings = []
+        # timings = [.1, .1, .1, .1, .1, 10]
+        timings.reverse()
+
+        circle = Circle()
+        self.add_foreground_mobject(circle)
+        self.add(circle)
+
+        phis = [.3, 1.6, 2.2, 3.4, 4.3, 5.9]
+        hexagon = HyperbolicPolygon.from_polar(phis, add_dots=False, stroke_width=2)
+        diagonals = HexagonMainDiagonals(hexagon, stroke_width=2)
+        self.add(hexagon, diagonals)
+
+        y1, y2, y3, g1, g2, g3 = get_y_g_triangles(hexagon, diagonals)
+        y1_label = MathTex('Y_1', font_size=15).move_to([.5, 0, 0])
+        y2_label = MathTex('Y_2', font_size=15).move_to([-.2, .55, 0])
+        y3_label = MathTex('Y_3', font_size=15).move_to([-.35, -.25, 0])
+        g1_label = MathTex('G_1', font_size=15).move_to([-.3, .15, 0])
+        g2_label = MathTex('G_2', font_size=15).move_to([.1, -.2, 0])
+        g3_label = MathTex('G_3', font_size=15).move_to([.2, .25, 0])
+        dot1 = Dot(y1.polygon_points[2], radius=.04)
+        dot2 = Dot(y2.polygon_points[2], radius=.04)
+        dot3 = Dot(y3.polygon_points[2], radius=.04)
+
+        self.add_subcaption("Die Dreiecke G_k und Y_k teilen sich jeweils genau einen Knoten "
+                            "für k = 1, 2, 3.", duration=4)
+        self.play(FadeIn(y1, g1, dot1))
+        self.play(Flash(dot1, line_stroke_width=1, line_length=.1, color=WHITE))
+        self.play(FadeOut(y1, g1, dot1), FadeIn(y2, g2, dot2))
+        self.play(Flash(dot2, line_stroke_width=1, line_length=.1, color=WHITE))
+        self.play(FadeOut(y2, g2, dot2), FadeIn(y3, g3, dot3))
+        self.play(Flash(dot3, line_stroke_width=1, line_length=.1, color=WHITE))
+        self.play(FadeOut(y3, g3, dot3))
+
+        self.add_subcaption("Es gibt jeweils eine Isometrie I_k, die die gegenüberliegende Dreiecke "
+                            "aufeinander abbildet. Also I_k(Y_k) = G_k.", duration=3)
+        self.play(FadeIn(y1))
+        self.play(ReplacementTransform(y1, g1))
+        self.play(FadeOut(g1))
+
+        # todo explain why the isometry is there
+
         self.wait(5)
