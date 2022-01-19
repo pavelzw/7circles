@@ -383,8 +383,8 @@ class Scene6(MovingCameraScene):
         intersecting_triangle2 = IntersectionTriangle(diagonals, color=PURPLE)
 
         formula = MathTex('0 &=', 'A(Y_1)', '+', 'A(Y_2)', '+', 'A(Y_3)', r'\\',
-                          '&-(', 'A(G_1)', '+', 'A(G_2)', '+', 'A(G_3))', font_size=17).move_to([1.25, .5, 0],
-                                                                                                aligned_edge=LEFT)
+                          '&-(', 'A(G_1)', '+', 'A(G_2)', '+', 'A(G_3)', ')', font_size=17).move_to([1.25, .5, 0],
+                                                                                                    aligned_edge=LEFT)
 
         self.add(formula)
 
