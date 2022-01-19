@@ -218,24 +218,21 @@ class Scene3(MovingCameraScene):
         self.play(Create(l3_prime), Write(l3_prime_label),
                   subcaption="Und L_3' als Verbindung zwischen den idealen Punkten.")
 
-        # können wir uns die Größe A(V) definieren.
+        self.play(self.camera.frame.animate.set(width=4).move_to([.8, 0, 0]))
 
-        formula0, formula1, plus, formula2, minus, formula3 = formula = VGroup(Tex("$A(V) = $", font_size=15),
-                                                                               Tex("$L_1'$", color=BLUE, font_size=15),
-                                                                               Tex("$+$", font_size=15),
-                                                                               Tex("$L_2'$", color=BLUE, font_size=15),
-                                                                               Tex("$-$", font_size=15),
-                                                                               Tex("$L_3'$", color=RED, font_size=15))
-        # todo align by center in VGroup?
-        formula.move_to([0, -1.4, 0])
-        formula.arrange(buff=.05, center=False)
+        formula = MathTex('A(V) = ', "L_1'", '+', "L_2'", '-', "L_3'", font_size=15)
+        formula[1].set_color(BLUE)
+        formula[3].set_color(BLUE)
+        formula[5].set_color(RED)
+        formula.move_to([1.15, 0, 0], aligned_edge=LEFT)
+
         self.add_subcaption("Jetzt können wir uns den alternierenden Umfang eines semiidealen Dreiecks definieren, "
                             "indem wir die beiden blauen Längen aufeinander addieren und die rote abziehen.",
                             duration=4)
-        self.play(Write(formula0))
-        self.play(TransformFromCopy(l1_prime_label, formula1))
-        self.play(Write(plus), TransformFromCopy(l2_prime_label, formula2))
-        self.play(Write(minus), TransformFromCopy(l3_prime_label, formula3))
+        self.play(Write(formula[0]))
+        self.play(TransformFromCopy(l1_prime_label, formula[1]))
+        self.play(Write(formula[2]), TransformFromCopy(l2_prime_label, formula[3]))
+        self.play(Write(formula[4]), TransformFromCopy(l3_prime_label, formula[5]))
 
         # todo insert alternating perimeter image?
 
@@ -243,11 +240,11 @@ class Scene3(MovingCameraScene):
         step_size_one_direction = 10
         # forward and back
         circle1_radii_transition = [circle1_radius * (
-                1 - t / step_size_one_direction) + .1 * t / step_size_one_direction for t in
-                                    range(step_size_one_direction)] + [
+                1 - t / step_size_one_direction) + .1 * t / step_size_one_direction
+                                    for t in range(step_size_one_direction)] + [
                                        circle1_radius * t / step_size_one_direction + .1 * (
-                                               1 - t / step_size_one_direction) for t
-                                       in range(step_size_one_direction + 1)]
+                                               1 - t / step_size_one_direction)
+                                       for t in range(step_size_one_direction + 1)]
         print(circle1_radii_transition)
         num_steps = 2 * step_size_one_direction + 1
 
