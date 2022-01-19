@@ -1,3 +1,5 @@
+from typing import Union
+
 from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut, FadeIn, PURPLE, WHITE, YELLOW, GREEN, \
     Uncreate, RED, VGroup, LEFT, DOWN, Dot, TransformFromCopy, Transform, Flash, MathTex, ReplacementTransform, \
     ApplyWave
@@ -75,7 +77,9 @@ class Scene1(MovingCameraScene):
         self.wait(timings.pop())
 
 
-def get_y_g_triangles(hexagon: HyperbolicPolygon, color_y=YELLOW, color_g=GREEN):
+def get_y_g_triangles(hexagon: HyperbolicPolygon,
+                      color_y: Union[str, list] = YELLOW,
+                      color_g: Union[str, list] = GREEN):
     diagonals = HexagonMainDiagonals(hexagon)
     c1, r1 = diagonals.arc1.circle_center, diagonals.arc1.radius
     c2, r2 = diagonals.arc2.circle_center, diagonals.arc2.radius
@@ -380,7 +384,7 @@ class Scene6(MovingCameraScene):
         diagonals = HexagonMainDiagonals(hexagon, stroke_width=2)
         self.add(hexagon, diagonals)
 
-        y1, y2, y3, g1, g2, g3 = get_y_g_triangles(hexagon, BLUE, RED)
+        y1, y2, y3, g1, g2, g3 = get_y_g_triangles(hexagon, [RED, BLUE, BLUE], [BLUE, RED, RED])
         intersecting_triangle = IntersectionTriangle(diagonals, color=RED)
         intersecting_triangle2 = IntersectionTriangle(diagonals, color=PURPLE)
 
@@ -440,7 +444,7 @@ class Scene6(MovingCameraScene):
         self.wait(3)
 
         self.add_subcaption("Und so kommen wir auf die Behauptung, die wir zeigen wollten.")
-        formula3 = MathTex(r'\mathrm{altPer}(P) = \pm 2 \cdot \mathrm{Per}(T_P) = 0', font_size=17) \
+        formula3 = MathTex(r'\mathrm{altPer}(P) = \pm 2 \cdot \mathrm{Per}(T_P)', font_size=17) \
             .next_to(formula2, DOWN)
         self.play(TransformFromCopy(formula2, formula3))
 
