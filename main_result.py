@@ -1,6 +1,6 @@
-from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut, WHITE, FadeIn, YELLOW, GREEN, Uncreate, \
-    UP, RED, VGroup, LEFT, DOWN, Dot, RIGHT, TransformFromCopy, Transform, Flash, MathTex, ReplacementTransform, \
-    ApplyWave, PURPLE
+from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut, FadeIn, PURPLE, WHITE, YELLOW, GREEN, \
+    Uncreate, RED, VGroup, LEFT, DOWN, Dot, TransformFromCopy, Transform, Flash, MathTex, ReplacementTransform, \
+    ApplyWave
 from manim.utils import rate_functions
 
 from geometry_util import polar_to_point, get_intersection_in_unit_circle_of_two_tangent_circles
@@ -99,6 +99,7 @@ def get_y_g_triangles(hexagon: HyperbolicPolygon, color_y=YELLOW, color_g=GREEN)
                            add_dots=False, color=color_g)
     g3 = HyperbolicPolygon([hexagon.polygon_points[0], hexagon.polygon_points[1], intersection3],
                            add_dots=False, color=color_g)
+
     return y1, y2, y3, g1, g2, g3
 
 
@@ -181,6 +182,10 @@ class Scene3(MovingCameraScene):
         self.play(Create(triangle), subcaption="Wir definieren uns eine ähnliche Größe wie den alternierenden Umfang "
                                                "für hyperbolische Dreiecke.")
 
+        # make meeting point of triangle more round
+        dot = Dot(triangle.polygon_points[2], radius=.02)
+        self.add(dot)
+
         circle1_radius = .2
         circle1_center = (1 - circle1_radius) * p1
         circle2_radius = .15
@@ -198,6 +203,7 @@ class Scene3(MovingCameraScene):
         l1_prime = HyperbolicArcBetweenPoints(intersection, triangle.polygon_points[2], color=BLUE)
         l1_prime_label = Tex("$L_1'$", color=BLUE, font_size=20).move_to([-.3, .1, 0])
         self.play(Create(l1_prime), Write(l1_prime_label), subcaption="erhalten wir die Längen L_1',")
+        dot.set_color(BLUE)
 
         # L2'
         arc = triangle.arcs[2]
@@ -233,8 +239,6 @@ class Scene3(MovingCameraScene):
         self.play(TransformFromCopy(l1_prime_label, formula[1]))
         self.play(Write(formula[2]), TransformFromCopy(l2_prime_label, formula[3]))
         self.play(Write(formula[4]), TransformFromCopy(l3_prime_label, formula[5]))
-
-        # todo insert alternating perimeter image?
 
         # change small circle radius
         step_size_one_direction = 10
@@ -327,9 +331,10 @@ class Scene5(MovingCameraScene):
 
         formula = MathTex("A(Y_k) = A(G_k)")
         self.wait(.5)
-        self.play(Write(formula), subcaption="Da wir eine Isometrie zwischen den beiden "
-                                             "Dreiecken haben, sind die Umfänge der Dreiecke gleich, "
-                                             "es gilt also A(Y_k) = A(G_k).")
+        self.add_subcaption("Da wir eine Isometrie zwischen den beiden "
+                            "Dreiecken haben, sind die Umfänge der Dreiecke gleich, "
+                            "es gilt also A(Y_k) = A(G_k).", duration=5)
+        self.play(Write(formula))
         self.wait(5)
         formula1, formula2, formula3 = VGroup(MathTex("A(Y_1) = A(G_1)"),
                                               MathTex("A(Y_2) = A(G_2)"),
