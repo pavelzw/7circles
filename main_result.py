@@ -293,12 +293,6 @@ class Scene4(MovingCameraScene):
         self.add(hexagon, diagonals)
 
         y1, y2, y3, g1, g2, g3 = get_y_g_triangles(hexagon, diagonals)
-        y1_label = MathTex('Y_1', font_size=15).move_to([.5, 0, 0])
-        y2_label = MathTex('Y_2', font_size=15).move_to([-.2, .55, 0])
-        y3_label = MathTex('Y_3', font_size=15).move_to([-.35, -.25, 0])
-        g1_label = MathTex('G_1', font_size=15).move_to([-.3, .15, 0])
-        g2_label = MathTex('G_2', font_size=15).move_to([.1, -.2, 0])
-        g3_label = MathTex('G_3', font_size=15).move_to([.2, .25, 0])
         dot1 = Dot(y1.polygon_points[2], radius=.04)
         dot2 = Dot(y2.polygon_points[2], radius=.04)
         dot3 = Dot(y3.polygon_points[2], radius=.04)
@@ -321,4 +315,44 @@ class Scene4(MovingCameraScene):
 
         # todo explain why the isometry is there
 
+        self.wait(5)
+
+
+class Scene5(MovingCameraScene):
+    def construct(self):
+        self.camera.frame.width = 6
+        timings = []
+        # timings = [.1, .1, .1, .1, .1, 10]
+        timings.reverse()
+
+        formula = MathTex("A(Y_k) = A(G_k)")
+        self.wait(.5)
+        self.play(Write(formula), subcaption="Da wir eine Isometrie zwischen den beiden "
+                                             "Dreiecken haben, sind die Umfänge der Dreiecke gleich, "
+                                             "es gilt also A(Y_k) = A(G_k).")
+        self.wait(5)
+        formula1, formula2, formula3 = VGroup(MathTex("A(Y_1) = A(G_1)"),
+                                              MathTex("A(Y_2) = A(G_2)"),
+                                              MathTex("A(Y_3) = A(G_3)")).arrange(DOWN)
+
+        self.play(TransformFromCopy(formula, formula1), TransformFromCopy(formula, formula2),
+                  TransformFromCopy(formula, formula3), FadeOut(formula),
+                  subcaption="Diese Formeln können wir explizit für alle drei Dreieckspaare aufschreiben.")
+        self.wait(2)
+
+        formula1_transformed, formula2_transformed, formula3_transformed = formulas_transformed = VGroup(
+            MathTex("A(Y_1) - A(G_1) = 0"),
+            MathTex("A(Y_2) - A(G_2) = 0"),
+            MathTex("A(Y_3) - A(G_3) = 0")).arrange(DOWN)
+
+        self.play(ReplacementTransform(formula1, formula1_transformed),
+                  ReplacementTransform(formula2, formula2_transformed),
+                  ReplacementTransform(formula3, formula3_transformed),
+                  subcaption="Und das A(G_k) auf die andere Seite bringen.")
+        self.wait(2)
+
+        formula_combined = MathTex("A(Y_1) + A(Y_2) + A(Y_3) - (A(G_1) + A(G_2) + A(G_3)) = 0", font_size=20)
+
+        self.play(ReplacementTransform(formulas_transformed, formula_combined),
+                  subcaption="Nun können wir alle Formeln zusammenaddieren und erhalten diese Formel hier.")
         self.wait(5)
