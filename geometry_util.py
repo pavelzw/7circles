@@ -147,6 +147,13 @@ def get_both_intersections_line_with_unit_circle(point1, point2):
     return np.array([new_x1, new_y1, 0]), np.array([new_x2, new_y2, 0])
 
 
+def get_parallel_to_line_through_point(line_points, point):
+    [a, b] = line_points
+    m = (a[1] - b[1]) / (a[0] - b[0])
+    b = point[1] - (point[0] * m)
+    return lambda x: m * x + b
+
+
 def tf_klein_to_hem(point):
     x = point[0]
     y = point[1]

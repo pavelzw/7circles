@@ -2,12 +2,12 @@ from math import pi
 
 import numpy as np
 from manim import Scene, Circle, Dot, Create, FadeIn, Line, \
-    Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW
+    Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Text, RIGHT, UP
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, mobius_transform, \
     tf_klein_to_poincare, get_intersections_of_n_tangent_circles, get_intersections_of_circles_with_unit_circle, \
-    get_intersection_from_angles
+    get_intersection_from_angles, get_parallel_to_line_through_point
 from hexagon import HexagonCircles, HexagonMainDiagonals, HyperbolicArcBetweenPoints
 from hexagon_util import create_phis, create_phi_transition
 from hyperbolic_polygon import HyperbolicPolygon
@@ -143,3 +143,33 @@ class SevenCircles(Scene):
         self.wait(1)
         self.play(Flash(diagonal_intersection))
         self.wait(1)
+
+
+class ParallelAxiom(Scene):
+    def construct(self):
+        left = -7
+        right = 7
+
+        g_fun = lambda x: -0.7 * x
+        g_points = [[left, g_fun(left), 0], [right, g_fun(right), 0]]
+        g = Line(g_points[0], g_points[1], name="g")
+        g_text = Text("g")
+
+        p_array = polar_to_point(1)
+        p = Dot(p_array, name="P")
+        p_text = Text("P").next_to(p, UP)
+
+        h_fun = get_parallel_to_line_through_point(g_points, p_array)
+        h_points = [[left, h_fun(left), 0], [right, h_fun(right), 0]]
+        h = Line(h_points[0], h_points[1], name="h")
+        h_text = Text("h").next_to(h, RIGHT)
+
+        self.play(Create(g))
+        self.play(Create(g_text))
+        self.wait(2)
+        self.play(Create(p))
+        self.play(Create(p_text))
+        self.wait(2)
+        self.play(Create(h))
+        self.play(Create(h_text))
+        self.wait(2)
