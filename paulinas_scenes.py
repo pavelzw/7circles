@@ -52,7 +52,7 @@ class Scene1(MovingCameraScene):
         for i in range(0, 6):
             self.play(Write(s_k[i]))
             # TODO arcs einzeln mit s_k createn
-            arc = hexagon.arcs
+            arc = HyperbolicPolygon.from_polar(phis, radius, dot_radius=0.02, color=BLUE).arcs
             self.play(Create(arc[i]))
             self.wait(2)
 
