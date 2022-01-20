@@ -1,7 +1,7 @@
 name: Render videos
 on: push
 jobs:
-  test:
+  main_result:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -14,5 +14,35 @@ jobs:
       - name: Save output as artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: Videos
+          name: main_results
+          path: ${{ steps.renderer.outputs.video_path }}
+  benedikt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Rendering Scenes (Benedikt)
+        uses: pavelzw/manim_community_renderer@master
+        id: renderer
+        with:
+          source_file: animation.py
+          args: "-qk"
+      - name: Save output as artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Benedikt
+          path: ${{ steps.renderer.outputs.video_path }}
+  paulina:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Rendering Scenes (Paulina)
+        uses: pavelzw/manim_community_renderer@master
+        id: renderer
+        with:
+          source_file: paulinas_scenes.py
+          args: "-qk"
+      - name: Save output as artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Paulina
           path: ${{ steps.renderer.outputs.video_path }}
