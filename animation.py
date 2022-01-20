@@ -114,7 +114,7 @@ class SmallCircles(MovingCameraScene):
         self.add(hexagon_circles)
         self.add(hexagon_diagonals)
 
-        # self.wait(duration=5)
+        self.wait(5)
 
 
 class SevenCircles(Scene):

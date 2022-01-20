@@ -7,7 +7,6 @@ from manim import Scene, Square, Circle, Dot, Group, Text, Create, FadeIn, FadeO
 
 from geometry_util import polar_to_point, hyperbolic_distance_function, create_min_circle_radius, moving_circle, \
     moving_line
-
 from hexagon_util import create_phis, create_radius_transition
 from hyperbolic_polygon import HyperbolicPolygon
 
@@ -112,6 +111,8 @@ class HexagonWithSixDisks(Scene):
         # circle for last point
         circle = Circle(arc_center=point, radius=circle_radius, color=GREEN_B, fill_opacity=0.5)
         self.add(circle)
+
+        self.wait(5)
 
 
 class TransformingNonIdealIntoIdeal(Scene):

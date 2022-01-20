@@ -25,12 +25,6 @@ jobs:
         id: renderer
         with:
           source_file: animation.py
-          scene_names: |
-            CircleWithArcs
-            CircleWithArcsMoving
-            LineTransform
-            SmallCircles
-            SevenCircles
           args: "-qp"
       - name: Save output as artifacts
         uses: actions/upload-artifact@v2
@@ -46,14 +40,6 @@ jobs:
         id: renderer
         with:
           source_file: paulinas_scenes.py
-          scene_names: |
-            EuclideanCircles
-            Horodisk
-            NonIdealHexagonAnimation
-            HexagonWithSixDisks
-            TransformingNonIdealIntoIdeal
-            TransformingHexagonWithDisks
-            AlternatingPerimeter
           args: "-qp"
       - name: Save output as artifacts
         uses: actions/upload-artifact@v2
