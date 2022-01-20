@@ -17,7 +17,7 @@ class EuclideanHexagon(VGroup, ABC):
             phi1 = phis[i]
             phi2 = phis[(i + 1) % 6]
             # bug: if two adjacent points have distance > PI, then the direction needs to be flipped
-            line = LineBetweenPointsOnUnitDisk(phi1, phi2).reverse_direction()
+            line = LineBetweenPointsOnUnitDisk(phi1, phi2, **kwargs).reverse_direction()
             self.edges.append(line)
         self.add(*self.edges)
 
@@ -48,10 +48,10 @@ class LineBetweenPointsOnUnitDisk(Line, ABC):
             super().__init__(start=point1, end=point2, **kwargs)
 
 
-def get_diagonals(hexagon: EuclideanHexagon):
+def get_diagonals(hexagon: EuclideanHexagon, **kwargs):
     diagonals = []
     phis = hexagon.phis
     for i in range(3):
-        diagonals.append(LineBetweenPointsOnUnitDisk(phis[i], phis[i + 3]))
+        diagonals.append(LineBetweenPointsOnUnitDisk(phis[i], phis[i + 3], **kwargs))
 
     return diagonals

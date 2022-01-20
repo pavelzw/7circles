@@ -54,14 +54,14 @@ class HexagonCircles(VMobject, Group, ABC):
         phis = hexagon.phis
         p0 = polar_to_point(phis[0])
         first_circle_center = p0 * (1 - first_circle_radius)
-        first_circle = Circle(radius=first_circle_radius, color=color).move_to(first_circle_center)
+        first_circle = Circle(radius=first_circle_radius, color=color, **kwargs).move_to(first_circle_center)
         self.add(first_circle)
         self.circles = [first_circle]
 
         new_center, new_radius = first_circle_center, first_circle_radius
         for i in range(1, 6):
             new_center, new_radius = self._get_next_circle(new_center, new_radius, phis[i - 1], phis[i])
-            new_circle = Circle(radius=new_radius, color=color).move_to(new_center)
+            new_circle = Circle(radius=new_radius, color=color, **kwargs).move_to(new_center)
             self.circles.append(new_circle)
             self.add(new_circle)
 

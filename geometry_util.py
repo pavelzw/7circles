@@ -57,15 +57,20 @@ def get_intersection_in_unit_circle_of_two_tangent_circles(c0: np.array, r0: flo
     return intersection2
 
 
-def get_intersections_of_n_tangent_circles(circles: [Circle]):
-    intersections = []
+def get_intersection_points_of_n_tangent_circles(circles: [Circle]):
+    points = []
     n = len(circles)
     for i in range(n):
         point = get_intersection_not_on_circle_of_two_tangent_circles(
             circles[i].get_center(), circles[i].radius, circles[(i + 1) % n].get_center(), circles[(i + 1) % n].radius
         )
-        intersections.append(Dot(point, color=GREEN, radius=0.05))
-    return intersections
+        points.append(point)
+    return points
+
+
+def get_intersections_of_n_tangent_circles(circles: [Circle], color=GREEN, radius=.05, **kwargs):
+    return list(map(lambda p: Dot(p, color=color, radius=radius, **kwargs),
+                    get_intersection_points_of_n_tangent_circles(circles)))
 
 
 def get_intersections_of_circles_with_unit_circle(circles: [Circle]):

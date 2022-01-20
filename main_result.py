@@ -1,12 +1,15 @@
 from typing import Union
 
+import numpy as np
 from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut, FadeIn, PURPLE, WHITE, YELLOW, GREEN, \
     Uncreate, RED, VGroup, LEFT, DOWN, Dot, TransformFromCopy, Transform, Flash, MathTex, ReplacementTransform, \
-    ApplyWave
+    ApplyWave, Group, GREY
 from manim.utils import rate_functions
 
-from geometry_util import polar_to_point, get_intersection_in_unit_circle_of_two_tangent_circles
-from hexagon import HexagonMainDiagonals, IntersectionTriangle
+from euclidean_hexagon import EuclideanHexagon, get_diagonals
+from geometry_util import polar_to_point, get_intersection_in_unit_circle_of_two_tangent_circles, \
+    get_intersections_of_n_tangent_circles, get_intersection_points_of_n_tangent_circles, get_intersection_from_angles
+from hexagon import HexagonMainDiagonals, IntersectionTriangle, HexagonAngles, HexagonCircles
 from hyperbolic_polygon import HyperbolicPolygon, HyperbolicArcBetweenPoints
 
 
@@ -449,3 +452,149 @@ class Scene6(MovingCameraScene):
         self.play(TransformFromCopy(formula2, formula3))
 
         self.wait(5)
+
+
+class Scene7(MovingCameraScene):
+    def construct(self):
+        self.camera.frame.width = 6
+        circle = Circle()  # todo stroke_width=2?
+        self.add(circle)
+
+        phis = HexagonAngles(np.array([.3, 1.6, 2.2, 3, 4.3]))
+
+        hexagon = HyperbolicPolygon.from_polar(phis, color=[RED, BLUE, RED, BLUE, RED, BLUE], add_dots=False,
+                                               stroke_width=2)
+
+        self.add_subcaption("Schauen wir uns nun ein hyperbolisches Hexagon an "
+                            "mit Kreisen, die tangential zum großen Kreis stehen, wobei "
+                            "sich benachbarte Kreise in exakt einem Punkt berühren.", duration=10)
+        self.play(Create(hexagon), run_time=4)
+        inner_circles = HexagonCircles(hexagon, first_circle_radius=.4, color=GREEN, stroke_width=2)
+        inner_intersections = get_intersections_of_n_tangent_circles(inner_circles.circles, color=YELLOW, radius=.03)
+        # todo maybe also add
+        #  outer_intersections = get_intersections_of_circles_with_unit_circle(hexagon_circles.circles)
+        inner_intersection_points = get_intersection_points_of_n_tangent_circles(inner_circles.circles)
+
+        self.play(Create(inner_circles[0]), run_time=1)
+        for i in range(1, 6):
+            self.play(Create(inner_circles.circles[i]), run_time=1)
+            self.play(Create(inner_intersections[i - 1]), run_time=.5)
+        self.play(Create(inner_intersections[-1]), run_time=.5)
+
+        self.add_foreground_mobjects(*inner_intersections)
+
+        self.play(self.camera.frame.animate.set(width=4).move_to([.8, 0, 0]))
+
+        self.add_subcaption("Wenn wir nun den alternierenden Umfang dieses Hexagons betrachten, sehen wir, "
+                            "dass dieser genau null ist, da die einzelnen Stücke in den Kreisen sich genau "
+                            "rauskürzen.", duration=5)
+
+        formula = MathTex(r'\mathrm{AltPer}(P)', '=', '0', '+', '0',
+                          font_size=18).move_to([1.15, 0, 0], LEFT)
+
+        self.play(Write(formula[0]))
+
+        # create 0s from arcs and merge them all together one by one
+        zero_0 = formula[2]
+        plus_1 = formula[3].copy()
+        zero_1 = formula[4].copy()
+        plus_2 = formula[3].copy()
+        zero_2 = formula[4].copy()
+        plus_3 = formula[3].copy()
+        zero_3 = formula[4].copy()
+        plus_4 = formula[3].copy()
+        zero_4 = formula[4].copy()
+        plus_5 = formula[3].copy()
+        zero_5 = formula[4].copy()
+
+        arcs = self._get_half_arcs(inner_intersection_points, hexagon.polygon_points, 0, RED, BLUE)
+
+        # arcs underneath red/blue arcs for visualization
+        grey_arcs = []  # all grey arcs
+        arcs_grey = self._get_half_arcs(inner_intersection_points, hexagon.polygon_points, 0, GREY, GREY)
+        grey_arcs.append(arcs_grey)
+        self.add(arcs_grey)
+        self.add(arcs)
+        self.play(Write(formula[1]), ReplacementTransform(arcs, zero_0))
+        self.wait(1)
+
+        grey_arcs.append(
+            self._perform_arc_transform(plus_1, zero_1, zero_0, 1, inner_intersection_points, hexagon.polygon_points))
+        grey_arcs.append(
+            self._perform_arc_transform(plus_2, zero_2, zero_0, 2, inner_intersection_points, hexagon.polygon_points))
+        grey_arcs.append(
+            self._perform_arc_transform(plus_3, zero_3, zero_0, 3, inner_intersection_points, hexagon.polygon_points))
+        grey_arcs.append(
+            self._perform_arc_transform(plus_4, zero_4, zero_0, 4, inner_intersection_points, hexagon.polygon_points))
+        grey_arcs.append(
+            self._perform_arc_transform(plus_5, zero_5, zero_0, 5, inner_intersection_points, hexagon.polygon_points))
+
+        self.add_subcaption("Und das entspricht genau dem Umfang des Dreiecks in der Mitte. ", duration=3)
+        diagonals = HexagonMainDiagonals(hexagon, stroke_width=2)
+
+        # replace formula with formula2 in order to animate it
+        formula2 = MathTex(r'\mathrm{AltPer}(P) = 0', font_size=formula.font_size).move_to(formula.get_left(), LEFT)
+        self.add(formula2)
+        self.remove(formula[0], formula[1], formula[2])
+
+        self.play(formula2.animate.set(font_size=14).move_to([1.1, 0, 0], LEFT))
+        formula3 = MathTex(r'= \mathrm{Per}(T_P)', font_size=14).next_to(formula2, buff=.05)
+        self.play(Write(formula3))
+        self.play(Create(diagonals), run_time=3)
+
+        self.add_subcaption("Also treffen sich die Hauptdiagonalen des Hexagons in einem Punkt.", duration=3)
+        intersection = get_intersection_in_unit_circle_of_two_tangent_circles(diagonals.arc1.circle_center,
+                                                                              diagonals.arc1.radius,
+                                                                              diagonals.arc2.circle_center,
+                                                                              diagonals.arc2.radius)
+        intersection_dot = Dot(intersection, color=YELLOW, radius=.03)
+
+        # make original hexagon grey and remove grey arcs on top
+        self.remove(*grey_arcs)
+        for i in range(6):
+            hexagon.arcs[i].set_color(GREY)
+        # turn hexagon arcs white again
+        self.play(Create(intersection_dot), *[hexagon.arcs[i].animate.set_color(WHITE) for i in range(6)])
+        self.play(Flash(intersection_dot, line_stroke_width=2), FadeOut(formula2, formula3))
+
+        self.add_subcaption("Nun müssen wir nur noch die Transformation vom hyperbolischen Raum in den euklidischen "
+                            "Raum durchführen.", duration=3)
+
+        # transform hyperbolic hexagon to euclidean hexagon
+        euclidean_hexagon = EuclideanHexagon(phis, stroke_width=2)
+        euclidean_diagonals = get_diagonals(hexagon, stroke_width=2)
+        euclidean_intersection_dot = Dot(get_intersection_from_angles(phis[0], phis[3], phis[1], phis[4]), color=YELLOW,
+                                         radius=.03)
+        self.play(self.camera.frame.animate.set(width=6).move_to([0, 0, 0]))
+        self.play(*[ReplacementTransform(hexagon.arcs[i], euclidean_hexagon.edges[i]) for i in range(6)],
+                  ReplacementTransform(diagonals.arc1, euclidean_diagonals[0].reverse_direction()),
+                  ReplacementTransform(diagonals.arc2, euclidean_diagonals[1].reverse_direction()),
+                  ReplacementTransform(diagonals.arc3, euclidean_diagonals[2].reverse_direction()),
+                  ReplacementTransform(intersection_dot, euclidean_intersection_dot),
+                  run_time=3)
+
+        self.add_subcaption("Im Klein Modell gilt die Aussage aufgrund der Isometrie zwischen den beiden Räumen "
+                            "immer noch und damit haben wir gewonnen.")
+        self.play(Flash(euclidean_intersection_dot, line_stroke_width=2))
+
+        self.wait(5)
+
+    def _perform_arc_transform(self, plus, zero, zero_0, i, intersection_points, polygon_points):
+        col1 = RED if i % 2 == 0 else BLUE
+        col2 = BLUE if i % 2 == 0 else RED
+        arcs = self._get_half_arcs(intersection_points, polygon_points, i, col1=col1, col2=col2)
+        # arcs underneath red/blue arcs for visualization
+        arcs_grey = self._get_half_arcs(intersection_points, polygon_points, i, col1=GREY, col2=GREY)
+        self.add(arcs_grey)
+        self.add(arcs)
+
+        self.play(Write(plus), ReplacementTransform(arcs, zero))  # create 0 from arcs
+        self.play(ReplacementTransform(Group(plus, zero), zero_0))  # merge 0 + 0
+        self.wait(1)
+        return arcs_grey
+
+    @staticmethod
+    def _get_half_arcs(intersection_points, polygon_points, i, col1, col2):
+        arc1 = HyperbolicArcBetweenPoints(intersection_points[i], polygon_points[i], color=col1, stroke_width=2)
+        arc2 = HyperbolicArcBetweenPoints(intersection_points[i - 1], polygon_points[i], color=col2, stroke_width=2)
+        return Group(arc1, arc2)
