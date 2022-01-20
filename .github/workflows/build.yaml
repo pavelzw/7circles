@@ -6,43 +6,57 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Rendering Scenes (Main Result)
-        uses: pavelzw/manim_community_renderer@master
+        uses: pavelzw/manim_community_renderer@v2
         id: renderer
         with:
           source_file: main_result.py
-          args: "-qk"
+          args: "-qp"
       - name: Save output as artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: main_results
+          name: main_result
           path: ${{ steps.renderer.outputs.video_path }}
   benedikt:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Rendering Scenes (Benedikt)
-        uses: pavelzw/manim_community_renderer@master
+        uses: pavelzw/manim_community_renderer@v2
         id: renderer
         with:
           source_file: animation.py
-          args: "-qk"
+          scene_names: |
+            CircleWithArcs
+            CircleWithArcsMoving
+            LineTransform
+            SmallCircles
+            SevenCircles
+          args: "-qp"
       - name: Save output as artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: Benedikt
+          name: benedikt
           path: ${{ steps.renderer.outputs.video_path }}
   paulina:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Rendering Scenes (Paulina)
-        uses: pavelzw/manim_community_renderer@master
+        uses: pavelzw/manim_community_renderer@v2
         id: renderer
         with:
           source_file: paulinas_scenes.py
-          args: "-qk"
+          scene_names: |
+            EuclideanCircles
+            Horodisk
+            NonIdealHexagonAnimation
+            HexagonWithSixDisks
+            TransformingNonIdealIntoIdeal
+            TransformingHexagonWithDisks
+            AlternatingPerimeter
+          args: "-qp"
       - name: Save output as artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: Paulina
+          name: paulina
           path: ${{ steps.renderer.outputs.video_path }}
