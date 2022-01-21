@@ -4,7 +4,7 @@ import numpy as np
 from manim import Scene, Square, Circle, Dot, Group, Text, Create, FadeIn, FadeOut, MoveAlongPath, Line, WHITE, BLUE, \
     GREEN_B, Transform, MovingCameraScene, Uncreate, \
     VGroup, DecimalNumber, RIGHT, Tex, LEFT, UP, MathTex, Write, Unwrite, Indicate, TransformFromCopy, VMobject, RED, \
-    DOWN, GREY_B, GREEN, ORIGIN, PURPLE, ORANGE
+    DOWN, GREY_B, GREEN, ORIGIN, PURPLE, ORANGE, ArcBetweenPoints
 
 from geometry_util import polar_to_point, hyperbolic_distance_function, create_min_circle_radius, moving_circle, \
     moving_line, get_intersection_in_unit_circle_of_two_tangent_circles
@@ -69,8 +69,7 @@ class Scene1(MovingCameraScene):
 
         # Perimeter
         sum1 = per, sum_sk = VGroup(MathTex(r'\mathrm{Per}(P) = ', font_size=formula_size),
-                                    MathTex(r'S_1 + S_2 + S_3 + S_4 + S_5 + S_6 ', color=BLUE,
-                                            font_size=formula_size)).arrange(
+                                    MathTex(r'S_1 + S_2 + S_3 + S_4 + S_5 + S_6 ', font_size=formula_size)).arrange(
             buff=0.05).move_to([2.5, 0.2, 0])
         sum2 = alt_per, alt_sum = VGroup(MathTex(r'\mathrm{AltPer}(P) ', font_size=formula_size),
                                          MathTex(r' = S_1 - S_2 + S_3 - S_4 + S_5 - S_6  ',
@@ -84,6 +83,7 @@ class Scene1(MovingCameraScene):
         # Alternating Perimeter
         hexagon_bi_colored = HyperbolicPolygon.from_polar(phis, radius, dot_radius=0.02,
                                                           color=[BLUE, RED, BLUE, RED, BLUE, RED])
+
         self.play(FadeIn(hexagon_bi_colored, s_2_red, s_4_red, s_6_red, *dots))
         self.wait(2)
         self.play(TransformFromCopy(VGroup(hexagon_bi_colored, *s_k_colored), sum2))
@@ -124,8 +124,16 @@ class Scene3(MovingCameraScene):  # former TransformingNonIdealIntoIdeal
         self.add(circle)
         p1 = MathTex(r'P_1', font_size=20).move_to([0.2, 0.6, 0])
         konvergenz = MathTex(r'P_n \xrightarrow{n \rightarrow \infty}P_\infty', font_size=25).move_to([2, 0, 0])
+        s_1 = MathTex(r'\tilde{S_1}', color=ORANGE, font_size=20).move_to([[.25, .6, 0]])
+        s_2 = MathTex(r'\tilde{S_2}', color=ORANGE, font_size=20).move_to([-.65, .5, 0])
+        s_3 = MathTex(r'\tilde{S_3}', color=ORANGE, font_size=20).move_to([-.8, -0.1, 0])
+        s_4 = MathTex(r'\tilde{S_4}', color=ORANGE, font_size=20).move_to([-.14, -0.7, 0])
+        s_5 = MathTex(r'\tilde{S_5}', color=ORANGE, font_size=20).move_to([0.53, -.6, 0])
+        s_6 = MathTex(r'\tilde{S_6}', color=ORANGE, font_size=20).move_to([.7, -.1, 0])
+        s_k = VGroup(s_1, s_2, s_3, s_4, s_5, s_6)
         radius = np.array([0.7, 0.6, .75, .56, .65, .53])
         phis = [0.47654, 2.065432, 2.876, 3.87623, 5.024, 5.673]
+        circle_radius = [.2, .25, .16, .29, .18, .12]  # radius for disks
 
         # without disks
         step_size = 50  # normally 100, but takes long
@@ -135,7 +143,7 @@ class Scene3(MovingCameraScene):  # former TransformingNonIdealIntoIdeal
         self.play(Create(hexagon), run_time=5)
         self.play(Write(p1))
         self.play(FadeOut(p1))
-        self.play(self.camera.frame.animate.move_to([.8, 0, 0]))
+        self.play(self.camera.frame.animate.move_to([1, 0, 0]))
         self.play(Write(konvergenz))
 
         for t in range(1, step_size - 1):
@@ -150,42 +158,43 @@ class Scene3(MovingCameraScene):  # former TransformingNonIdealIntoIdeal
 
         # with disks
         self.play(FadeOut(hexagon, konvergenz))
-        self.play(self.camera.frame.animate.move_to([0, 0, 0]))
-        hexagon_n_ideal = HyperbolicPolygon.from_polar(phis, radius, dot_radius=0.02)
-        self.play(FadeIn(hexagon_n_ideal))
+        hex_n_ideal = HyperbolicPolygon.from_polar(phis, radius, dot_radius=0.02)
+        self.play(FadeIn(hex_n_ideal))
 
-        # case for first circle
-        last_point = hexagon_n_ideal.polygon_points[0]
-        point = hexagon_n_ideal.polygon_points[1]
-
-        end_point = hexagon_n_ideal.polygon_points[5]
-
-        circle_radius = create_min_circle_radius(end_point, last_point, point)
-
-        circle = Circle(arc_center=last_point, radius=circle_radius, color=GREEN_B, fill_opacity=0.5)
-        self.play(FadeIn(circle))
-        # intersection arc and disk 0
-        second_point = hexagon_n_ideal.polygon_points[2]
-        circle_radius_point = create_min_circle_radius(last_point, point, second_point)
-        intersection1 = get_intersection_in_unit_circle_of_two_tangent_circles(hexagon_n_ideal.arcs[0].circle_center,
-                                                                               hexagon_n_ideal.arcs[0].radius,
-                                                                               last_point, circle_radius)
-        intersection2 = get_intersection_in_unit_circle_of_two_tangent_circles(point, circle_radius_point,
-                                                                               hexagon_n_ideal.arcs[0].circle_center,
-                                                                               hexagon_n_ideal.arcs[0].radius)
-        self.add(Dot(intersection1, color=ORANGE), Dot(intersection2, color=PURPLE))
-        for k in range(2, 6):  # from 2 to 5
-            next_point = polar_to_point(phis[k], radius[k])
-
-            circle_radius = create_min_circle_radius(last_point, point, next_point)
-            circle = Circle(arc_center=point, radius=circle_radius, color=GREEN_B, fill_opacity=0.5)
+        for k in range(0, 6):  # creating disks
+            point1 = hex_n_ideal.polygon_points[k]
+            circle = Circle(arc_center=point1, radius=circle_radius[k], color=GREEN_B, fill_opacity=0.5)
+            self.add_foreground_mobjects(circle)
             self.play(FadeIn(circle))
-            last_point = point
-            point = next_point
 
-        # circle for last point
-        circle = Circle(arc_center=point, radius=circle_radius, color=GREEN_B, fill_opacity=0.5)
-        self.play(FadeIn(circle))
+        for k in range(0, 6):  # creating S_k tilde
+            point1 = hex_n_ideal.polygon_points[k]
+            point2 = hex_n_ideal.polygon_points[(k + 1) % 6]
+            arc = hex_n_ideal.arcs[k]
+            intersection1 = get_intersection_in_unit_circle_of_two_tangent_circles(arc.circle_center, arc.radius,
+                                                                                   point1, circle_radius[k])
+            intersection2 = get_intersection_in_unit_circle_of_two_tangent_circles(point2,
+                                                                                   circle_radius[(k + 1) % 6],
+                                                                                   arc.circle_center, arc.radius)
+            arc_new = ArcBetweenPoints(intersection2, intersection1, color=ORANGE,
+                                       radius=arc.radius).reverse_direction()
+            self.play(Create(arc_new), Write(s_k[k]))
+            if k == 0:
+                distance_text, distance_number = label = VGroup(
+                    Tex(r'$\mathrm{length}(\tilde{S_1})=$', font_size=20),
+                    DecimalNumber(np.exp(hyperbolic_distance_function(intersection2, intersection1)),
+                                  num_decimal_places=2, show_ellipsis=True, group_with_commas=False,
+                                  font_size=20)).arrange(buff=.05).move_to([2.4, 0, 0])
+                self.play(Write(label))
+                self.wait(1)
+                self.play(FadeOut(label))
+        self.wait(3)
+        sum2 = alt_per, alt_sum = VGroup(MathTex(r'\mathrm{AltPer}(\tilde{P}) =', font_size=20),
+                                         MathTex(
+                                             r' \tilde{S_1} - \tilde{S_2} + \tilde{S_3} - \tilde{S_4} + \tilde{S_5} - \tilde{S_6}',
+                                             font_size=20)).arrange(direction=DOWN, aligned_edge=LEFT).move_to(
+            [2.4, 1, 0])
+        self.play(TransformFromCopy(s_k, sum2))
         self.wait(3)
 
 
@@ -282,7 +291,7 @@ class TransformingHexagonWithDisks(MovingCameraScene):
         # length of S_k
         s_1 = Tex(r'$S_1$')
         # label = VGroup(Tex(r'$\mathrm{length}(S_1)=$', font_size=35), DecimalNumber(
-        #   hyperbolic_distance_function(hexagon.polygon_points[0], ), hexagon.polygon_points[1])),
+        #  hyperbolic_distance_function(hexagon.polygon_points[0]), hexagon.polygon_points[1])),
         #  num_decimal_places=2, show_ellipsis=True, group_with_commas=False, font_size=35))
         # label.move_to([2, 0, 0], aligned_edge=LEFT)
         # self.add(label)
@@ -290,7 +299,8 @@ class TransformingHexagonWithDisks(MovingCameraScene):
 
         new_disk_group = VGroup()
         # transition of disks and hexagon
-        disk_transition = create_radius_transition(radius=radius, step_size=step_size, end_point=1 - circle_radius)
+        disk_transition = create_radius_transition(radius=radius, step_size=step_size,
+                                                   end_point=1 - circle_radius)
         for t in range(1, step_size):
             hexagon_new = HyperbolicPolygon.from_polar(phis, transition[t])
             s_1.next_to((hexagon_new.arcs[0]), RIGHT)
@@ -326,8 +336,9 @@ class TransformingNonIdealIntoIdeal(Scene):
         point2_text = Tex('$P_2$', font_size=30)
         distance_text, distance_number = label = VGroup(
             Tex(r'$\mathrm{dist}(P_1, P_2)=$', font_size=35),
-            DecimalNumber(np.exp(hyperbolic_distance_function(hexagon.polygon_points[0], hexagon.polygon_points[1])),
-                          num_decimal_places=2, show_ellipsis=True, group_with_commas=False, font_size=35))
+            DecimalNumber(
+                np.exp(hyperbolic_distance_function(hexagon.polygon_points[0], hexagon.polygon_points[1])),
+                num_decimal_places=2, show_ellipsis=True, group_with_commas=False, font_size=35))
         label.move_to([2, 0, 0], aligned_edge=LEFT)
         self.add(label)
         for t in range(1, step_size - 1):
