@@ -3,7 +3,8 @@ from math import pi
 import numpy as np
 from manim import Scene, Square, Circle, Dot, Group, Text, Create, FadeIn, FadeOut, MoveAlongPath, Line, WHITE, BLUE, \
     GREEN_B, Transform, MovingCameraScene, Uncreate, \
-    VGroup, DecimalNumber, RIGHT, Tex, LEFT, UP, MathTex, Write
+    VGroup, DecimalNumber, RIGHT, Tex, LEFT, UP, MathTex, Write, Unwrite, Indicate, TransformFromCopy, VMobject, RED, \
+    DOWN
 
 from geometry_util import polar_to_point, hyperbolic_distance_function, create_min_circle_radius, moving_circle, \
     moving_line
@@ -16,18 +17,24 @@ class Scene1(MovingCameraScene):
         # Labels
         s_1 = MathTex('S_1', color=BLUE, font_size=15).move_to([0, .5, 0])
         s_2 = MathTex('S_2', color=BLUE, font_size=15).move_to([-.6, .45, 0])
+        s_2_red = MathTex('S_2', color=RED, font_size=15).move_to([-.6, .45, 0])
         s_3 = MathTex('S_3', color=BLUE, font_size=15).move_to([-.7, -0.1, 0])
         s_4 = MathTex('S_4', color=BLUE, font_size=15).move_to([-.1, -0.6, 0])
+        s_4_red = MathTex('S_4', color=RED, font_size=15).move_to([-.1, -0.6, 0])
         s_5 = MathTex('S_5', color=BLUE, font_size=15).move_to([0.4, -.55, 0])
         s_6 = MathTex('S_6', color=BLUE, font_size=15).move_to([.6, 0, 0])
+        s_6_red = MathTex('S_6', color=RED, font_size=15).move_to([.6, 0, 0])
         s_k = [s_1, s_2, s_3, s_4, s_5, s_6]
+        s_k_colored = [s_1, s_2_red, s_3, s_4_red, s_5, s_6_red]
+
+        formula_size = 15
 
         timings = [8,  # hexagon
                    5]
         # timings = [.1, .1, .1, .1, .1, 10]
         timings.reverse()
         self.camera.frame.width = 6
-        circle = Circle()
+        circle = Circle(color=WHITE)
         self.play(Create(circle))
 
         # showing four random non ideal hexagons and an ideal hexagon
@@ -38,7 +45,6 @@ class Scene1(MovingCameraScene):
             if i == 4:
                 hexagon = HyperbolicPolygon.from_polar(phis, dot_radius=0.02)
             self.play(FadeIn(hexagon))
-            self.wait(1)
             self.play(FadeOut(hexagon))
 
         # creating our nonideal hexagon
@@ -46,19 +52,41 @@ class Scene1(MovingCameraScene):
         phis = [0.47654, 2.065432, 2.876, 3.87623, 5.024, 5.673]
 
         hexagon = HyperbolicPolygon.from_polar(phis, radius, dot_radius=0.02)
+        hex_name = MathTex('P', font_size=15).move_to([0.6, 0.4, 0])
         self.play(Create(hexagon), run_time=timings.pop())
+        self.play(Indicate(hexagon, color=WHITE), Indicate(hex_name, color=WHITE))
+        self.wait(2)
+
+        arc = HyperbolicPolygon.from_polar(phis, radius, dot_radius=0.02, color=BLUE).arcs
+        dots = HyperbolicPolygon.from_polar(phis, radius, dot_radius=0.02,
+                                            color=BLUE).dots
         # Kantenbeschriftung
         for i in range(0, 6):
-            self.play(Write(s_k[i]))
-            # TODO arcs einzeln mit s_k createn
-            arc = HyperbolicPolygon.from_polar(phis, radius, dot_radius=0.02, color=BLUE).arcs
-            self.play(Create(arc[i]))
-            self.wait(2)
+            self.play(Create(arc[i]), Write(s_k[i]), Create(dots[i].set_color(BLUE)),
+                      rate_func=lambda a: a, run_time=1)
 
-            # creating perimeter
-            # hexagon = HyperbolicPolygon.from_polar(phis, radius, color=[BLUE, BLUE, BLUE, BLUE, BLUE, BLUE],
-            #                                      add_dots=False)
-            # self.play(Create(hexagon), run_time=timings.pop())
+        self.play(self.camera.frame.animate.set(width=6).move_to([1.5, 0, 0]))  # moves circle to left
+
+        # Perimeter
+        sum1 = per, sum_sk = VGroup(MathTex(r'\mathrm{Per}(P) ', font_size=formula_size),
+                                    MathTex(r'= S_1 + S_2 + S_3 + S_4 + S_5 + S_6 ', font_size=formula_size)).arrange(
+            buff=0.05).move_to([2.5, 0.2, 0])
+        sum2 = alt_per, alt_sum = VGroup(MathTex(r'\mathrm{AltPer}(P) ', font_size=formula_size),
+                                         MathTex(r' = S_1 - S_2 + S_3 - S_4 + S_5 - S_6  ',
+                                                 font_size=formula_size)).arrange(
+            buff=0.05).next_to(sum1, .5 * DOWN)
+
+        self.play(Write(per))
+        self.play(TransformFromCopy(VGroup(*arc, *s_k), sum_sk))
+        self.wait(3)
+
+        # Alternating Perimeter
+        hexagon_bi_colored = HyperbolicPolygon.from_polar(phis, radius, dot_radius=0.02,
+                                                          color=[BLUE, RED, BLUE, RED, BLUE, RED])
+        self.play(FadeIn(hexagon_bi_colored, s_2_red, s_4_red, s_6_red))
+        self.wait(2)
+        self.play(TransformFromCopy(VGroup(hexagon_bi_colored, *s_k_colored), sum2))
+        self.wait(3)
 
 
 class NonIdealHexagonAnimation(Scene):
