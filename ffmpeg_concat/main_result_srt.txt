@@ -1,0 +1,7 @@
+file ../media/videos/main_result/1440p60/Scene1.srt
+file ../media/videos/main_result/1440p60/Scene2.srt
+file ../media/videos/main_result/1440p60/Scene3.srt
+file ../media/videos/main_result/1440p60/Scene4.srt
+file ../media/videos/main_result/1440p60/Scene5.srt
+file ../media/videos/main_result/1440p60/Scene6.srt
+file ../media/videos/main_result/1440p60/Scene7.srt
