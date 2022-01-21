@@ -4,7 +4,7 @@ import numpy as np
 from manim import Scene, Square, Circle, Dot, Group, Text, Create, FadeIn, FadeOut, MoveAlongPath, Line, WHITE, BLUE, \
     GREEN_B, Transform, MovingCameraScene, Uncreate, \
     VGroup, DecimalNumber, RIGHT, Tex, LEFT, UP, MathTex, Write, Unwrite, Indicate, TransformFromCopy, VMobject, RED, \
-    DOWN, GREY_B, GREEN, ORIGIN, PURPLE, ORANGE, ArcBetweenPoints
+    DOWN, GREY_B, GREEN, ORIGIN, PURPLE, ORANGE, ArcBetweenPoints, ReplacementTransform, GREEN_D
 
 from geometry_util import polar_to_point, hyperbolic_distance_function, create_min_circle_radius, moving_circle, \
     moving_line, get_intersection_in_unit_circle_of_two_tangent_circles
@@ -94,27 +94,59 @@ class Scene2(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 6
         s_1 = MathTex('S_1', color=BLUE, font_size=15).move_to([0.2, .5, 0])
-        s_1_green = MathTex('S_1', color=GREEN, font_size=15).move_to([0.2, .5, 0])
+        s_1_orange = MathTex('S_1', color=ORANGE, font_size=15).move_to([0.2, .5, 0])
         s_2 = MathTex('S_2', color=RED, font_size=15).move_to([-.65, .5, 0])
         s_3 = MathTex('S_3', color=BLUE, font_size=15).move_to([-.75, -0.1, 0])
         s_4 = MathTex('S_4', color=RED, font_size=15).move_to([-.2, -0.7, 0])
         s_5 = MathTex('S_5', color=BLUE, font_size=15).move_to([0.53, -.67, 0])
         s_6 = MathTex('S_6', color=RED, font_size=15).move_to([.7, 0, 0])
         s_k = VGroup(s_1, s_2, s_3, s_4, s_5, s_6)
+        radius_disks = [.5, .4]
         circle = Circle(color=WHITE)
+        self.add_foreground_mobjects(circle)
         phis = [0.47654, 2.065432, 2.876, 3.87623, 5.024, 5.673]
 
         hexagon = HyperbolicPolygon.from_polar(phis, add_dots=False, color=[BLUE, RED, BLUE, RED, BLUE, RED])
         hexagon_grey = HyperbolicPolygon.from_polar(phis, add_dots=False, color=GREY_B)
-        arc1 = HyperbolicPolygon.from_polar(phis, add_dots=False, color=GREEN).arcs[0]
+        arc_colored = HyperbolicPolygon.from_polar(phis, add_dots=False, color=ORANGE).arcs[0]
         self.add(circle)
         self.play(Create(hexagon, run_time=5))
         self.play(FadeIn(s_k))
-        self.wait(3)
-        self.play(FadeIn(hexagon_grey), FadeOut(s_k), FadeIn(arc1, s_1_green))
-        self.wait(3)
+        self.play(self.camera.frame.animate.move_to([1, 0, 0]))
+        self.wait(1)
+        self.play(FadeIn(hexagon_grey), FadeOut(s_k), FadeOut(hexagon), FadeIn(arc_colored, s_1_orange))
+        self.wait(1)
 
-        # TODO measuring length on s_1 dynamically
+        point1 = hexagon.polygon_points[0]
+        point2 = hexagon.polygon_points[1]
+        arc = hexagon.arcs[0]
+
+        distance_text, distance_number = label = VGroup(
+            Tex(r'$\mathrm{length}(S_1)=$', font_size=20),
+            DecimalNumber(np.exp(hyperbolic_distance_function(point1, point2)),
+                          num_decimal_places=2, show_ellipsis=True, group_with_commas=False,
+                          font_size=20))
+        label.arrange()
+        label.move_to([1.5, 0, 0], aligned_edge=LEFT)
+        self.play(Create(label))  # TODO num_decimal_places is not 2??
+        step_size = 50
+        for t in range(1, step_size):
+            interp_point1 = get_intersection_in_unit_circle_of_two_tangent_circles(arc.circle_center, arc.radius,
+                                                                                   point1,
+                                                                                   t / step_size * radius_disks[0])
+            interp_point2 = get_intersection_in_unit_circle_of_two_tangent_circles(point2,
+                                                                                   t / step_size * radius_disks[1],
+                                                                                   arc.circle_center, arc.radius)
+            new_arc = ArcBetweenPoints(interp_point2, interp_point1, color=ORANGE, radius=arc.radius)
+
+            distance = np.exp(
+                hyperbolic_distance_function(interp_point2, interp_point1))
+            distance_number.font_size = 20
+            label.arrange()
+            label.move_to([1.5, 0, 0], aligned_edge=LEFT)
+            self.play(Transform(arc_colored, new_arc), distance_number.animate.set_value(distance), run_time=0.05,
+                      rate_func=lambda a: a)
+        self.wait(3)
 
 
 class Scene3(MovingCameraScene):  # former TransformingNonIdealIntoIdeal

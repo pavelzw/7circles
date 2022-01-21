@@ -16,7 +16,7 @@ Scene2:
 Betrachten wir nun also den alternierenden Umfang eines idealen Sechsecks.
 Hier ergibt sich das Problem, dass die einzelnen Segment S_k unendliche Länge haben, da sie ja den Rand berühren:
 Mit einem kleinen Trick können wir dieses Problem aber umgehen.
-Die Länge eines S_k in einem nicht idealen Sechseck ist nämclich endlich.
+Die Länge eines S_k in einem nicht idealen Sechseck ist nämlich endlich.
 
 Scene3:
 Betrachte dazu eine Folge {Pn} an hyperbolischen (nicht idealen) Sechsecken, die gegen ein ideales Sechseck Pinf konvergieren.
