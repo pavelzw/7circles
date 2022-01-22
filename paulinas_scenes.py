@@ -71,11 +71,11 @@ class Scene1(MovingCameraScene):
         sum1 = per, sum_sk = VGroup(MathTex(r'\mathrm{Per}(P) = ', font_size=formula_size),
                                     MathTex(r'S_1 + S_2 + S_3 + S_4 + S_5 + S_6 ', font_size=formula_size)).arrange(
             buff=0.05).move_to([2.5, 0.2, 0])
-        sum2 = alt_per, alt_sum = VGroup(MathTex(r'\mathrm{AltPer}(P) ', font_size=formula_size),
-                                         MathTex(r' = S_1 - S_2 + S_3 - S_4 + S_5 - S_6  ',
-                                                 # TODO red and blue would be nice
-                                                 font_size=formula_size)).arrange(buff=0.05).next_to(sum1, .5 * DOWN)
-
+        alt_sum = MathTex("S_1", '+', "S_2", '-', "S_3", '+', "S_4", '-', "S_5", '+', "S_6", font_size=15)
+        alt_sum[2].set_color(RED), alt_sum[6].set_color(RED), alt_sum[10].set_color(RED)  # alternating color
+        alt_sum[0].set_color(BLUE), alt_sum[4].set_color(BLUE), alt_sum[8].set_color(BLUE),
+        alt_per = MathTex(r'\mathrm{AltPer}(P) =', font_size=formula_size)
+        sum2 = VGroup(alt_per, alt_sum).arrange(buff=0.05).next_to(sum1, .5 * DOWN)
         self.play(Write(per))
         self.play(TransformFromCopy(VGroup(*arc, *s_k), sum_sk))
         self.wait(3)
@@ -85,8 +85,12 @@ class Scene1(MovingCameraScene):
                                                           color=[BLUE, RED, BLUE, RED, BLUE, RED])
 
         self.play(FadeIn(hexagon_bi_colored, s_2_red, s_4_red, s_6_red, *dots))
+        red_arcs = VGroup(hexagon_bi_colored.arcs[1], hexagon_bi_colored.arcs[3], hexagon_bi_colored.arcs[5], s_2_red,
+                          s_4_red, s_6_red)
+        self.play(Indicate(red_arcs, color=RED))
         self.wait(2)
-        self.play(TransformFromCopy(VGroup(hexagon_bi_colored, *s_k_colored), sum2))
+        self.play(Write(sum2[0]))
+        self.play(TransformFromCopy(VGroup(hexagon_bi_colored, *s_k_colored), sum2[1]))
         self.wait(3)
 
 
