@@ -71,6 +71,7 @@ class HyperbolicPolygon(VGroup, ABC):
         return cls([polar_to_point(arc, radius=radius) for arc, radius in zip(phis, radii)], **kwargs)
 
     def __init__(self, points: 'list[np.ndarray]', color: Union['list[str]', str] = None, add_dots=True, dot_radius=.04,
+                 dot_color=WHITE,
                  **kwargs):
         super(HyperbolicPolygon, self).__init__()
 
@@ -86,11 +87,11 @@ class HyperbolicPolygon(VGroup, ABC):
         self._dots = []
 
         if add_dots:
-            self._dots.append(Dot(points[0], radius=dot_radius))
+            self._dots.append(Dot(points[0], radius=dot_radius, color=dot_color))
             self.add(self._dots[-1])
         for i in range(n):
             if add_dots and i < n - 1:
-                self._dots.append(Dot(points[i + 1], radius=dot_radius))
+                self._dots.append(Dot(points[i + 1], radius=dot_radius, color=dot_color))
                 self.add(self._dots[-1])
             self.add(self.arcs[i])
 
@@ -103,7 +104,7 @@ class HyperbolicPolygon(VGroup, ABC):
     @property
     def arcs(self) -> 'list[HyperbolicArcBetweenPoints]':
         return self._arcs
-    
+
     @property
     def polygon_points(self) -> 'list[np.ndarray]':
         return self._polygon_points

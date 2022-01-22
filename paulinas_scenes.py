@@ -4,7 +4,7 @@ import numpy as np
 from manim import Scene, Square, Circle, Dot, Group, Text, Create, FadeIn, FadeOut, MoveAlongPath, Line, WHITE, BLUE, \
     GREEN_B, Transform, MovingCameraScene, Uncreate, \
     VGroup, DecimalNumber, RIGHT, Tex, LEFT, UP, MathTex, Write, Unwrite, Indicate, TransformFromCopy, VMobject, RED, \
-    DOWN, GREY_B, GREEN, ORIGIN, PURPLE, ORANGE, ArcBetweenPoints, ReplacementTransform, GREEN_D
+    DOWN, GREY_B, GREEN, ORIGIN, PURPLE, ORANGE, ArcBetweenPoints, ReplacementTransform, GREEN_D, Flash
 
 from geometry_util import polar_to_point, hyperbolic_distance_function, create_min_circle_radius, moving_circle, \
     moving_line, get_intersection_in_unit_circle_of_two_tangent_circles
@@ -58,11 +58,12 @@ class Scene1(MovingCameraScene):
         self.wait(2)
 
         arc = HyperbolicPolygon.from_polar(phis, radius, dot_radius=0.02, color=BLUE).arcs
-        dots = HyperbolicPolygon.from_polar(phis, radius, dot_radius=0.02,
-                                            color=BLUE).dots
+        dots = hexagon.dots
         # Kantenbeschriftung
+        dots[-1].set_color(BLUE)
         for i in range(0, 6):
-            self.play(Create(arc[i]), Write(s_k[i]), Create(dots[i].set_color(BLUE)),
+            dots[i].set_color(BLUE)
+            self.play(Create(arc[i]), Write(s_k[i]),
                       rate_func=lambda a: a, run_time=1)
 
         self.play(self.camera.frame.animate.set(width=6).move_to([1.5, 0, 0]))  # moves circle to left
@@ -71,6 +72,7 @@ class Scene1(MovingCameraScene):
         sum1 = per, sum_sk = VGroup(MathTex(r'\mathrm{Per}(P) = ', font_size=formula_size),
                                     MathTex(r'S_1 + S_2 + S_3 + S_4 + S_5 + S_6 ', font_size=formula_size)).arrange(
             buff=0.05).move_to([2.5, 0.2, 0])
+
         alt_sum = MathTex("S_1", "- S_2", "+ S_3", "- S_4", "+ S_5", "- S_6", font_size=15)
         alt_sum[1].set_color(RED), alt_sum[3].set_color(RED), alt_sum[5].set_color(RED)  # alternating color
         alt_sum[0].set_color(BLUE), alt_sum[2].set_color(BLUE), alt_sum[4].set_color(BLUE),
@@ -81,12 +83,13 @@ class Scene1(MovingCameraScene):
         self.wait(3)
 
         # Alternating Perimeter
-        hexagon_bi_colored = HyperbolicPolygon.from_polar(phis, radius, dot_radius=0.02,
+        hexagon_bi_colored = HyperbolicPolygon.from_polar(phis, radius, dot_radius=.02, dot_color=RED,
                                                           color=[BLUE, RED, BLUE, RED, BLUE, RED])
 
-        self.play(FadeIn(hexagon_bi_colored, s_2_red, s_4_red, s_6_red, *dots), FadeOut(hexagon, *arc, s_2, s_4, s_6))
+        self.play(FadeIn(hexagon_bi_colored, s_2_red, s_4_red, s_6_red), FadeOut(*hexagon.arcs, *arc, s_2, s_4, s_6))
         red_arcs = VGroup(hexagon_bi_colored.arcs[1], hexagon_bi_colored.arcs[3], hexagon_bi_colored.arcs[5], s_2_red,
-                          s_4_red, s_6_red)
+                          s_4_red, s_6_red, *hexagon_bi_colored.dots)
+
         self.play(Indicate(red_arcs, color=RED))
         self.wait(2)
         self.play(Write(sum2[0]))
@@ -125,21 +128,28 @@ class Scene2(MovingCameraScene):
         point2 = hexagon.polygon_points[1]
         arc = hexagon.arcs[0]
 
-        distance_text, distance_number = label = VGroup(
-            Tex(r'$\mathrm{length}(S_1)=$', font_size=20),
-            DecimalNumber(np.exp(hyperbolic_distance_function(point1, point2)),
-                          num_decimal_places=2, show_ellipsis=True, group_with_commas=False,
-                          font_size=20))
-        label.arrange()
-        label.move_to([1.5, 0, 0], aligned_edge=LEFT)
-        self.play(Create(distance_text))
+        distance_text = MathTex(r'\mathrm{length}(S_1)=', font_size=20).move_to([2, 0, 0], aligned_edge=LEFT)
+        infinity = MathTex(r'\infty', font_size=20).next_to(distance_text, buff=.05)
 
-        step_size = 100
+        self.play(Write(VGroup(distance_text, infinity)))
+        self.wait(1)
+        distance_number = DecimalNumber(hyperbolic_distance_function(point1, point2),
+                                        num_decimal_places=2, show_ellipsis=True, group_with_commas=False,
+                                        font_size=20).next_to(distance_text, buff=.05)
+        self.remove(infinity)
+        self.add(distance_number)
+        label = VGroup(distance_text, distance_number)
+        s_0 = Dot(hexagon.polygon_points[0])
+        # todo guten zeitpunkt für s_0 finden
+        self.play(Create(s_0))
+        step_size = 50
         for t in range(1, step_size):
             if t < step_size / 2:
                 transition = 2 * t / step_size
             else:
                 transition = (1 - t / step_size) * 2
+            if t == step_size / 2:
+                self.wait(2)
             interp_point1 = get_intersection_in_unit_circle_of_two_tangent_circles(arc.circle_center, arc.radius,
                                                                                    point1,
                                                                                    transition * radius_disks[0])
@@ -151,9 +161,12 @@ class Scene2(MovingCameraScene):
             distance = np.exp(
                 hyperbolic_distance_function(interp_point2, interp_point1))
             distance_number.font_size = 20
-            label.arrange()
-            label.move_to([1.5, 0, 0], aligned_edge=LEFT)
-            self.play(Transform(arc_colored, new_arc), distance_number.animate.set_value(distance), run_time=0.05,
+            label.arrange(buff=.05)
+            label.move_to([2, 0, 0], aligned_edge=LEFT)
+            # todo moving dots
+            self.play(Transform(arc_colored, new_arc),
+                      Transform(s_0, Dot(interp_point1)),
+                      distance_number.animate.set_value(distance), run_time=0.05,
                       rate_func=lambda a: a)
         self.wait(3)
 
@@ -201,15 +214,15 @@ class Scene3(MovingCameraScene):  # former TransformingNonIdealIntoIdeal
         self.play(FadeOut(hexagon, konvergenz))
         hex_n_ideal = HyperbolicPolygon.from_polar(phis, radius, dot_radius=0.02)
         self.play(FadeIn(hex_n_ideal))
-
+        disks = []
         for k in range(0, 6):  # creating disks
             point1 = hex_n_ideal.polygon_points[k]
             circle = Circle(arc_center=point1, radius=circle_radius[k], color=GREEN_B, fill_opacity=0.5)
-            if k == 0:
-                disk1 = circle
+            disks.append(circle)
             self.add_foreground_mobjects(circle)
             self.play(FadeIn(circle))
 
+        dynamic_arcs = []
         for k in range(0, 6):  # creating S_k tilde
             point1 = hex_n_ideal.polygon_points[k]
             point2 = hex_n_ideal.polygon_points[(k + 1) % 6]
@@ -221,10 +234,7 @@ class Scene3(MovingCameraScene):  # former TransformingNonIdealIntoIdeal
                                                                                    arc.circle_center, arc.radius)
             arc_new = ArcBetweenPoints(intersection2, intersection1, color=ORANGE,
                                        radius=arc.radius).reverse_direction()
-            if k == 0:
-                dynamic_arc1 = arc_new
-            if k == 5:
-                dynamic_arc2 = arc_new
+            dynamic_arcs.append(arc_new)
             self.play(Create(arc_new), Write(s_k[k]))
             if k == 0:
                 distance_text, distance_number = label = VGroup(
@@ -277,17 +287,18 @@ class Scene3(MovingCameraScene):  # former TransformingNonIdealIntoIdeal
                                                                                        circle_radius[1],
                                                                                        arc1.circle_center, arc1.radius)
                 arc_new1 = ArcBetweenPoints(intersection1, moving_intersection1, color=ORANGE,
-                                            radius=arc1.radius)
+                                            radius=arc1.radius).reverse_direction()
                 # S_2 tilde
                 moving_intersection2 = get_intersection_in_unit_circle_of_two_tangent_circles(s_0, radius,
                                                                                               arc2.circle_center,
                                                                                               arc2.radius, )
                 intersection2 = get_intersection_in_unit_circle_of_two_tangent_circles(arc2.circle_center, arc2.radius,
                                                                                        s_5, circle_radius[5])
-                arc_new2 = ArcBetweenPoints(moving_intersection2, intersection2, color=ORANGE, radius=arc2.radius)
-                # todo arcs are flashing up weirdly
-                self.play(Transform(disk1, new_circle), Transform(dynamic_arc1, arc_new1),
-                          Transform(dynamic_arc2, arc_new2), rate_func=lambda a: a, run_time=3 / num_steps)
+                arc_new2 = ArcBetweenPoints(moving_intersection2, intersection2, color=ORANGE,
+                                            radius=arc2.radius).reverse_direction()
+                self.play(Transform(disks[0], new_circle), Transform(dynamic_arcs[0], arc_new1),
+                          Transform(dynamic_arcs[5], arc_new2), rate_func=lambda a: a, run_time=3 / num_steps)
+                # todo maybe for all s_k transforming
 
         self.wait(3)
         alt_per = MathTex(r'= \mathrm{AltPer}(P)', font_size=20).next_to(altper_tilde, buff=.05)
