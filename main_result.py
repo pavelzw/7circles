@@ -3,7 +3,7 @@ from typing import Union
 import numpy as np
 from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut, FadeIn, PURPLE, WHITE, YELLOW, GREEN, \
     Uncreate, RED, VGroup, LEFT, DOWN, Dot, TransformFromCopy, Transform, Flash, MathTex, ReplacementTransform, \
-    ApplyWave, Group, GREY
+    ApplyWave, Group, GREY, GREEN_E, YELLOW_E, RED_E
 from manim.utils import rate_functions
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
@@ -565,16 +565,23 @@ class Scene7(MovingCameraScene):
         euclidean_diagonals = get_diagonals(hexagon, stroke_width=2)
         euclidean_intersection_dot = Dot(get_intersection_from_angles(phis[0], phis[3], phis[1], phis[4]), color=YELLOW,
                                          radius=.03)
+        self.add_foreground_mobjects(hexagon, diagonals, intersection_dot)
+
         self.play(self.camera.frame.animate.set(width=6).move_to([0, 0, 0]))
         self.play(*[ReplacementTransform(hexagon.arcs[i], euclidean_hexagon.edges[i]) for i in range(6)],
                   ReplacementTransform(diagonals.arc1, euclidean_diagonals[0].reverse_direction()),
                   ReplacementTransform(diagonals.arc2, euclidean_diagonals[1].reverse_direction()),
                   ReplacementTransform(diagonals.arc3, euclidean_diagonals[2].reverse_direction()),
                   ReplacementTransform(intersection_dot, euclidean_intersection_dot),
+                  # turn uninteresting parts dark
+                  *[inner_circles[i].animate.set_color(GREEN_E) for i in range(len(inner_circles))],
+                  *[inner_intersections[i].animate.set_color(YELLOW_E)
+                    for i in range(len(inner_intersections))],
+                  circle.animate.set_color(RED_E),
                   run_time=3)
 
         self.add_subcaption("Im Klein Modell gilt die Aussage aufgrund der Isometrie zwischen den beiden Räumen "
-                            "immer noch und damit haben wir gewonnen.")
+                            "immer noch und damit haben wir gewonnen.", duration=6)
         self.play(Flash(euclidean_intersection_dot, line_stroke_width=2))
 
         self.wait(5)
