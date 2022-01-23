@@ -2,8 +2,8 @@ from math import pi
 
 import numpy as np
 from manim import Scene, Circle, Dot, Create, FadeIn, Line, \
-    Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Text, RIGHT, UP, GREEN_B, \
-    VGroup
+    Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Text, RIGHT, UP, Write, \
+    MoveToTarget, DOWN, Tex, LEFT, BLUE, GREEN, WHITE, PURPLE, GREY, PINK, Group
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, mobius_transform, \
@@ -118,29 +118,70 @@ class SmallCircles(MovingCameraScene):
         self.wait(5)
 
 
-class SevenCircles(Scene):
+class SevenCircles(MovingCameraScene):
     def construct(self):
-        circle = Circle()
+        self.camera.frame.width = 9
+
+        OUTER_CIRCLE_COLOR = WHITE
+        INNER_CIRCLE_COLOR = BLUE
+        INNER_INTERSECTION_COLOR = GREEN
+        OUTER_INTERSECTION_COLOR = GREY
+        HEXAGON_COLOR = PINK
+        DIAGONAL_COLOR = PURPLE
+        DIAGONAL_INTERSECTION_COLOR = YELLOW
+
+        title = Text("Der Sieben Kreise Satz").scale(0.8)
+
+        t0 = Tex("Sei ", "$C_0$", " ein Kreis ").set_color_by_tex("C_0", OUTER_CIRCLE_COLOR).move_to(LEFT + 1.5 * DOWN)
+        t1 = Tex("und ", "$C_1, \ldots, C_6$", " in $C_0$ enthaltene Kreise ").set_color_by_tex("C_1",
+                                                                                                INNER_CIRCLE_COLOR)
+        t2 = Tex("sodass jeder innere Kreis ", "zu $C_0$ tangential", " ist ").set_color_by_tex("C_0",
+                                                                                                OUTER_INTERSECTION_COLOR)
+        t3 = Tex("und je ", "zwei nebeneinanderliegende innere Kreise ebenfalls zueinander tangential",
+                 " sind.\n").set_color_by_tex("innere", INNER_INTERSECTION_COLOR)
+        t4 = Tex("Dann treffen sich die drei ", "Diagonalen",
+                 " des von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildeten",
+                 " Hexagons ").set_color_by_tex("Diagonalen", DIAGONAL_COLOR).set_color_by_tex("Hexagon", HEXAGON_COLOR)
+        t5 = Tex("in einem ", "Punkt", ".").set_color_by_tex("Punkt", DIAGONAL_INTERSECTION_COLOR)
+        theorem_text = Group(t0, t1, t2, t3, t4, t5).arrange(DOWN).scale(0.3).move_to(
+            1.5 * DOWN + LEFT).align_on_border(LEFT)
+
+        circle = Circle(color=OUTER_CIRCLE_COLOR)
         phis = create_phis(min_dist=.8, max_dist=1.2)
         first_circle_radius = .4
 
-        hexagon = EuclideanHexagon(phis)
+        hexagon = EuclideanHexagon(phis, color=PINK)
         hexagon_circles = HexagonCircles(hexagon, first_circle_radius)
-        inner_intersections = get_intersections_of_n_tangent_circles(hexagon_circles.circles)
-        outer_intersections = get_intersections_of_circles_with_unit_circle(hexagon_circles.circles)
-        diagonals = get_diagonals(hexagon)
-        diagonal_intersection = Dot(get_intersection_from_angles(phis[0], phis[3], phis[1], phis[4]), color=YELLOW)
+        inner_intersections = get_intersections_of_n_tangent_circles(hexagon_circles.circles,
+                                                                     color=INNER_INTERSECTION_COLOR)
+        outer_intersections = get_intersections_of_circles_with_unit_circle(hexagon_circles.circles,
+                                                                            color=OUTER_INTERSECTION_COLOR)
+        diagonals = get_diagonals(hexagon, color=DIAGONAL_COLOR)
+        diagonal_intersection = Dot(get_intersection_from_angles(phis[0], phis[3], phis[1], phis[4]),
+                                    color=DIAGONAL_INTERSECTION_COLOR)
 
-        self.play(FadeIn(circle))
-        self.play(Create(hexagon_circles, run_time=5))
-        for i in range(6):
-            self.play(Create(inner_intersections[i], run_time=.5))
+        self.play(Write(title))
+        # self.add_subcaption("Wir beschäftigen uns heute mit dem Sieben-Kreise-Satz. Unser Ziel ist es diesen über "
+        # "einen interessanten Weg, der hyperbolische Geometrie mit einschließt zu beweisen.")
+        self.wait(4)
+        # self.add_subcaption("Aber zuerst einmal: Was sagt der Sieben-Kreise-Satz überhaupt aus?")
+
+        self.play(title.animate.shift(1.5 * UP).scale(0.7), self.camera.frame.animate.shift(0.8 * DOWN))
+        self.wait(1)
+
+        self.play(FadeIn(circle), Write(t0))
+        self.play(Create(hexagon_circles, run_time=5), Write(t1))
+
+        self.play(Write(t2))
         for i in range(6):
             self.play(Create(outer_intersections[i], run_time=.5))
-        self.play(Create(hexagon, run_time=5))
+        self.play(Write(t3))
+        for i in range(6):
+            self.play(Create(inner_intersections[i], run_time=.5))
+        self.play(Create(hexagon, run_time=5), Write(t4))
         for x in diagonals:
             self.play(Create(x), run_time=1)
-        self.play(Create(diagonal_intersection))
+        self.play(Create(diagonal_intersection), Write(t5))
         self.wait(1)
         self.play(Flash(diagonal_intersection))
         self.wait(1)
@@ -165,12 +206,16 @@ class ParallelAxiom(Scene):
         h = Line(h_points[0], h_points[1], name="h")
         h_text = Text("h").next_to(h, RIGHT)
 
-        self.play(Create(g))
+        self.add_subcaption("Das Parallelenaxiom sagt aus, dass zu jeder Gerade g")
+        self.wait(5)
+        self.play(Create(g), subcaption="und jedem Punkt P, der nicht auf g liegt")
         self.play(Create(g_text))
         self.wait(2)
-        self.play(Create(p))
+        self.play(Create(p), subcaption="genau eine Gerade h existiert, die durch P verläuft und zu g parallel ist.")
         self.play(Create(p_text))
         self.wait(2)
         self.play(Create(h))
         self.play(Create(h_text))
         self.wait(2)
+        self.add_subcaption(
+            "Parallel heißt hier einfach, dass sich die beiden Geraden nicht schneiden.")
