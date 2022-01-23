@@ -175,43 +175,43 @@ class SevenCircles(MovingCameraScene):
         self.play(title.animate.shift(1.5 * UP).scale(0.7), self.camera.frame.animate.shift(0.8 * DOWN))
         self.wait(1)
 
-        self.play(Write(theorem_text[0]))
-        self.play(Write(theorem_text[1]))
-        self.play(Write(theorem_text[2]))
+        self.play(Write(theorem_text[0], run_time=.2))
+        self.play(Write(theorem_text[1], run_time=.4))
+        self.play(Write(theorem_text[2], run_time=.4))
 
         self.play(FadeIn(circle))
 
-        self.play(Write(theorem_text[3]))
-        self.play(Write(theorem_text[4]))
-        self.play(Write(theorem_text[5]))
+        self.play(Write(theorem_text[3], run_time=.2))
+        self.play(Write(theorem_text[4], run_time=.6))
+        self.play(Write(theorem_text[5], run_time=1.8))
 
         self.play(Create(hexagon_circles, run_time=5))
 
-        self.play(Write(theorem_text[6]))
-        self.play(Write(theorem_text[7]))
-        self.play(Write(theorem_text[8]))
+        self.play(Write(theorem_text[6], run_time=1.6))
+        self.play(Write(theorem_text[7], run_time=1.2))
+        self.play(Write(theorem_text[8], run_time=.2))
 
         for i in range(6):
             self.play(Create(outer_intersections[i], run_time=.5))
 
-        self.play(Write(theorem_text[9]))
-        self.play(Write(theorem_text[10]))
-        self.play(Write(theorem_text[11]))
+        self.play(Write(theorem_text[9]), run_time=.6)
+        self.play(Write(theorem_text[10]), run_time=4.6)
+        self.play(Write(theorem_text[11]), run_time=.2)
 
         for i in range(6):
             self.play(Create(inner_intersections[i], run_time=.5))
 
-        self.play(Write(theorem_text[12]))
-        self.play(Write(theorem_text[13]))
-        self.play(Write(theorem_text[14]))
-        self.play(Write(theorem_text[15]))
+        self.play(Write(theorem_text[12]), run_time=1.2)
+        self.play(Write(theorem_text[13]), run_time=.8)
+        self.play(Write(theorem_text[14]), run_time=5)
+        self.play(Write(theorem_text[15]), run_time=.6)
 
         self.play(Create(hexagon, run_time=5))
         for x in diagonals:
             self.play(Create(x), run_time=1)
 
-        self.play(Write(theorem_text[16]))
-        self.play(Write(theorem_text[17]))
+        self.play(Write(theorem_text[16]), run_time=.6)
+        self.play(Write(theorem_text[17]), run_time=.2)
         self.play(Write(theorem_text[18]))
 
         self.play(Create(diagonal_intersection))
