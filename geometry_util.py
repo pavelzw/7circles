@@ -1,4 +1,5 @@
 import math
+from typing import Callable
 
 import numpy as np
 from manim import Circle, Dot, WHITE, GREEN, Arc, Line
@@ -194,6 +195,72 @@ def tf_poincare_to_hem(point):  # 2 coord to 3 coord
 
 def tf_poincare_to_klein(point):  # 2 coord to 2 coord
     return tf_poincare_to_hem(tf_hem_to_klein(point))
+
+
+def tf_poincare_disk_to_poincare_half_plane(point):
+    # https://en.wikipedia.org/wiki/Poincar%C3%A9_disk_model#Relation_to_the_Poincar%C3%A9_half-plane_model
+    assert point[0] <= 1 + .01
+    assert point[1] <= 1 + .01
+    x, y = point[0], point[1]
+    return np.array([2 * x / (x ** 2 + (1 - y) ** 2), (1 - x ** 2 - y ** 2) / (x ** 2 + (1 - y) ** 2)])
+
+
+def tf_poincare_half_plane_to_poincare_disk(point):
+    # https://en.wikipedia.org/wiki/Poincar%C3%A9_disk_model#Relation_to_the_Poincar%C3%A9_half-plane_model
+    assert point[1] >= 0 - .01
+    x, y = point[0], point[1]
+    return np.array([2 * x / (x ** 2 + (1 + y) ** 2), (x ** 2 + y ** 2 - 1) / (x ** 2 + (1 + y) ** 2), 0])
+
+
+def mobius_transform_from_matrix(p, a, b, c, d):
+    # ad - bc = 1
+    assert abs(a * d - b * c - 1) <= 0.01
+    # z |-> (a * z + b) / (c * z + d)
+    z = complex(p[0], p[1])
+    result = (a * z + b) / (c * z + d)
+    return np.array([result.real, result.imag])
+
+
+def mobius_transform_half_plane(p, q) -> Callable:
+    """
+    Returns the mobius transformation that maps `p` to `q`.
+
+    :param p: array_like
+        in the Poincaré half plane
+    :param q: array_like
+        in the Poincaré half plane
+    :return: function that takes an array_like and applies the mobius transform to it
+    """
+    x, y = p[0], p[1]
+    u, v = q[0], q[1]
+    # T_b maps i to p = x + i*y
+    # T_c maps i to q = u + i*v
+    # => T_a = T_c \circ T_b^-1 maps p to q
+    b = np.array([[1, x], [0, 1]]) @ np.array([[np.sqrt(y), 0], [0, 1 / np.sqrt(y)]])
+    c = np.array([[1, u], [0, 1]]) @ np.array([[np.sqrt(v), 0], [0, 1 / np.sqrt(v)]])
+    a = c @ np.linalg.inv(b)
+    return lambda z: mobius_transform_from_matrix(z, a[0, 0], a[0, 1], a[1, 0], a[1, 1])
+
+
+def mobius_transform_poincare_disk(p, q) -> Callable:
+    """
+    Returns the mobius transformation that maps `p` to `q`.
+
+    :param p: array_like
+        in the Poincaré unit disk
+    :param q: array_like
+        in the Poincaré unit disk
+    :return: function that takes an array_like and applies the mobius transform to it
+    """
+    p_half_plane = tf_poincare_disk_to_poincare_half_plane(p)
+    q_half_plane = tf_poincare_disk_to_poincare_half_plane(q)
+    transform_half_plane = mobius_transform_half_plane(p_half_plane, q_half_plane)
+    # transform from unit disk to half plane, do mobius transform there and then transform back
+    return lambda x: tf_poincare_half_plane_to_poincare_disk(
+        transform_half_plane(
+            tf_poincare_disk_to_poincare_half_plane(x)
+        )
+    )
 
 
 def mobius_transform(point, x, y, u):

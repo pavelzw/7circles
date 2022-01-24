@@ -3,12 +3,13 @@ from typing import Union
 import numpy as np
 from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut, FadeIn, PURPLE, WHITE, YELLOW, GREEN, \
     Uncreate, RED, VGroup, LEFT, DOWN, Dot, TransformFromCopy, Transform, Flash, MathTex, ReplacementTransform, \
-    ApplyWave, Group, GREY, GREEN_E, YELLOW_E, RED_E, Unwrite
+    ApplyWave, Group, GREY, GREEN_E, YELLOW_E, RED_E, Unwrite, Square, Indicate, UP
 from manim.utils import rate_functions
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, get_intersection_in_unit_circle_of_two_tangent_circles, \
-    get_intersections_of_n_tangent_circles, get_intersection_points_of_n_tangent_circles, get_intersection_from_angles
+    get_intersections_of_n_tangent_circles, get_intersection_points_of_n_tangent_circles, get_intersection_from_angles, \
+    mobius_transform_poincare_disk
 from hexagon import HexagonMainDiagonals, IntersectionTriangle, HexagonAngles, HexagonCircles
 from hyperbolic_polygon import HyperbolicPolygon, HyperbolicArcBetweenPoints
 
@@ -338,17 +339,57 @@ class Scene4(MovingCameraScene):
         self.play(FadeOut(y3, g3, dot3))
 
         self.add_subcaption("Es gibt jeweils eine Isometrie I_k, die die gegenüberliegende Dreiecke "
-                            "aufeinander abbildet. Also I_k(Y_k) = G_k.", duration=3)
-        self.play(FadeIn(y1))
-        self.play(ReplacementTransform(y1, g1))
-        self.play(FadeOut(g1))
+                            "aufeinander abbildet. Diese können wir uns wie folgt definieren.", duration=3)
+        # self.play(FadeIn(y1))
+        # self.play(ReplacementTransform(y1, g1))
+        # self.play(FadeOut(g1))
 
-        # todo explain why the isometry is there
+        # isometry explanation
+        p = y1.polygon_points[2]
+        zero = np.array([0, 0, 0])
+        # move hexagon s. t. p is at zero
+        mobius_transform = mobius_transform_poincare_disk(p, zero)
+        transformed_hexagon_points = [mobius_transform(point) for point in hexagon.polygon_points]
+        transformed_hexagon = HyperbolicPolygon(transformed_hexagon_points, add_dots=False, stroke_width=2)
+        transformed_diagonals = HexagonMainDiagonals(transformed_hexagon, stroke_width=2)
+        dot_p = Dot(p, radius=.05, color=YELLOW)
+        self.add_foreground_mobjects(dot_p)
+        self.play(Create(dot_p))
+
+        self.play(dot_p.animate.move_to(mobius_transform(p)),
+                  ReplacementTransform(hexagon, transformed_hexagon),
+                  ReplacementTransform(diagonals, transformed_diagonals), run_time=2)
+        self.add_subcaption("Die beiden Diagonalen, die den Punkt schneiden, sind nun beides Geraden durch den "
+                            "Ursprung. Deshalb können wir einfach eine Punktspiegelung am Ursprung machen "
+                            "und können so das rechte Dreieck auf das linke Dreieck transformieren.", duration=8)
+        self.play(Indicate(transformed_diagonals.arc1), Indicate(transformed_diagonals.arc3))
+        self.wait(2)
+        triangle1 = HyperbolicPolygon([transformed_hexagon_points[-1], transformed_hexagon_points[0], zero],
+                                      add_dots=False, color=YELLOW)
+        triangle2 = HyperbolicPolygon([transformed_hexagon_points[2], transformed_hexagon_points[3], zero],
+                                      add_dots=False, color=YELLOW)
+        self.play(FadeIn(triangle1))
+        self.wait(2)
+        y1_label = MathTex('Y_1', font_size=15).move_to([.35, -.2, 0])
+        g1_label = MathTex('G_1', font_size=15).move_to([-.4, .2, 0])
+        isometry_formula = MathTex('I_1(Y_1) = G_1', font_size=20).move_to([1.35, 0, 0], LEFT)
+        self.play(Write(y1_label), Write(g1_label))
+        self.play(ReplacementTransform(triangle1, triangle2), Write(isometry_formula))
+
+        self.wait(3)
+        self.add_subcaption("Das ganze geht natürlich nicht nur für das erste Dreieckspaar, sondern für alle.")
+        self.play(Transform(isometry_formula, MathTex('I_k(Y_k) = G_k', font_size=20).move_to([1.35, 0, 0], LEFT)))
 
         self.wait(5)
 
         # transition to Scene5
-        self.play(self.camera.frame.animate.move_to([5, 0, 0]))
+        self.play(self.camera.frame.animate.move_to(isometry_formula.get_center()),
+                  FadeOut(circle, g1_label, y1_label, transformed_hexagon, transformed_diagonals,
+                          dot_p, triangle2),
+                  isometry_formula.animate.set(font_size=48)
+                  )
+        self.remove(circle, dot_p)  # remove foreground mobjects
+        self.wait(2)
 
 
 class Scene5(MovingCameraScene):
@@ -357,9 +398,13 @@ class Scene5(MovingCameraScene):
         timings = []
         # timings = [.1, .1, .1, .1, .1, 10]
         timings.reverse()
+        isometry_formula = MathTex('I_k(Y_k) = G_k')
+        formula = MathTex(r'\Rightarrow A(Y_k) = A(G_k)')
+        # todo align on equals sign
+        self.add(isometry_formula)
+        self.wait(1)
+        self.play(isometry_formula.animate.next_to(formula, UP))
 
-        formula = MathTex("A(Y_k) = A(G_k)")
-        self.wait(.5)
         self.add_subcaption("Da wir eine Isometrie zwischen den beiden "
                             "Dreiecken haben, sind die Umfänge der Dreiecke gleich, "
                             "es gilt also A(Y_k) = A(G_k).", duration=5)
@@ -369,9 +414,10 @@ class Scene5(MovingCameraScene):
                                               MathTex("A(Y_2) = A(G_2)"),
                                               MathTex("A(Y_3) = A(G_3)")).arrange(DOWN)
 
-        self.play(TransformFromCopy(formula, formula1), TransformFromCopy(formula, formula2),
-                  TransformFromCopy(formula, formula3), FadeOut(formula),
-                  subcaption="Diese Formeln können wir explizit für alle drei Dreieckspaare aufschreiben.")
+        self.add_subcaption("Diese Formeln können wir explizit für alle drei Dreieckspaare aufschreiben.", duration=3)
+        self.play(FadeOut(isometry_formula), TransformFromCopy(formula, formula1))
+        self.play(TransformFromCopy(formula, formula3))
+        self.play(ReplacementTransform(formula, formula2))
         self.wait(2)
 
         formula1_transformed, formula2_transformed, formula3_transformed = formulas_transformed = VGroup(
@@ -625,6 +671,10 @@ class Scene7(MovingCameraScene):
         self.add_subcaption("Im Klein Modell gilt die Aussage aufgrund der Isometrie zwischen den beiden Räumen "
                             "immer noch und damit haben wir gewonnen.", duration=6)
         self.play(Flash(euclidean_intersection_dot, line_stroke_width=2))
+
+        self.wait(2)
+        proof_square = Square(side_length=.15, stroke_width=2).move_to([2, -1, 0], DOWN)
+        self.play(Create(proof_square), run_time=2)
 
         self.wait(5)
 
