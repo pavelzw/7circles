@@ -4,7 +4,7 @@ import numpy as np
 from manim import Scene, Circle, Dot, Create, FadeIn, Line, \
     Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Text, UP, Write, \
     DOWN, Tex, BLUE, GREEN, WHITE, PURPLE, GREY, PINK, Uncreate, AnimationGroup, Unwrite, ImageMobject, LEFT, RIGHT, \
-    MarkupText
+    MarkupText, Polygon
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, mobius_transform, \
@@ -306,25 +306,63 @@ class ParallelAxiom(MovingCameraScene):
 
 class HyperbolicModels(MovingCameraScene):
     def construct(self):
+        center = [0, 0, 0]
+
+        klein_origin = [3.5, -1, 0]
+        poincare_origin = [-3.5, -1, 0]
+
         title = MarkupText(
             f'<span underline="single" underline_color="white">Modelle für die hyperbolische Ebene</span>').scale(
             0.8).shift(3.5 * UP)
 
-        klein_model = ImageMobject("tessellation_klein.png").move_to(1 * DOWN + 3.5 * LEFT).scale(0.7)
-        klein_text = Text("Klein-Modell").scale(0.6).move_to(3.5 * LEFT + 2.2 * UP)
-        poincare_model = ImageMobject("tessellation_poincare.png").move_to(1 * DOWN + 3.5 * RIGHT).scale(0.7)
-        poincare_text = Text("Poincaré-Modell").scale(0.6).move_to(3.5 * RIGHT + 2.2 * UP)
+        klein_model = ImageMobject("tessellation_klein.png").move_to(1 * DOWN + 3.5 * RIGHT).scale(0.7)
+        klein_text = Text("Klein-Modell").scale(0.6).move_to(3.5 * RIGHT + 2.2 * UP)
+        poincare_model = ImageMobject("tessellation_poincare.png").move_to(1 * DOWN + 3.5 * LEFT).scale(0.7)
+        poincare_text = Text("Poincaré-Modell").scale(0.6).move_to(3.5 * LEFT + 2.2 * UP)
 
-        # self.add(title, klein_model, klein_text, poincare_model, poincare_text)
+        self.add(title, klein_model, klein_text, poincare_model, poincare_text)
 
-        self.play(Write(title))
-        self.add_foreground_mobject(title)
-        self.wait(1)
+        k1 = np.array([[0, 0, 0], [2, 0, 0], [1.24, 1.58, 0]])
+        k2 = np.array([[-0.46, 1.95, 0], [-1.81, 0.89, 0], [-1.49, 1.86, 0]])
 
-        self.add_foreground_mobject(klein_text)
-        self.play(Write(klein_text), FadeIn(klein_model), run_time=3)
-        self.wait(3)
+        p1 = np.array([[0., 0., 0.], [1.25, 0, 0], [0.78, 0.98, 0]])
+        p2 = np.array([[-.28, 1.23, 0], [-1.12, 0.55, 0], [-1.12, 1.42, 0]])
 
-        self.add_foreground_mobject(poincare_text)
-        self.play(Write(poincare_text), FadeIn(poincare_model), run_time=3)
-        self.wait(3)
+        scale_front = 0.4
+        scale_back = 2.5
+
+        p1 = scale_front * p1
+        p2 = scale_front * p2
+
+        ktri1 = Polygon(*k1).shift(klein_origin)
+        ktri2 = Polygon(*k2).shift(klein_origin)
+        ptri1 = HyperbolicPolygon(p1).scale(scale_back).shift(np.add(poincare_origin, [0.38, 0.32, 0]))
+        ptri2 = HyperbolicPolygon(p2).scale(scale_back).shift(np.add(poincare_origin, [-0.44, 0.59, 0]))
+
+        self.add(ktri1, ktri2, ptri1, ptri2)
+
+        # self.play(Write(title))
+        # self.add_foreground_mobject(title)
+        # self.wait(1)
+#
+# self.add_foreground_mobject(poincare_text)
+# self.play(Write(poincare_text), FadeIn(poincare_model), run_time=3)
+# self.wait(3)
+#
+# self.add_foreground_mobject(klein_text)
+# self.play(Write(klein_text), FadeIn(klein_model), run_time=3)
+# self.wait(3)
+#
+# self.play(self.camera.frame.animate.scale(0.8).move_to(np.add(poincare_origin, [0, 0.4, 0])),
+#          FadeOut(klein_model), FadeOut(klein_text))
+#
+# self.wait(5)
+#
+# self.play(self.camera.frame.animate.scale(1.25).move_to(center), FadeIn(klein_model), FadeIn(klein_text))
+#
+# self.wait(5)
+#
+# self.play(self.camera.frame.animate.scale(0.8).move_to(np.add(klein_origin, [0, 0.4, 0])),
+#          FadeOut(poincare_model), FadeOut(poincare_text))
+#
+# self.wait(5)
