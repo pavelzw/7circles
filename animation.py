@@ -3,7 +3,7 @@ from math import pi
 import numpy as np
 from manim import Scene, Circle, Dot, Create, FadeIn, Line, \
     Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Text, UP, Write, \
-    DOWN, Tex, BLUE, GREEN, WHITE, PURPLE, GREY, PINK
+    DOWN, Tex, BLUE, GREEN, WHITE, PURPLE, GREY, PINK, Uncreate, AnimationGroup
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, mobius_transform, \
@@ -221,28 +221,43 @@ class SevenCircles(MovingCameraScene):
         self.wait(1)
 
 
-class ParallelAxiomEuclidean(MovingCameraScene):
+class ParallelAxiom(MovingCameraScene):
     def construct(self):
+        center = [0, 2, 0]
         left = -7
         right = 7
 
-        title = Text("Parallelenaxiom - Euklidische Geometrie").scale(0.7).shift(5 * UP)
+        title = Text("Parallelenaxiom").scale(0.7).shift(5 * UP)
 
         g_fun = lambda x: -0.7 * x
         g_points = [[left, g_fun(left), 0], [right, g_fun(right), 0]]
         g = Line(g_points[0], g_points[1], name="g")
-        g_text = Text("g", stroke_width=0.05).move_to([-3.5, 3, 0])
+        g_text = Tex("$g$", stroke_width=0.05).move_to([-3.5, 3, 0])
 
         p_array = polar_to_point(1)
         p = Dot(p_array, name="P", color=YELLOW)
-        p_text = Text("P", stroke_width=0.05).next_to(p, UP)
+        p_text = Tex("$P$", stroke_width=0.05).next_to(p, UP)
 
         h_fun = get_parallel_to_line_through_point(g_points, p_array)
         h_points = [[left, h_fun(left), 0], [right, h_fun(right), 0]]
         h = Line(h_points[0], h_points[1], name="h")
-        h_text = Text("h", stroke_width=0.05).move_to([-1.7, 3, 0])
+        h_text = Tex("$h$", stroke_width=0.05).move_to([-1.7, 3, 0])
 
-        self.camera.frame.move_to([0, 2, 0])
+        similar_to_g = [lambda x: x * -.65, lambda x: x * -.8, lambda x: x * -.57, lambda x: x * -.77]
+        similar_points = [[[left, _(left), 0.], [right, _(right), 0.]] for _ in similar_to_g]
+        similar_funcs = [get_parallel_to_line_through_point(sim_points, p_array) for sim_points in similar_points]
+        sim_h_points = [[[left, _(left), 0.], [right, _(right), 0.]] for _ in similar_funcs]
+        similar_lines = [Line(_[0], _[1], stroke_width=1) for _ in sim_h_points]
+
+        elements = [title, g, g_text, h, h_text, p, p_text, similar_lines[0], similar_lines[1],
+                    similar_lines[2],
+                    similar_lines[3]]
+
+        uncreate = AnimationGroup(*[Uncreate(i, run_time=1) for i in elements])
+
+        question = Text("Wie stellt man die hyperbolischen Ebene im Euklidischen dar?").scale(0.7).move_to(center)
+
+        self.camera.frame.move_to(center)
         self.play(Create(title))
         self.add_subcaption("Das Parallelenaxiom sagt aus, dass zu jeder Gerade g", duration=3)
         self.play(Create(g))
@@ -258,5 +273,29 @@ class ParallelAxiomEuclidean(MovingCameraScene):
         self.play(Create(h_text))
         self.wait(2)
         self.add_subcaption(
-            "Parallel heißt hier einfach, dass sich die beiden Geraden nicht schneiden.", duration=5)
+            "Parallel heißt hier einfach, dass sich die beiden Geraden nicht schneiden.", duration=3)
+        self.wait(5)
+        self.add_subcaption("In der hyperbolischen Geometrie ist diese Eigenschaft nicht gegeben.", duration=3)
         self.wait(3)
+        self.add_subcaption(
+            "Dort gibt es für jedes solche g und P mehrere, sogar unendlich viele Geraden durch P, die zu g parallel sind also g nicht schneiden.",
+            duration=4)
+
+        self.play(Create(similar_lines[0]))
+        self.play(Create(similar_lines[1]))
+        self.play(Create(similar_lines[2]))
+        self.play(Create(similar_lines[3]))
+
+        self.add_subcaption(
+            "Unsere Darstellung hier ist aber irreführend, denn natürlich schneiden alle außer der ursprünglichen Gerade $h$ $g$ wenn wir den Geraden nur lange genug folgen.",
+            duration=4)
+        self.wait(4)
+        self.add_subcaption(
+            "Allgemein haben wir das Problem, dass wir einen Raum in dem hyperbolische Geometrie herrscht in einem euklidischen zweidimensionalen Video darstellen wollen.",
+            duration=4)
+        self.wait(4)
+        self.add_subcaption("Die Frage ist also: Wie stellt man die hyperbolischen Ebene im Euklidischen dar?",
+                            duration=4)
+        self.play(uncreate)
+        self.wait(1)
+        self.play(Write(question))
