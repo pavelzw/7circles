@@ -2,8 +2,8 @@ from math import pi
 
 import numpy as np
 from manim import Scene, Circle, Dot, Create, FadeIn, Line, \
-    Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Text, RIGHT, UP, Write, \
-    MoveToTarget, DOWN, Tex, LEFT, BLUE, GREEN, WHITE, PURPLE, GREY, PINK, Group
+    Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Text, UP, Write, \
+    DOWN, Tex, BLUE, GREEN, WHITE, PURPLE, GREY, PINK
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, mobius_transform, \
@@ -212,7 +212,8 @@ class SevenCircles(MovingCameraScene):
 
         self.play(Write(theorem_text[16]), run_time=.6)
         self.play(Write(theorem_text[17]), run_time=.2)
-        self.play(Write(theorem_text[18]))
+        self.play(Write(theorem_text[18], run_time=.2))
+        self.play(Write(theorem_text[19]))
 
         self.play(Create(diagonal_intersection))
         self.wait(1)
@@ -220,35 +221,42 @@ class SevenCircles(MovingCameraScene):
         self.wait(1)
 
 
-class ParallelAxiom(Scene):
+class ParallelAxiomEuclidean(MovingCameraScene):
     def construct(self):
         left = -7
         right = 7
 
+        title = Text("Parallelenaxiom - Euklidische Geometrie").scale(0.7).shift(5 * UP)
+
         g_fun = lambda x: -0.7 * x
         g_points = [[left, g_fun(left), 0], [right, g_fun(right), 0]]
         g = Line(g_points[0], g_points[1], name="g")
-        g_text = Text("g")
+        g_text = Text("g", stroke_width=0.05).move_to([-3.5, 3, 0])
 
         p_array = polar_to_point(1)
-        p = Dot(p_array, name="P")
-        p_text = Text("P").next_to(p, UP)
+        p = Dot(p_array, name="P", color=YELLOW)
+        p_text = Text("P", stroke_width=0.05).next_to(p, UP)
 
         h_fun = get_parallel_to_line_through_point(g_points, p_array)
         h_points = [[left, h_fun(left), 0], [right, h_fun(right), 0]]
         h = Line(h_points[0], h_points[1], name="h")
-        h_text = Text("h").next_to(h, RIGHT)
+        h_text = Text("h", stroke_width=0.05).move_to([-1.7, 3, 0])
 
-        self.add_subcaption("Das Parallelenaxiom sagt aus, dass zu jeder Gerade g")
-        self.wait(5)
-        self.play(Create(g), subcaption="und jedem Punkt P, der nicht auf g liegt")
+        self.camera.frame.move_to([0, 2, 0])
+        self.play(Create(title))
+        self.add_subcaption("Das Parallelenaxiom sagt aus, dass zu jeder Gerade g", duration=3)
+        self.play(Create(g))
         self.play(Create(g_text))
         self.wait(2)
-        self.play(Create(p), subcaption="genau eine Gerade h existiert, die durch P verläuft und zu g parallel ist.")
+        self.add_subcaption("und jedem Punkt P, der nicht auf g liegt", duration=3)
+        self.play(Create(p))
         self.play(Create(p_text))
+        self.add_foreground_mobject(p)
         self.wait(2)
+        self.add_subcaption("genau eine Gerade h existiert, die durch P verläuft und zu g parallel ist.", duration=3)
         self.play(Create(h))
         self.play(Create(h_text))
         self.wait(2)
         self.add_subcaption(
-            "Parallel heißt hier einfach, dass sich die beiden Geraden nicht schneiden.")
+            "Parallel heißt hier einfach, dass sich die beiden Geraden nicht schneiden.", duration=5)
+        self.wait(3)
