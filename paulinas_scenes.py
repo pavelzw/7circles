@@ -3,8 +3,8 @@ from math import pi
 import numpy as np
 from manim import Scene, Square, Circle, Dot, Group, Text, Create, FadeIn, FadeOut, MoveAlongPath, Line, WHITE, BLUE, \
     GREEN_B, Transform, MovingCameraScene, Uncreate, \
-    VGroup, DecimalNumber, RIGHT, Tex, LEFT, UP, MathTex, Write, Unwrite, Indicate, TransformFromCopy, VMobject, RED, \
-    DOWN, GREY_B, GREEN, ORIGIN, PURPLE, ORANGE, ArcBetweenPoints, ReplacementTransform, GREEN_D, Flash
+    VGroup, DecimalNumber, RIGHT, Tex, LEFT, UP, MathTex, Write, Indicate, TransformFromCopy, RED, \
+    DOWN, GREY_B, ORANGE, ArcBetweenPoints
 
 from geometry_util import polar_to_point, hyperbolic_distance_function, create_min_circle_radius, moving_circle, \
     moving_line, get_intersection_in_unit_circle_of_two_tangent_circles
@@ -14,6 +14,10 @@ from hyperbolic_polygon import HyperbolicPolygon, HyperbolicArcBetweenPoints
 
 class Scene1(MovingCameraScene):
     def construct(self):
+        # todo 6 circles next to each other, Create all hexagons at the same time
+        # todo text stroke width
+        # todo coloring
+        # todo arcs stroke width
         # Labels
         s_1 = MathTex('S_1', color=BLUE, font_size=15).move_to([0, .5, 0])
         s_2 = MathTex('S_2', color=BLUE, font_size=15).move_to([-.6, .45, 0])
@@ -63,7 +67,7 @@ class Scene1(MovingCameraScene):
         dots[-1].set_color(BLUE)
         for i in range(0, 6):
             dots[i].set_color(BLUE)
-            self.play(Create(arc[i]), Write(s_k[i]),
+            self.play(Create(arc[i]), Write(s_k[i], stroke_width=.5),
                       rate_func=lambda a: a, run_time=1)
 
         self.play(self.camera.frame.animate.set(width=6).move_to([1.5, 0, 0]))  # moves circle to left
@@ -73,9 +77,10 @@ class Scene1(MovingCameraScene):
                                     MathTex(r'S_1 + S_2 + S_3 + S_4 + S_5 + S_6 ', font_size=formula_size)).arrange(
             buff=0.05).move_to([2.5, 0.2, 0])
 
+        # todo make + and - WHITE
         alt_sum = MathTex("S_1", "- S_2", "+ S_3", "- S_4", "+ S_5", "- S_6", font_size=15)
         alt_sum[1].set_color(RED), alt_sum[3].set_color(RED), alt_sum[5].set_color(RED)  # alternating color
-        alt_sum[0].set_color(BLUE), alt_sum[2].set_color(BLUE), alt_sum[4].set_color(BLUE),
+        alt_sum[0].set_color(BLUE), alt_sum[2].set_color(BLUE), alt_sum[4].set_color(BLUE)
         alt_per = MathTex(r'\mathrm{AltPer}(P) =', font_size=formula_size)
         sum2 = VGroup(alt_per, alt_sum).arrange(buff=.05).next_to(sum1, .5 * DOWN, aligned_edge=LEFT)
         self.play(Write(per))
@@ -143,6 +148,7 @@ class Scene2(MovingCameraScene):
         # todo guten zeitpunkt für s_0 finden
         self.play(Create(s_0))
         step_size = 50
+        # todo length = infty at the end
         for t in range(1, step_size):
             if t < step_size / 2:
                 transition = 2 * t / step_size
@@ -150,6 +156,7 @@ class Scene2(MovingCameraScene):
                 transition = (1 - t / step_size) * 2
             if t == step_size / 2:
                 self.wait(2)
+            # todo reverse direction in first frame
             interp_point1 = get_intersection_in_unit_circle_of_two_tangent_circles(arc.circle_center, arc.radius,
                                                                                    point1,
                                                                                    transition * radius_disks[0])
@@ -265,6 +272,8 @@ class Scene3(MovingCameraScene):  # former TransformingNonIdealIntoIdeal
                hex_n_ideal.polygon_points[3], hex_n_ideal.polygon_points[4], hex_n_ideal.polygon_points[5]]
         arc_k = [hex_n_ideal.arcs[0], hex_n_ideal.arcs[1], hex_n_ideal.arcs[2], hex_n_ideal.arcs[3],
                  hex_n_ideal.arcs[4], hex_n_ideal.arcs[5]]
+        # todo when green circle has radius 0, make dot orange
+        # todo make green circles hyperbolic circles
         for i in range(0, 2):
             if i == 0:
                 circle1_radii_transition = [circle_radius[0] * (
@@ -353,7 +362,7 @@ class Scene3(MovingCameraScene):  # former TransformingNonIdealIntoIdeal
                             MathTex(r'=\tilde{S_1}-\tilde{S_2} + \tilde{S_3} - \tilde{S_4} + \tilde{S_5}-\tilde{S_6}',
                                     font_size=20),
                             MathTex(r'\mathrm{AltPer}(P)', font_size=20)).arrange(DOWN, aligned_edge=LEFT).move_to(
-            [2, 0, 0])
+            [1.2, 0, 0], LEFT)
         self.play(FadeOut(konvergenz), Write(end_result))
         self.wait(3)
 
