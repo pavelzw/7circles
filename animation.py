@@ -3,7 +3,8 @@ from math import pi
 import numpy as np
 from manim import Scene, Circle, Dot, Create, FadeIn, Line, \
     Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Text, UP, Write, \
-    DOWN, Tex, BLUE, GREEN, WHITE, PURPLE, GREY, PINK, Uncreate, AnimationGroup
+    DOWN, Tex, BLUE, GREEN, WHITE, PURPLE, GREY, PINK, Uncreate, AnimationGroup, Unwrite, ImageMobject, LEFT, RIGHT, \
+    MarkupText
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, mobius_transform, \
@@ -232,7 +233,7 @@ class ParallelAxiom(MovingCameraScene):
         g_fun = lambda x: -0.7 * x
         g_points = [[left, g_fun(left), 0], [right, g_fun(right), 0]]
         g = Line(g_points[0], g_points[1], name="g")
-        g_text = Tex("$g$", stroke_width=0.05).move_to([-3.5, 3, 0])
+        g_text = Tex("$g$", stroke_width=0.05).move_to([-3.7, 3, 0])
 
         p_array = polar_to_point(1)
         p = Dot(p_array, name="P", color=YELLOW)
@@ -299,3 +300,31 @@ class ParallelAxiom(MovingCameraScene):
         self.play(uncreate)
         self.wait(1)
         self.play(Write(question))
+        self.wait(3)
+        self.play(Unwrite(question))
+
+
+class HyperbolicModels(MovingCameraScene):
+    def construct(self):
+        title = MarkupText(
+            f'<span underline="single" underline_color="white">Modelle für die hyperbolische Ebene</span>').scale(
+            0.8).shift(3.5 * UP)
+
+        klein_model = ImageMobject("tessellation_klein.png").move_to(1 * DOWN + 3.5 * LEFT).scale(0.7)
+        klein_text = Text("Klein-Modell").scale(0.6).move_to(3.5 * LEFT + 2.2 * UP)
+        poincare_model = ImageMobject("tessellation_poincare.png").move_to(1 * DOWN + 3.5 * RIGHT).scale(0.7)
+        poincare_text = Text("Poincaré-Modell").scale(0.6).move_to(3.5 * RIGHT + 2.2 * UP)
+
+        # self.add(title, klein_model, klein_text, poincare_model, poincare_text)
+
+        self.play(Write(title))
+        self.add_foreground_mobject(title)
+        self.wait(1)
+
+        self.add_foreground_mobject(klein_text)
+        self.play(Write(klein_text), FadeIn(klein_model), run_time=3)
+        self.wait(3)
+
+        self.add_foreground_mobject(poincare_text)
+        self.play(Write(poincare_text), FadeIn(poincare_model), run_time=3)
+        self.wait(3)
