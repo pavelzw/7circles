@@ -4,7 +4,7 @@ import numpy as np
 from manim import Scene, Circle, Dot, Create, FadeIn, Line, \
     Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Text, UP, Write, \
     DOWN, Tex, BLUE, GREEN, WHITE, PURPLE, GREY, PINK, Uncreate, AnimationGroup, Unwrite, ImageMobject, LEFT, RIGHT, \
-    MarkupText, Polygon, Group, FadeOut
+    MarkupText, Polygon, Group
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, mobius_transform, \
@@ -349,41 +349,61 @@ class HyperbolicModels(MovingCameraScene):
         ptri2.move_to(ptri2.get_center() * scale_back).shift(poincare_origin)
         # self.add(ktri1, ktri2, ptri1, ptri2)
 
+        phis = [[0.4, 2], [1.3, 6], [3.5, 5], [4, 1.5]]
+
+        p_geodesics_raw = [HyperbolicArcBetweenPoints(polar_to_point(x), polar_to_point(y)) for [x, y] in phis]
+        p_geodesics = [geo.scale(scale_back).move_to(geo.get_center() * scale_back).shift(poincare_origin) for geo in
+                       p_geodesics_raw]
+        k_geodesics_raw = [Line(polar_to_point(x), polar_to_point(y)) for [x, y] in phis]
+        k_geodesics = [geo.scale(scale_back).move_to(geo.get_center() * scale_back).shift(poincare_origin) for geo in
+                       k_geodesics_raw]
+
         MY_BLUE = "#22c1dd"
 
         pcircle = Circle(color=MY_BLUE, stroke_width=1).scale(scale_back).move_to(poincare_origin)
         kcircle = Circle(color=MY_BLUE, stroke_width=1).scale(scale_back).move_to(klein_origin)
 
-        self.play(Write(title))
-        self.add_foreground_mobject(title)
-        self.wait(1)
-
-        self.add_foreground_mobject(poincare_text)
-        self.play(Write(poincare_text), FadeIn(poincare_model), run_time=3)
-        self.wait(3)
-
-        self.add_foreground_mobject(klein_text)
-        self.play(Write(klein_text), FadeIn(klein_model), run_time=3)
-        self.wait(3)
-
-        self.play(self.camera.frame.animate.scale(0.8).move_to(np.add(poincare_origin, [0, 0.4, 0])),
-                  FadeOut(klein_model), FadeOut(klein_text))
-
-        self.wait(2)
-
-        self.play(Create(pcircle))
-
-        self.wait(2)
-
-        self.play(self.camera.frame.animate.scale(1.25).move_to(center), FadeIn(klein_model), FadeIn(klein_text))
-
-        self.wait(5)
-
-        self.play(self.camera.frame.animate.scale(0.8).move_to(np.add(klein_origin, [0, 0.4, 0])),
-                  FadeOut(poincare_model), FadeOut(poincare_text))
-
-        self.wait(2)
-
-        self.play(Create(kcircle))
-
-        self.wait(5)
+        # self.play(Write(title))
+        # self.add_foreground_mobject(title)
+        # self.wait(1)
+        #
+        # self.add_foreground_mobject(poincare_text)
+        # self.play(Write(poincare_text), FadeIn(poincare_model), run_time=3)
+        # self.wait(3)
+        #
+        # self.add_foreground_mobject(klein_text)
+        # self.play(Write(klein_text), FadeIn(klein_model), run_time=3)
+        # self.wait(3)
+        #
+        self.add(pcircle)
+        self.add(p_geodesics[0], p_geodesics[1], p_geodesics[2], p_geodesics[3])
+        # self.play(self.camera.frame.animate.scale(0.8).move_to(np.add(poincare_origin, [0, 0.4, 0])),
+        #          FadeOut(klein_model), FadeOut(klein_text), FadeOut(poincare_model))
+#
+# self.wait(2)
+#
+# self.play(Indicate(pcircle, color=MY_BLUE))
+#
+# self.wait(2)
+#
+# self.play(Create(p_geodesics[0]))
+# self.play(Create(p_geodesics[1]))
+# self.play(Create(p_geodesics[2]))
+# self.play(Create(p_geodesics[3]))
+#
+# self.wait(2)
+#
+# self.play(self.camera.frame.animate.scale(1.25).move_to(center), FadeIn(klein_model), FadeIn(klein_text))
+#
+# self.wait(5)
+#
+# self.add(kcircle)
+# self.play(self.camera.frame.animate.scale(0.8).move_to(np.add(klein_origin, [0, 0.4, 0])),
+#          FadeOut(poincare_model), FadeOut(poincare_text))
+#
+# self.wait(2)
+#
+# self.play(Indicate(kcircle, color=MY_BLUE))
+#
+# self.wait(5)
+#
