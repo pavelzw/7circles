@@ -2,14 +2,15 @@ from math import pi
 
 import numpy as np
 from manim import Scene, Circle, Dot, Create, FadeIn, Line, \
-    Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Text, RIGHT, UP
+    Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Text, RIGHT, UP, GREEN_B, \
+    VGroup
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, mobius_transform, \
     tf_klein_to_poincare, get_intersections_of_n_tangent_circles, get_intersections_of_circles_with_unit_circle, \
-    get_intersection_from_angles, get_parallel_to_line_through_point
+    get_intersection_from_angles, get_parallel_to_line_through_point, create_min_circle_radius
 from hexagon import HexagonCircles, HexagonMainDiagonals, HyperbolicArcBetweenPoints
-from hexagon_util import create_phis, create_phi_transition
+from hexagon_util import create_phis, create_phi_transition, create_radius_transition
 from hyperbolic_polygon import HyperbolicPolygon
 
 
