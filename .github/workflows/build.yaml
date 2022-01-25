@@ -10,7 +10,6 @@ jobs:
         id: renderer
         with:
           source_file: main_result.py
-          args: "-qp"
           # concat all scenes into one video file
           post_render: sh ./ffmpeg_concat/concat_main_result.sh
       - name: Save output as artifacts
@@ -28,7 +27,6 @@ jobs:
         id: renderer
         with:
           source_file: animation.py
-          args: "-qp"
       - name: Save output as artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -43,7 +41,6 @@ jobs:
         id: renderer
         with:
           source_file: paulinas_scenes.py
-          args: "-qp"
       - name: Save output as artifacts
         uses: actions/upload-artifact@v2
         with:
