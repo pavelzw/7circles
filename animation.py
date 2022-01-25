@@ -4,7 +4,7 @@ import numpy as np
 from manim import Scene, Circle, Dot, Create, FadeIn, Line, \
     Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Text, UP, Write, \
     DOWN, Tex, BLUE, GREEN, WHITE, PURPLE, GREY, PINK, Uncreate, AnimationGroup, Unwrite, ImageMobject, LEFT, RIGHT, \
-    MarkupText, Polygon
+    MarkupText, Polygon, Group
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, mobius_transform, \
@@ -315,9 +315,9 @@ class HyperbolicModels(MovingCameraScene):
             f'<span underline="single" underline_color="white">Modelle für die hyperbolische Ebene</span>').scale(
             0.8).shift(3.5 * UP)
 
-        klein_model = ImageMobject("tessellation_klein.png").move_to(1 * DOWN + 3.5 * RIGHT).scale(0.7)
+        klein_model = ImageMobject("tessellation_klein.png").scale(0.7).move_to(klein_origin)
         klein_text = Text("Klein-Modell").scale(0.6).move_to(3.5 * RIGHT + 2.2 * UP)
-        poincare_model = ImageMobject("tessellation_poincare.png").move_to(1 * DOWN + 3.5 * LEFT).scale(0.7)
+        poincare_model = ImageMobject("tessellation_poincare.png").scale(0.7).move_to(poincare_origin)
         poincare_text = Text("Poincaré-Modell").scale(0.6).move_to(3.5 * LEFT + 2.2 * UP)
 
         self.add(title, klein_model, klein_text, poincare_model, poincare_text)
@@ -334,11 +334,19 @@ class HyperbolicModels(MovingCameraScene):
         p1 = scale_front * p1
         p2 = scale_front * p2
 
-        ktri1 = Polygon(*k1).shift(klein_origin)
-        ktri2 = Polygon(*k2).shift(klein_origin)
-        ptri1 = HyperbolicPolygon(p1).scale(scale_back).shift(np.add(poincare_origin, [0.38, 0.32, 0]))
-        ptri2 = HyperbolicPolygon(p2).scale(scale_back).shift(np.add(poincare_origin, [-0.44, 0.59, 0]))
+        raw_ktri1 = Polygon(*k1, color=WHITE, stroke_width=1).shift(klein_origin)
+        kpoints1 = [Dot(np.add(p, klein_origin)) for p in k1]
+        raw_ktri2 = Polygon(*k2, color=WHITE, stroke_width=1).shift(klein_origin)
+        kpoints2 = [Dot(np.add(p, klein_origin)) for p in k2]
+        ktri1 = Group(raw_ktri1, kpoints1[0], kpoints1[1], kpoints1[2])
+        ktri2 = Group(raw_ktri2, kpoints2[0], kpoints2[1], kpoints2[2])
 
+        ptri1 = HyperbolicPolygon(p1,
+                                  stroke_width=1).scale(scale_back)
+        ptri1.move_to(ptri1.get_center() * scale_back).shift(poincare_origin)
+        ptri2 = HyperbolicPolygon(p2,
+                                  stroke_width=1).scale(scale_back)
+        ptri2.move_to(ptri2.get_center() * scale_back).shift(poincare_origin)
         self.add(ktri1, ktri2, ptri1, ptri2)
 
         # self.play(Write(title))
