@@ -12,7 +12,7 @@ jobs:
           source_file: main_result.py
           args: "-qp"
           # concat all scenes into one video file
-          post_render: ffmpeg -f concat -safe 0 -i ffmpeg_concat/main_result_mp4.txt -f concat -safe 0 -i ffmpeg_concat/main_result_srt.txt -map 0:v -map 1 -c:v copy -c:s copy media/videos/main_result/1440p60/main_result.mkv
+          post_render: sh ./ffmpeg_concat/concat_main_result.sh
       - name: Save output as artifacts
         uses: actions/upload-artifact@v2
         with:
