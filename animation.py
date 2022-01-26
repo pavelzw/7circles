@@ -9,7 +9,8 @@ from manim import Scene, Circle, Dot, Create, FadeIn, Line, \
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, mobius_transform, \
     tf_klein_to_poincare, get_intersections_of_n_tangent_circles, get_intersections_of_circles_with_unit_circle, \
-    get_intersection_from_angles, get_parallel_to_line_through_point, create_min_circle_radius
+    get_intersection_from_angles, get_parallel_to_line_through_point, tf_poincare_to_klein, \
+    get_both_intersections_line_with_unit_circle
 from hexagon import HexagonCircles, HexagonMainDiagonals, HyperbolicArcBetweenPoints
 from hexagon_util import create_phis, create_phi_transition, create_radius_transition
 from hyperbolic_polygon import HyperbolicPolygon
@@ -311,6 +312,8 @@ class HyperbolicModels(MovingCameraScene):
         klein_origin = [3.5, -1, 0]
         poincare_origin = [-3.5, -1, 0]
 
+        MY_BLUE = "#22c1dd"
+
         title = MarkupText(
             f'<span underline="single" underline_color="white">Modelle für die hyperbolische Ebene</span>').scale(
             0.8).shift(3.5 * UP)
@@ -354,11 +357,32 @@ class HyperbolicModels(MovingCameraScene):
         p_geodesics_raw = [HyperbolicArcBetweenPoints(polar_to_point(x), polar_to_point(y)) for [x, y] in phis]
         p_geodesics = [geo.scale(scale_back).move_to(geo.get_center() * scale_back).shift(poincare_origin) for geo in
                        p_geodesics_raw]
+
+        p_point_coords = [0, -0.3, 0]
+        p_point = Dot(p_point_coords)
+        p_point.move_to(p_point.get_center() * scale_back).shift(poincare_origin)
+
+        p_point_text = Text("P").scale(0.8).next_to(p_point)
+
+        p_point_geodesic_point_phis = [0, 2.3, 2.9, 3.15, 3.4, 3.8, 4.1, 4.5, 5]
+        p_point_geodesic_points = [polar_to_point(x) for x in p_point_geodesic_point_phis]
+        p_point_geodesics_both_points = [
+            get_both_intersections_line_with_unit_circle(x, tf_poincare_to_klein(p_point_coords)) for x in
+            p_point_geodesic_points]
+        p_point_geodesics = [HyperbolicArcBetweenPoints(points[0], points[1], color=MY_BLUE) for points in
+                             p_point_geodesics_both_points]
+        p_point_moved_geodesics = [geo.scale(scale_back).move_to(geo.get_center() * scale_back).shift(poincare_origin)
+                                   for geo in
+                                   p_point_geodesics]
+
         k_geodesics_raw = [Line(polar_to_point(x), polar_to_point(y)) for [x, y] in phis]
         k_geodesics = [geo.scale(scale_back).move_to(geo.get_center() * scale_back).shift(poincare_origin) for geo in
                        k_geodesics_raw]
 
-        MY_BLUE = "#22c1dd"
+        k_point = Dot([0, -0.3, 0])
+        k_point.move_to(k_point.get_center() * scale_back).shift(poincare_origin)
+
+        k_point_text = Text("P").scale(0.8).next_to(k_point)
 
         pcircle = Circle(color=MY_BLUE, stroke_width=1).scale(scale_back).move_to(poincare_origin)
         kcircle = Circle(color=MY_BLUE, stroke_width=1).scale(scale_back).move_to(klein_origin)
@@ -376,20 +400,42 @@ class HyperbolicModels(MovingCameraScene):
         # self.wait(3)
         #
         self.add(pcircle)
-        self.add(p_geodesics[0], p_geodesics[1], p_geodesics[2], p_geodesics[3])
+        # self.add(p_geodesics[0], p_geodesics[1], p_geodesics[2], p_geodesics[3])
+        self.add(p_geodesics[0], p_point, p_point_text)
         # self.play(self.camera.frame.animate.scale(0.8).move_to(np.add(poincare_origin, [0, 0.4, 0])),
         #          FadeOut(klein_model), FadeOut(klein_text), FadeOut(poincare_model))
-#
-# self.wait(2)
-#
-# self.play(Indicate(pcircle, color=MY_BLUE))
-#
-# self.wait(2)
-#
-# self.play(Create(p_geodesics[0]))
-# self.play(Create(p_geodesics[1]))
-# self.play(Create(p_geodesics[2]))
-# self.play(Create(p_geodesics[3]))
+
+        #
+        # self.wait(2)
+        #
+        # self.play(Indicate(pcircle, color=MY_BLUE))
+        #
+        # self.wait(2)
+        #
+        # self.play(Create(p_geodesics[0]))
+        # self.play(Create(p_geodesics[1]))
+        # self.play(Create(p_geodesics[2]))
+        # self.play(Create(p_geodesics[3]))
+        #
+        # self.wait(2)
+        #
+        #
+        # self.play(Uncreate(p_geodesics[0]), Uncreate(p_geodesics[1]), Uncreate(p_geodesics[2]), Create(p_point), Write(p_point_text))
+        # self.add_foreground_object(p_point, p_point_text)
+        #
+        self.add_foreground_mobject(p_point)
+        self.add_foreground_mobject(p_point_text)
+        self.wait(2)
+
+        self.play(Create(p_point_moved_geodesics[0]))
+        self.play(Create(p_point_moved_geodesics[1]))
+        self.play(Create(p_point_moved_geodesics[2]))
+        self.play(Create(p_point_moved_geodesics[3]))
+        self.play(Create(p_point_moved_geodesics[4]))
+        self.play(Create(p_point_moved_geodesics[5]))
+        self.play(Create(p_point_moved_geodesics[6]))
+
+        self.wait(2)
 #
 # self.wait(2)
 #
