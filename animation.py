@@ -1,16 +1,17 @@
+from cmath import sqrt
 from math import pi
 
 import numpy as np
 from manim import Scene, Circle, Dot, Create, FadeIn, Line, \
     Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Text, UP, Write, \
     DOWN, Tex, BLUE, GREEN, WHITE, PURPLE, GREY, PINK, Uncreate, AnimationGroup, Unwrite, ImageMobject, LEFT, RIGHT, \
-    MarkupText, Polygon, Group
+    MarkupText, Polygon, Group, PI, DecimalNumber
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, mobius_transform, \
     tf_klein_to_poincare, get_intersections_of_n_tangent_circles, get_intersections_of_circles_with_unit_circle, \
     get_intersection_from_angles, get_parallel_to_line_through_point, tf_poincare_to_klein, \
-    get_both_intersections_line_with_unit_circle
+    get_both_intersections_line_with_unit_circle, hyperbolic_distance_function
 from hexagon import HexagonCircles, HexagonMainDiagonals, HyperbolicArcBetweenPoints
 from hexagon_util import create_phis, create_phi_transition, create_radius_transition
 from hyperbolic_polygon import HyperbolicPolygon
@@ -344,6 +345,8 @@ class HyperbolicModels(MovingCameraScene):
         ktri1 = Group(raw_ktri1, kpoints1[0], kpoints1[1], kpoints1[2])
         ktri2 = Group(raw_ktri2, kpoints2[0], kpoints2[1], kpoints2[2])
 
+        pcircle = Circle(color=MY_BLUE, stroke_width=1).scale(scale_back).move_to(poincare_origin)
+
         ptri1 = HyperbolicPolygon(p1,
                                   stroke_width=1).scale(scale_back)
         ptri1.move_to(ptri1.get_center() * scale_back).shift(poincare_origin)
@@ -375,6 +378,16 @@ class HyperbolicModels(MovingCameraScene):
                                    for geo in
                                    p_point_geodesics]
 
+        p_moving_dot = Dot(poincare_origin)
+        p_moving_dot_phi = 5 * PI / 3
+        norm_factor = 6 / pow(PI, 2)
+
+        p_current_point = np.array(center)
+
+        p_distance_number = DecimalNumber(np.exp(hyperbolic_distance_function(center, p_current_point)),
+                                          num_decimal_places=2, show_ellipsis=True, group_with_commas=False,
+                                          font_size=20).next_to(pcircle, buff=.05)
+
         k_geodesics_raw = [Line(polar_to_point(x), polar_to_point(y)) for [x, y] in phis]
         k_geodesics = [geo.scale(scale_back).move_to(geo.get_center() * scale_back).shift(poincare_origin) for geo in
                        k_geodesics_raw]
@@ -384,7 +397,6 @@ class HyperbolicModels(MovingCameraScene):
 
         k_point_text = Text("P").scale(0.8).next_to(k_point)
 
-        pcircle = Circle(color=MY_BLUE, stroke_width=1).scale(scale_back).move_to(poincare_origin)
         kcircle = Circle(color=MY_BLUE, stroke_width=1).scale(scale_back).move_to(klein_origin)
 
         # self.play(Write(title))
@@ -401,7 +413,7 @@ class HyperbolicModels(MovingCameraScene):
         #
         self.add(pcircle)
         # self.add(p_geodesics[0], p_geodesics[1], p_geodesics[2], p_geodesics[3])
-        self.add(p_geodesics[0], p_point, p_point_text)
+        # self.add(p_geodesics[0], p_point, p_point_text)
         # self.play(self.camera.frame.animate.scale(0.8).move_to(np.add(poincare_origin, [0, 0.4, 0])),
         #          FadeOut(klein_model), FadeOut(klein_text), FadeOut(poincare_model))
 
@@ -421,21 +433,49 @@ class HyperbolicModels(MovingCameraScene):
         #
         #
         # self.play(Uncreate(p_geodesics[0]), Uncreate(p_geodesics[1]), Uncreate(p_geodesics[2]), Create(p_point), Write(p_point_text))
-        # self.add_foreground_object(p_point, p_point_text)
         #
-        self.add_foreground_mobject(p_point)
-        self.add_foreground_mobject(p_point_text)
-        self.wait(2)
+        # self.add_foreground_mobject(p_point)
+        # self.add_foreground_mobject(p_point_text)
+        # self.wait(2)
+        #
+        # self.play(Create(p_point_moved_geodesics[0]))
+        # self.play(Create(p_point_moved_geodesics[1]))
+        # self.play(Create(p_point_moved_geodesics[2]))
+        # self.play(Create(p_point_moved_geodesics[3]))
+        # self.play(Create(p_point_moved_geodesics[4]))
+        # self.play(Create(p_point_moved_geodesics[5]))
+        # self.play(Create(p_point_moved_geodesics[6]))
+        #
+        # self.wait(2)
+        #
+        # self.play(Uncreate(p_point_moved_geodesics[0]),
+        #          Uncreate(p_point_moved_geodesics[1]),
+        #          Uncreate(p_point_moved_geodesics[2]),
+        #          Uncreate(p_point_moved_geodesics[3]),
+        #          Uncreate(p_point_moved_geodesics[4]),
+        #          Uncreate(p_point_moved_geodesics[5]),
+        #          Uncreate(p_point_moved_geodesics[6]),
+        #          Uncreate(p_point), Unwrite(p_point_text))
+        #
+        # self.wait(2)
 
-        self.play(Create(p_point_moved_geodesics[0]))
-        self.play(Create(p_point_moved_geodesics[1]))
-        self.play(Create(p_point_moved_geodesics[2]))
-        self.play(Create(p_point_moved_geodesics[3]))
-        self.play(Create(p_point_moved_geodesics[4]))
-        self.play(Create(p_point_moved_geodesics[5]))
-        self.play(Create(p_point_moved_geodesics[6]))
+        self.play(Create(p_moving_dot))
 
-        self.wait(2)
+        for t in range(1, 50):
+            p_current_point = p_current_point + np.array(polar_to_point(p_moving_dot_phi, norm_factor / pow(t, 2)))
+            pos = p_current_point * scale_back + np.array(poincare_origin)
+            moving_dot = Dot(pos, radius=0.08 / sqrt(t))
+
+            distance = np.exp(
+                hyperbolic_distance_function(center, p_current_point))
+
+            p_distance_number.font_size = 20
+
+            self.play(Transform(p_moving_dot, moving_dot), p_distance_number.animate.set_value(distance), run_time=0.2,
+                      rate_func=lambda a: a)
+            self.remove(p_moving_dot)
+            p_moving_dot = moving_dot
+
 #
 # self.wait(2)
 #
