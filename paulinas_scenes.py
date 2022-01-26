@@ -38,9 +38,9 @@ class Scene1(MovingCameraScene):
         self.camera.frame.width = 9
 
         # showing four random non ideal hexagons and an ideal hexagon
-        text_non_ideal_ideal = VGroup(MathTex(r'Nicht\,Ideales\, Sechseck', font_size=20, color=BLUE, stroke_width=1),
-                                      MathTex(r'Ideales\, Sechseck', font_size=20, color=GREEN_B,
-                                              stroke_width=1)).arrange(aligned_edge=LEFT, direction=DOWN)
+        text_non_ideal_ideal = VGroup(Tex(r'Nicht\,Ideales\, Sechseck', font_size=20, color=BLUE, stroke_width=1),
+                                      Tex(r'Ideales\, Sechseck', font_size=20, color=GREEN_B,
+                                          stroke_width=1)).arrange(aligned_edge=LEFT, direction=DOWN)
         position = [[-3, 1.3, 0], [0, 1.3, 0], [3, 1.3, 0], [-3, -1.3, 0], [0, -1.3, 0], [3, -1.3, 0]]
         for i in range(0, 6):
             if i == 5:
@@ -154,7 +154,8 @@ class Scene2(MovingCameraScene):
                                         num_decimal_places=2, show_ellipsis=True, group_with_commas=False,
                                         font_size=20).next_to(distance_text, buff=.05)
         s_0 = Dot(hexagon.polygon_points[0], radius=.01, color=ORANGE)
-        self.play(FadeOut(infinity), FadeIn(distance_number), FadeIn(s_0))
+        self.remove(infinity)
+        self.add(distance_number, s_0)
         label = VGroup(distance_text, distance_number)
         step_size = 50
         for t in range(1, step_size):
@@ -162,8 +163,6 @@ class Scene2(MovingCameraScene):
                 transition = 2 * t / step_size
             else:
                 transition = (1 - t / step_size) * 2
-            if t == step_size / 2:
-                self.wait(2)
             interp_point1 = get_intersection_in_unit_circle_of_two_tangent_circles(arc.circle_center, arc.radius,
                                                                                    point1,
                                                                                    transition * radius_disks[0])
@@ -171,7 +170,7 @@ class Scene2(MovingCameraScene):
                                                                                    transition * radius_disks[1],
                                                                                    arc.circle_center, arc.radius)
             new_arc = ArcBetweenPoints(interp_point2, interp_point1, color=ORANGE,
-                                       radius=arc.radius).reverse_direction()
+                                       radius=arc.radius, stroke_width=2).reverse_direction()
 
             distance = np.exp(
                 hyperbolic_distance_function(interp_point2, interp_point1))
