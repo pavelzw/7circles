@@ -319,10 +319,11 @@ def create_min_circle_radius(last_point, point, next_point):
 
 # for horodisks
 def moving_circle(start_angle, end_angle, center):
-    arc1 = Arc(start_angle=start_angle, angle=end_angle).move_arc_center_to(center)  # creates eighth of circle
-    arc2 = Arc(start_angle=start_angle, angle=end_angle, radius=0.25).move_arc_center_to(center)
-    arc3 = Arc(start_angle=start_angle, angle=end_angle, radius=0.5).move_arc_center_to(center)
-    arc4 = Arc(start_angle=start_angle, angle=end_angle, radius=0.75).move_arc_center_to(center)
+    arc1 = Arc(start_angle=start_angle, angle=end_angle, radius=0.5).move_arc_center_to(
+        center)  # creates eighth of circle
+    arc2 = Arc(start_angle=start_angle, angle=end_angle, radius=0.125).move_arc_center_to(center)
+    arc3 = Arc(start_angle=start_angle, angle=end_angle, radius=0.25).move_arc_center_to(center)
+    arc4 = Arc(start_angle=start_angle, angle=end_angle, radius=0.375).move_arc_center_to(center)
     return [arc1, arc2, arc3, arc4]
 
 

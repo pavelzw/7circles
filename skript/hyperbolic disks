@@ -1,5 +1,7 @@
 Nun betrachten wir nochmal genauer, wie sich Kreise, Radien und Abstände im hyperbolischen verhalten:
 
+Wir kennen das Verhalten dieser im euklidischen Modell. Ein Kreis hat ein Zentrum P, sodass jeder Punkt auf dem Kreis
+    die gleiche euklidische Distanz zu diesem P hat.
 Hyperbolische Scheiben, die wir im Poincare Modell H^2 einbetten, sind genauso definiert, wie euklidische Scheiben/Kreise
     -> Definition B(z_0,r)
 Was hyperbolische Scheiben von euklidischen Scheiben unterscheidet ist die eben definierte Distanzfunktion. (kurz angeben)

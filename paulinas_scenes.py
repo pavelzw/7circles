@@ -292,7 +292,6 @@ class Scene3(MovingCameraScene):  # former TransformingNonIdealIntoIdeal
                hex_n_ideal.polygon_points[3], hex_n_ideal.polygon_points[4], hex_n_ideal.polygon_points[5]]
         arc_k = [hex_n_ideal.arcs[0], hex_n_ideal.arcs[1], hex_n_ideal.arcs[2], hex_n_ideal.arcs[3],
                  hex_n_ideal.arcs[4], hex_n_ideal.arcs[5]]
-        # todo when green circle has radius 0, make dot orange
         # todo make green circles hyperbolic circles
 
         # transforming disk at s_0
@@ -578,84 +577,3 @@ class AlternatingPerimeter(Scene):
 
         self.play(Create(hexagon), run_time=8)
         self.wait(2)
-
-
-class EuclideanCircles(Scene):
-    def construct(self):
-        # euclidean situation in center
-        eucl_center = np.array([0, 0, 0])
-        new_center = np.array([4, 0, 0])
-        point1 = eucl_center - np.array([1, 0, 0])
-        point2 = point1 + np.array([1, 1, 0])
-        point3 = eucl_center + np.array([0.5, -0.5, 0])
-        points = np.array([eucl_center, point1, point2, point3])
-
-        square = Square(side_length=4).move_to(eucl_center)
-        circle = Circle(radius=1).move_to(eucl_center)
-        dot = Dot().move_to(eucl_center)
-        text = Text('Euclidean Center', font_size=15).next_to(dot)
-        group = Group(circle, dot)
-        self.play(Create(square))
-        self.play(Create(dot))
-        self.play(Create(circle))
-        self.play(FadeIn(text))
-        self.play(FadeOut(text))
-        for i in range(3):
-            self.play(MoveAlongPath(group, Line(start=points[i], end=points[i + 1])))
-
-        # explaining radii
-        radius_text = Text('radius 3', font_size=18)
-        group2 = Group(group, square)
-        circle_radii = Circle(radius=3)
-        self.play(Transform(group2, circle_radii))
-        self.play(Create(dot))
-        radius1 = Line(start=eucl_center, end=eucl_center + np.array([3, 0, 0]))
-        radius2 = Line(start=eucl_center, end=eucl_center + np.array([-1, -np.sqrt(8), 0]))
-        self.play(Create(radius1))
-        self.play(Create(radius2), FadeIn(radius_text.next_to(radius2)))
-        self.play(Uncreate(radius2), Uncreate(radius_text), Uncreate(radius1))
-    # radius with arc
-    # moving everything to the right so we can continue with the horodisk
-
-
-class Horodisk(Scene):
-    def construct(self):
-        # hyperbolic situation
-        # points of position
-        center = [0, 0, 0]
-        start_points = np.array([center, center, center, center])
-        length = [1, 1, -3]  # 1 is 1 unit to the left, -3 is 3 units to the right, way of circles moving
-
-        angle1 = pi / 4
-        angle2 = 4 * pi / 3
-        angles = [0, angle1, angle2]
-
-        outer_circle = Circle(color=WHITE, radius=2).move_to(center)
-        circle = [Dot(color=BLUE), Circle(color=WHITE, radius=1.5),
-                  Circle(color=WHITE, radius=1), Circle(color=WHITE, radius=0.5)]
-        circles = Group(circle[0], circle[1], circle[2], circle[3]).move_to(center)
-
-        # creating circles and dot
-        self.play(FadeIn(outer_circle))
-        self.play(FadeIn(circle[0]))
-        self.wait(duration=2)
-        self.play(Create(circle[1]), Create(circle[2]), Create(circle[3]))
-
-        # circles moving along a line 3 times
-        for i in range(3):
-            end_points = np.array([start_points[0] - [1 * length[i], 0, 0],
-                                   start_points[1] - [0.25 * length[i], 0, 0],
-                                   start_points[2] - [0.5 * length[i], 0, 0],
-                                   start_points[3] - [0.75 * length[i], 0, 0]])
-            lines = moving_line(start_points, end_points)
-            self.play(MoveAlongPath(circle[0], lines[0]), MoveAlongPath(circle[1], lines[1]),
-                      MoveAlongPath(circle[2], lines[2]), MoveAlongPath(circle[3], lines[3]))
-            self.wait(duration=1)
-            start_points = end_points
-
-        # circles moving along part circle twice
-        for i in range(2):
-            arcs = moving_circle(angles[i], angles[i + 1], center)
-            self.play(MoveAlongPath(circle[0], arcs[0]), MoveAlongPath(circle[1], arcs[1]),
-                      MoveAlongPath(circle[2], arcs[2]), MoveAlongPath(circle[3], arcs[3]))
-            self.wait(duration=1)
