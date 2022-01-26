@@ -48,12 +48,20 @@ class Scene1(MovingCameraScene):
             else:
                 radius = np.random.uniform(0.5, 0.7, 6)
                 phis = create_phis(min_dist=0.6)
-                hexagon = HyperbolicPolygon.from_polar(phis, radius, add_dots=False, stroke_width=4, color=BLUE)
+                hexagon = HyperbolicPolygon.from_polar(phis, radius, dot_radius=.02, dot_color=BLUE, stroke_width=4,
+                                                       color=BLUE)
+                group = VGroup(hexagon, Circle(color=WHITE)).move_to(position[i])
                 if i == 3 or i == 4:
                     hexagon = HyperbolicPolygon.from_polar(phis, add_dots=False, stroke_width=4, color=GREEN_B)
-                group = VGroup(hexagon, Circle(color=WHITE)).move_to(position[i])
-                self.play(FadeIn(group[1]))
-                self.play(Create(group[0]), run_time=2, rate_func=lambda a: a)
+                    group = VGroup(hexagon, Circle(color=WHITE)).move_to(position[i])
+                    self.play(FadeIn(group[1]))
+                    self.play(Create(group[0]), run_time=2, rate_func=lambda a: a)
+                else:
+                    self.play(FadeIn(Circle(color=WHITE).move_to(position[i])))
+                    for k in range(0, 6):
+                        self.add(hexagon.dots[k])
+                        self.play(Create(group[0].arcs[k]), run_time=0.3, rate_func=lambda a: a)
+
         self.wait(2)
         self.play(*[FadeOut(mob) for mob in self.mobjects])
 
