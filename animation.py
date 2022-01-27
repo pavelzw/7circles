@@ -5,7 +5,7 @@ import numpy as np
 from manim import Scene, Circle, Dot, Create, FadeIn, Line, \
     Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Text, UP, Write, \
     DOWN, Tex, BLUE, GREEN, WHITE, PURPLE, GREY, PINK, Uncreate, AnimationGroup, Unwrite, ImageMobject, LEFT, RIGHT, \
-    MarkupText, Polygon, Group, PI, DecimalNumber
+    MarkupText, Polygon, Group, PI, DecimalNumber, ValueTracker, FadeOut
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, mobius_transform, \
@@ -384,9 +384,11 @@ class HyperbolicModels(MovingCameraScene):
 
         p_current_point = np.array(center)
 
-        p_distance_number = DecimalNumber(np.exp(hyperbolic_distance_function(center, p_current_point)),
+        p_distance_text = Text("Abstand vom Ursprung: ", font_size=20).next_to(pcircle, buff=.2)
+        p_distance_number = DecimalNumber(0.0,
                                           num_decimal_places=2, show_ellipsis=True, group_with_commas=False,
-                                          font_size=20).next_to(pcircle, buff=.05)
+                                          font_size=20).next_to(p_distance_text, buff=.05)
+        p_distance_tracker = ValueTracker(0.0)
 
         k_geodesics_raw = [Line(polar_to_point(x), polar_to_point(y)) for [x, y] in phis]
         k_geodesics = [geo.scale(scale_back).move_to(geo.get_center() * scale_back).shift(poincare_origin) for geo in
@@ -459,23 +461,41 @@ class HyperbolicModels(MovingCameraScene):
         #
         # self.wait(2)
 
-        self.play(Create(p_moving_dot))
+        self.play(Create(p_moving_dot), Write(p_distance_text))
+        self.play(Write(p_distance_number))
 
-        for t in range(1, 50):
-            p_current_point = p_current_point + np.array(polar_to_point(p_moving_dot_phi, norm_factor / pow(t, 2)))
+        self.wait(2)
+
+        p_distance_number.add_updater(lambda d: d.set_value(p_distance_tracker.get_value()))
+
+        batch_size = 1
+        frame_rate = 1 / (6 * batch_size)
+        offset = 0
+
+        for t in range(1, 30 * batch_size):
+            if batch_size == 1:
+                r = t
+            else:
+                r = 1 + int(t / batch_size)
+
+            if t % batch_size == 1 or batch_size == 1:
+                offset = np.array(
+                    polar_to_point(p_moving_dot_phi, norm_factor / (batch_size * pow(r, 2))))
+            p_current_point = p_current_point + offset
             pos = p_current_point * scale_back + np.array(poincare_origin)
-            moving_dot = Dot(pos, radius=0.08 / sqrt(t))
-
-            distance = np.exp(
-                hyperbolic_distance_function(center, p_current_point))
+            moving_dot = Dot(pos, radius=0.08 / sqrt(r))
 
             p_distance_number.font_size = 20
 
-            self.play(Transform(p_moving_dot, moving_dot), p_distance_number.animate.set_value(distance), run_time=0.2,
+            p_distance_tracker.set_value(np.exp(
+                hyperbolic_distance_function(center, p_current_point)))
+
+            self.play(Transform(p_moving_dot, moving_dot), run_time=frame_rate,
                       rate_func=lambda a: a)
             self.remove(p_moving_dot)
             p_moving_dot = moving_dot
 
+        self.play(FadeOut(p_moving_dot), FadeOut(p_distance_number), FadeOut(p_distance_text))
 #
 # self.wait(2)
 #
