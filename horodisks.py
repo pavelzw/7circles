@@ -16,13 +16,16 @@ from hyperbolic_polygon import HyperbolicPolygon, HyperbolicArcBetweenPoints
 class Scene1(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 8
-        def_ball_hyp = MathTex(r'z:\mathrm{dist}(z,z_0)\leq r')
-        def_dist_eukl = MathTex(r'\mathrm{dist}(a,b)=')
+        def_ball = MathTex(r'\mathrm{B}(z_0,r)=\{z:\mathrm{dist}(z,z_0)\leq r\}', font_size=20).move_to([0, -2, 0])
+        def_dist_eukl = MathTex(r'\mathrm{dist_e}(a,b)=|b-a|', font_size=20).move_to([-2, -1.6, 0])
+        def_dist_hyp = MathTex(r'\mathrm{dist_h}(a,b)=\ln \frac{(a-c)(b-d)}{(a-b)(c-d)}', font_size=20).move_to(
+            [2, -1.6, 0])
+
         title_hyp = Tex(r'Hyperbolischer Raum', font_size=25, stroke_width=.5).move_to([2, 1.7, 0])
         subtitle_hyp = Tex(r'Poincar\'{e}-Modell', font_size=18, stroke_width=.5).move_to([2, 1.5, 0])
         title_eucl = Tex(r'Euklidischer Raum', font_size=25, stroke_width=.5).move_to([-2, 1.7, 0])
         self.add_foreground_mobjects(title_eucl)
-        separating_line = Line(start=[0, 8, 0], end=[0, -8, 0], stroke_width=2)
+        separating_line = Line(start=[0, 8, 0], end=[0, -3, 0], stroke_width=2)
         self.play(Write(title_eucl))
         self.play(FadeIn(separating_line))
         self.play(Write(title_hyp))
@@ -38,6 +41,7 @@ class Scene1(MovingCameraScene):
         radius = Line(start=[-2, 0, 0], end=[-2.75, 0, 0], color=RED, stroke_width=2)
         grid = NumberPlane(x_range=[-8, -2, .25], y_range=[1, 9, .25], background_line_style={
             "stroke_color": GREY, "stroke_width": .5}).move_to([-3, 0, 0])
+        self.play(Write(def_ball))
 
         # euklidische situation
         self.play(FadeIn(grid))
@@ -48,6 +52,7 @@ class Scene1(MovingCameraScene):
         self.play(FadeOut(radius))
         self.play(Create(eucl_circles[0]), Create(eucl_circles[1]))
         circle_radius_group = VGroup(*eucl_circles, eucl_dot, eucl_dot_tex)
+        self.play(Write(def_dist_eukl))
         self.wait(2)
 
         # hyperbolische situation
@@ -65,6 +70,7 @@ class Scene1(MovingCameraScene):
         self.play(FadeIn(circle[0]))
         self.wait(duration=2)
         self.play(Create(circle[1]), Create(circle[2]), Create(circle[3]))
+        self.play(Write(def_dist_hyp))
 
         # circles moving along a line 3 times
         for t in range(3):
