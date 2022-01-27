@@ -46,3 +46,17 @@ jobs:
         with:
           name: paulina
           path: ${{ steps.renderer.outputs.video_path }}
+  horodisks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Rendering Scenes (Horodisks)
+        uses: pavelzw/manim_community_renderer@v2
+        id: renderer
+        with:
+          source_file: horodisks.py
+      - name: Save output as artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: horodisks
+          path: ${{ steps.renderer.outputs.video_path }}
