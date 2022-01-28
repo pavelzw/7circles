@@ -6,7 +6,7 @@ from manim import Scene, Circle, Dot, Create, FadeIn, Line, \
     Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Text, UP, Write, \
     DOWN, Tex, BLUE, GREEN, WHITE, PURPLE, GREY, PINK, Uncreate, AnimationGroup, Unwrite, ImageMobject, LEFT, RIGHT, \
     MarkupText, Polygon, Group, PI, DecimalNumber, ValueTracker, FadeOut, ArcBetweenPoints, ShowPassingFlash, \
-    DrawBorderThenFill
+    DrawBorderThenFill, Indicate
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, mobius_transform, \
@@ -339,14 +339,14 @@ class HyperbolicModels(MovingCameraScene):
         p1 = scale_front * p1
         p2 = scale_front * p2
 
-        raw_ktri1 = Polygon(*k1, color=WHITE, stroke_width=1).shift(klein_origin)
-        kpoints1 = [Dot(np.add(p, klein_origin)) for p in k1]
-        raw_ktri2 = Polygon(*k2, color=WHITE, stroke_width=1).shift(klein_origin)
-        kpoints2 = [Dot(np.add(p, klein_origin)) for p in k2]
-        ktri1 = Group(raw_ktri1, kpoints1[0], kpoints1[1], kpoints1[2])
-        ktri2 = Group(raw_ktri2, kpoints2[0], kpoints2[1], kpoints2[2])
+        raw_ktri1 = Polygon(*k1, color=YELLOW, stroke_width=1.5).shift(klein_origin)
+        kpoints1 = [Dot(np.add(p, klein_origin), color=YELLOW, radius=.06) for p in k1]
+        raw_ktri2 = Polygon(*k2, color=YELLOW, stroke_width=1.5).shift(klein_origin)
+        kpoints2 = [Dot(np.add(p, klein_origin), color=YELLOW, radius=.06) for p in k2]
 
         pcircle = Circle(color=MY_BLUE, stroke_width=1).scale(scale_back).move_to(poincare_origin)
+
+        kcircle = Circle(color=MY_BLUE, stroke_width=1).scale(scale_back).move_to(klein_origin)
 
         ptri1 = HyperbolicPolygon(p1,
                                   stroke_width=1.5, dot_radius=.02, color=YELLOW, dot_color=YELLOW).scale(
@@ -370,16 +370,16 @@ class HyperbolicModels(MovingCameraScene):
         p_geodesics = [geo.scale(scale_back).move_to(geo.get_center() * scale_back).shift(poincare_origin) for geo in
                        p_geodesics_raw]
 
-        p_point_coords = [0, -0.3, 0]
-        p_point = Dot(p_point_coords)
+        point_coords = [0, -0.3, 0]
+        p_point = Dot(point_coords)
         p_point.move_to(p_point.get_center() * scale_back).shift(poincare_origin)
 
         p_point_text = Text("P").scale(0.8).next_to(p_point)
 
-        p_point_geodesic_point_phis = [0, 2.3, 2.9, 3.15, 3.4, 3.8, 4.1, 4.5, 5]
-        p_point_geodesic_points = [polar_to_point(x) for x in p_point_geodesic_point_phis]
+        point_geodesic_point_phis = [0, 2.3, 2.9, 3.15, 3.4, 3.8, 4.1, 4.5, 5]
+        p_point_geodesic_points = [polar_to_point(x) for x in point_geodesic_point_phis]
         p_point_geodesics_both_points = [
-            get_both_intersections_line_with_unit_circle(x, tf_poincare_to_klein(p_point_coords)) for x in
+            get_both_intersections_line_with_unit_circle(x, tf_poincare_to_klein(point_coords)) for x in
             p_point_geodesic_points]
         p_point_geodesics = [HyperbolicArcBetweenPoints(points[0], points[1], color=MY_BLUE) for points in
                              p_point_geodesics_both_points]
@@ -404,153 +404,234 @@ class HyperbolicModels(MovingCameraScene):
                                  arc_center=center)
 
         k_geodesics_raw = [Line(polar_to_point(x), polar_to_point(y)) for [x, y] in phis]
-        k_geodesics = [geo.scale(scale_back).move_to(geo.get_center() * scale_back).shift(poincare_origin) for geo in
+        k_geodesics = [geo.scale(scale_back).move_to(geo.get_center() * scale_back).shift(klein_origin) for geo in
                        k_geodesics_raw]
 
-        k_point = Dot([0, -0.3, 0])
-        k_point.move_to(k_point.get_center() * scale_back).shift(poincare_origin)
+        k_point = Dot(point_coords)
+        k_point.move_to(k_point.get_center() * scale_back).shift(klein_origin)
 
         k_point_text = Text("P").scale(0.8).next_to(k_point)
 
-        kcircle = Circle(color=MY_BLUE, stroke_width=1).scale(scale_back).move_to(klein_origin)
+        k_point_geodesics_intersections = [
+            get_both_intersections_line_with_unit_circle(point_coords, polar_to_point(phi))
+            for phi in point_geodesic_point_phis]
+        k_point_geodesics_raw = [Line(x, y, color=MY_BLUE) for [x, y] in k_point_geodesics_intersections]
+        k_point_geodesics = [l.scale(scale_back).move_to(l.get_center() * scale_back).shift(klein_origin) for l in
+                             k_point_geodesics_raw]
 
-        # self.play(Write(title))
-        # self.add_foreground_mobject(title)
-        # self.wait(1)
-        #
-        # self.add_foreground_mobject(poincare_text)
-        # self.play(Write(poincare_text), FadeIn(poincare_model), run_time=3)
-        # self.wait(3)
-        #
-        # self.add_foreground_mobject(klein_text)
-        # self.play(Write(klein_text), FadeIn(klein_model), run_time=3)
-        # self.wait(3)
-        #
-        # self.add(pcircle)
-        # # self.add(p_geodesics[0], p_geodesics[1], p_geodesics[2], p_geodesics[3])
-        # # self.add(p_geodesics[0], p_point, p_point_text)
-        # self.play(self.camera.frame.animate.scale(0.8).move_to(np.add(poincare_origin, [1, 0.4, 0])),
-        #           FadeOut(klein_model), FadeOut(klein_text), FadeOut(poincare_model))
-        #
-        # self.wait(2)
-        #
-        # self.play(Indicate(pcircle, color=MY_BLUE))
-        #
-        # self.wait(2)
-        #
-        # self.play(Create(p_geodesics[0]))
-        # self.play(Create(p_geodesics[1]))
-        # self.play(Create(p_geodesics[2]))
-        # self.play(Create(p_geodesics[3]))
-        #
-        # self.wait(2)
-        #
-        # self.play(Uncreate(p_geodesics[1]), Uncreate(p_geodesics[2]), Uncreate(p_geodesics[3]), Create(p_point),
-        #           Write(p_point_text))
-        #
-        # self.add_foreground_mobject(p_point)
-        # self.add_foreground_mobject(p_point_text)
-        # self.wait(2)
-        #
-        # self.play(Create(p_point_moved_geodesics[0]))
-        # self.play(Create(p_point_moved_geodesics[1]))
-        # self.play(Create(p_point_moved_geodesics[2]))
-        # self.play(Create(p_point_moved_geodesics[3]))
-        # self.play(Create(p_point_moved_geodesics[4]))
-        # self.play(Create(p_point_moved_geodesics[5]))
-        # self.play(Create(p_point_moved_geodesics[6]))
-        #
-        # self.wait(2)
-        #
-        # self.play(Uncreate(p_geodesics[0]),
-        #           Uncreate(p_point_moved_geodesics[0]),
-        #           Uncreate(p_point_moved_geodesics[1]),
-        #           Uncreate(p_point_moved_geodesics[2]),
-        #           Uncreate(p_point_moved_geodesics[3]),
-        #           Uncreate(p_point_moved_geodesics[4]),
-        #           Uncreate(p_point_moved_geodesics[5]),
-        #           Uncreate(p_point_moved_geodesics[6]),
-        #           Uncreate(p_point), Unwrite(p_point_text))
-        #
-        # self.wait(2)
-        #
-        # self.play(Create(p_moving_dot), Write(p_distance_text))
-        # self.play(Write(p_distance_number))
-        #
-        # self.wait(2)
-        #
-        # p_distance_number.add_updater(lambda d: d.set_value(p_distance_tracker.get_value()))
-        #
-        # steps = 30
-        # frames = 300
-        # duration = 5
-        # frame_rate = duration / frames
-        # batch_size = frames / steps
-        # offset = 0
-        #
-        # for t in range(1, frames):
-        #     if batch_size == 1:
-        #         r = t
-        #     else:
-        #         r = 1 + int(t / batch_size)
-        #
-        #     if t % batch_size == 1 or batch_size == 1:
-        #         offset = np.array(
-        #             polar_to_point(p_moving_dot_phi, norm_factor / (batch_size * pow(r, 2))))
-        #     p_current_point = p_current_point + offset
-        #     pos = p_current_point * scale_back + np.array(poincare_origin)
-        #     moving_dot = Dot(pos, radius=0.08 / sqrt(r))
-        #
-        #     p_distance_number.font_size = 20
-        #
-        #     p_distance_tracker.set_value(np.exp(
-        #         hyperbolic_distance_function(center, p_current_point)))
-        #
-        #     self.play(Transform(p_moving_dot, moving_dot), run_time=frame_rate,
-        #               rate_func=lambda a: a)
-        #     self.remove(p_moving_dot)
-        #     p_moving_dot = moving_dot
-        #
-        # moving_dot = Dot(polar_to_point(p_moving_dot_phi) * scale_back + np.array(poincare_origin))
-        #
-        # self.play(Transform(p_moving_dot, moving_dot), FadeOut(p_distance_number), FadeIn(p_distance_infty),
-        #           run_time=.25)
-        #
-        # self.wait(5)
-        #
-        # self.play(FadeOut(p_moving_dot), FadeOut(p_distance_infty), FadeOut(p_distance_text))
-        #
-        # self.wait(2)
-        #
-        # self.play(FadeIn(poincare_model), FadeOut(pcircle))
-        #
-        # self.play(Create(ptri1), run_time=2)
-        # self.play(Write(ptri1_text))
-        #
-        # self.wait(1)
-        #
-        # self.play(Create(ptri2), run_time=2)
-        # self.play(Write(ptri2_text))
-        #
-        # self.wait(1)
-        #
-        # self.play(Write(ptri_size_text), run_time=2)
-        #
-        # self.wait(4)
-        #
-        # self.play(Uncreate(ptri1), Uncreate(ptri2), Uncreate(ptri1_text), Uncreate(ptri2_text),
-        #           Uncreate(ptri_size_text), run_time=2)
-        #
-        # self.play(self.camera.frame.animate.scale(1.25).move_to(center), FadeIn(klein_model), FadeIn(klein_text))
-        #
-        # self.wait(5)
-        #
+        ktri1_text = Tex(r"$\Delta_1$").next_to(raw_ktri1, LEFT).scale(.6).shift(0.7 * RIGHT)
+
+        ktri2_text = Tex(r"$\Delta_2$").next_to(raw_ktri2, LEFT).scale(.6).shift(0.4 * RIGHT)
+
+        ktri_size_text = Tex(r"$A(\Delta_1) = A(\Delta_2)$", font_size=40).next_to(kcircle, LEFT, buff=.5)
+
+        self.play(Write(title))
+        self.add_foreground_mobject(title)
+        self.wait(1)
+
+        self.add_foreground_mobject(poincare_text)
+        self.play(Write(poincare_text), FadeIn(poincare_model), run_time=3)
+        self.wait(3)
+
+        self.add_foreground_mobject(klein_text)
+        self.play(Write(klein_text), FadeIn(klein_model), run_time=3)
+        self.wait(3)
+
+        self.add(pcircle)
+        # self.add(p_geodesics[0], p_geodesics[1], p_geodesics[2], p_geodesics[3])
+        # self.add(p_geodesics[0], p_point, p_point_text)
+        self.play(self.camera.frame.animate.scale(0.8).move_to(np.add(poincare_origin, [1, 0.4, 0])),
+                  FadeOut(klein_model), FadeOut(klein_text), FadeOut(poincare_model))
+
+        self.wait(2)
+
+        self.play(Indicate(pcircle, color=MY_BLUE))
+
+        self.wait(2)
+
+        self.play(Create(p_geodesics[0]))
+        self.play(Create(p_geodesics[1]))
+        self.play(Create(p_geodesics[2]))
+        self.play(Create(p_geodesics[3]))
+
+        self.wait(2)
+
+        self.play(Uncreate(p_geodesics[1]), Uncreate(p_geodesics[2]), Uncreate(p_geodesics[3]), Create(p_point),
+                  Write(p_point_text))
+
+        self.add_foreground_mobject(p_point)
+        self.add_foreground_mobject(p_point_text)
+        self.wait(2)
+
+        self.play(Create(p_point_moved_geodesics[0]))
+        self.play(Create(p_point_moved_geodesics[1]))
+        self.play(Create(p_point_moved_geodesics[2]))
+        self.play(Create(p_point_moved_geodesics[3]))
+        self.play(Create(p_point_moved_geodesics[4]))
+        self.play(Create(p_point_moved_geodesics[5]))
+        self.play(Create(p_point_moved_geodesics[6]))
+
+        self.wait(2)
+
+        self.play(Uncreate(p_geodesics[0]),
+                  Uncreate(p_point_moved_geodesics[0]),
+                  Uncreate(p_point_moved_geodesics[1]),
+                  Uncreate(p_point_moved_geodesics[2]),
+                  Uncreate(p_point_moved_geodesics[3]),
+                  Uncreate(p_point_moved_geodesics[4]),
+                  Uncreate(p_point_moved_geodesics[5]),
+                  Uncreate(p_point_moved_geodesics[6]),
+                  Uncreate(p_point), Unwrite(p_point_text))
+
+        self.wait(2)
+
+        self.play(Create(p_moving_dot), Write(p_distance_text))
+        self.play(Write(p_distance_number))
+
+        self.wait(2)
+
+        p_distance_number.add_updater(lambda d: d.set_value(p_distance_tracker.get_value()))
+
+        steps = 30
+        frames = 300
+        duration = 5
+        frame_rate = duration / frames
+        batch_size = frames / steps
+        offset = 0
+
+        for t in range(1, frames):
+            if batch_size == 1:
+                r = t
+            else:
+                r = 1 + int(t / batch_size)
+
+            if t % batch_size == 1 or batch_size == 1:
+                offset = np.array(
+                    polar_to_point(p_moving_dot_phi, norm_factor / (batch_size * pow(r, 2))))
+            p_current_point = p_current_point + offset
+            pos = p_current_point * scale_back + np.array(poincare_origin)
+            moving_dot = Dot(pos, radius=0.08 / sqrt(r))
+
+            p_distance_number.font_size = 20
+
+            p_distance_tracker.set_value(np.exp(
+                hyperbolic_distance_function(center, p_current_point)))
+
+            self.play(Transform(p_moving_dot, moving_dot), run_time=frame_rate,
+                      rate_func=lambda a: a)
+            self.remove(p_moving_dot)
+            p_moving_dot = moving_dot
+
+        moving_dot = Dot(polar_to_point(p_moving_dot_phi) * scale_back + np.array(poincare_origin))
+
+        self.play(Transform(p_moving_dot, moving_dot), FadeOut(p_distance_number), FadeIn(p_distance_infty),
+                  run_time=.25)
+
+        self.wait(5)
+
+        self.play(FadeOut(p_moving_dot), FadeOut(p_distance_infty), FadeOut(p_distance_text))
+
+        self.wait(2)
+
+        self.play(FadeIn(poincare_model), FadeOut(pcircle))
+
+        self.play(Create(ptri1), run_time=2)
+        self.play(Write(ptri1_text))
+
+        self.wait(1)
+
+        self.play(Create(ptri2), run_time=2)
+        self.play(Write(ptri2_text))
+
+        self.wait(1)
+
+        self.play(Write(ptri_size_text), run_time=2)
+
+        self.wait(4)
+
+        self.play(Uncreate(ptri1), Uncreate(ptri2), Uncreate(ptri1_text), Uncreate(ptri2_text),
+                  Uncreate(ptri_size_text), run_time=2)
+
+        self.play(self.camera.frame.animate.scale(1.25).move_to(center), FadeIn(klein_model), FadeIn(klein_text))
+
+        self.wait(5)
+
         self.add(kcircle)
         self.play(self.camera.frame.animate.scale(0.8).move_to(np.add(klein_origin, [-1, 0.4, 0])),
                   FadeOut(poincare_model), FadeOut(poincare_text), FadeOut(klein_model))
 
         self.wait(2)
 
-        # self.play(Indicate(kcircle, color=MY_BLUE))
-        #
-        # self.wait(5)
+        self.play(Create(k_geodesics[0]))
+        self.play(Create(k_geodesics[1]))
+        self.play(Create(k_geodesics[2]))
+        self.play(Create(k_geodesics[3]))
+
+        self.wait(2)
+
+        self.play(Uncreate(k_geodesics[1]), Uncreate(k_geodesics[2]), Uncreate(k_geodesics[3]), Create(k_point),
+                  Write(k_point_text))
+
+        self.add_foreground_mobject(k_point)
+        self.add_foreground_mobject(k_point_text)
+
+        self.wait(2)
+
+        self.play(Create(k_point_geodesics[0]))
+        self.play(Create(k_point_geodesics[1]))
+        self.play(Create(k_point_geodesics[2]))
+        self.play(Create(k_point_geodesics[3]))
+        self.play(Create(k_point_geodesics[4]))
+        self.play(Create(k_point_geodesics[5]))
+
+        self.wait(2)
+
+        self.play(Uncreate(k_geodesics[0]),
+                  Uncreate(k_point_geodesics[0]),
+                  Uncreate(k_point_geodesics[1]),
+                  Uncreate(k_point_geodesics[2]),
+                  Uncreate(k_point_geodesics[3]),
+                  Uncreate(k_point_geodesics[4]),
+                  Uncreate(k_point_geodesics[5]),
+                  Uncreate(k_point), Unwrite(k_point_text))
+
+        self.wait(2)
+
+        self.play(FadeIn(klein_model), FadeOut(kcircle))
+
+        self.play(Create(kpoints1[0]),
+                  Create(kpoints1[1]),
+                  Create(kpoints1[2]))
+        self.play(Create(raw_ktri1), run_time=2)
+        self.play(Write(ktri1_text))
+
+        self.wait(1)
+
+        self.play(Create(kpoints2[0]),
+                  Create(kpoints2[1]),
+                  Create(kpoints2[2]))
+        self.play(Create(raw_ktri2), run_time=2)
+        self.play(Write(ktri2_text))
+
+        self.wait(1)
+
+        self.play(Write(ktri_size_text), run_time=2)
+
+        self.wait(4)
+
+        self.play(Uncreate(raw_ktri1),
+                  Uncreate(kpoints1[0]),
+                  Uncreate(kpoints1[1]),
+                  Uncreate(kpoints1[2]),
+                  Uncreate(raw_ktri2),
+                  Uncreate(kpoints2[0]),
+                  Uncreate(kpoints2[1]),
+                  Uncreate(kpoints2[2]),
+                  Uncreate(ktri1_text), Uncreate(ktri2_text),
+                  Uncreate(ktri_size_text), run_time=2)
+
+        self.wait(2)
+
+        self.play(self.camera.frame.animate.scale(1.25).move_to(center), FadeIn(poincare_model), FadeIn(poincare_text))
+
+        self.wait(5)
