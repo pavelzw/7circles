@@ -458,19 +458,18 @@ class Scene5(MovingCameraScene):
         formula = MathTex(r'\Rightarrow A(Y_k) = A(G_k)')
         # todo align on equals sign
         self.add(isometry_formula)
+        self.add_subcaption("Da wir eine Isometrie zwischen den beiden "
+                            "Dreiecken haben, sind die alternierenden Umfänge der Dreiecke gleich.", duration=6)
         self.wait(1)
         self.play(isometry_formula.animate.next_to(formula, UP))
 
-        self.add_subcaption("Da wir eine Isometrie zwischen den beiden "
-                            "Dreiecken haben, sind die Umfänge der Dreiecke gleich, "
-                            "es gilt also A(Y_k) = A(G_k).", duration=5)
         self.play(Write(formula))
         self.wait(5)
         formula1, formula2, formula3 = VGroup(MathTex("A(Y_1) = A(G_1)"),
                                               MathTex("A(Y_2) = A(G_2)"),
                                               MathTex("A(Y_3) = A(G_3)")).arrange(DOWN)
 
-        self.add_subcaption("Diese Formeln können wir explizit für alle drei Dreieckspaare aufschreiben.", duration=3)
+        self.add_subcaption("Diese Formeln können wir explizit für alle drei Dreieckspaare aufschreiben", duration=3)
         self.play(FadeOut(isometry_formula), TransformFromCopy(formula, formula1))
         self.play(TransformFromCopy(formula, formula3))
         self.play(ReplacementTransform(formula, formula2))
@@ -481,17 +480,17 @@ class Scene5(MovingCameraScene):
             MathTex("A(Y_2) - A(G_2) = 0"),
             MathTex("A(Y_3) - A(G_3) = 0")).arrange(DOWN)
 
+        self.add_subcaption("und den Umfang von G_k auf die andere Seite bringen.", duration=3)
         self.play(ReplacementTransform(formula1, formula1_transformed),
                   ReplacementTransform(formula2, formula2_transformed),
-                  ReplacementTransform(formula3, formula3_transformed),
-                  subcaption="Und das A(G_k) auf die andere Seite bringen.")
-        self.wait(2)
+                  ReplacementTransform(formula3, formula3_transformed))
+        self.wait(3.5)
 
         formula_combined = MathTex("A(Y_1) + A(Y_2) + A(Y_3) - (A(G_1) + A(G_2) + A(G_3)) = 0", font_size=20)
 
-        self.play(ReplacementTransform(formulas_transformed, formula_combined),
-                  subcaption="Nun können wir alle Formeln zusammenaddieren und erhalten diese Formel hier.")
-        self.wait(5)
+        self.add_subcaption("Nun können wir alles zusammenaddieren und erhalten folgende Formel.", duration=4)
+        self.play(ReplacementTransform(formulas_transformed, formula_combined))
+        self.wait(3.5)
 
         # transition to Scene6
         circle = Circle()
@@ -523,6 +522,7 @@ class Scene6(MovingCameraScene):
         diagonals = HexagonMainDiagonals(hexagon, stroke_width=2)
         self.add(hexagon, diagonals)
 
+        # todo add y, g labels
         y1, y2, y3, g1, g2, g3 = get_y_g_triangles(hexagon, [RED, BLUE, BLUE], [BLUE, RED, RED])
         intersecting_triangle = IntersectionTriangle(diagonals, color=RED)
         intersecting_triangle2 = IntersectionTriangle(diagonals, color=PURPLE)
@@ -533,24 +533,24 @@ class Scene6(MovingCameraScene):
 
         self.add(formula1)
 
-        self.add_subcaption("Nun zählen wir mal zusammen, was alles herauskommt, wenn wir "
-                            "die Längen aufeinander addieren und voneinander abziehen.",
-                            duration=10)
+        self.add_subcaption("Was bedeutet diese Summe jetzt eigentlich? Betrachten wir das ganze im Bild.",
+                            duration=4)
+        self.wait(2)
         # A(Y_1)
-        self.play(formula1[1].animate.set_color(BLUE), ApplyWave(formula1[1], amplitude=.1))
+        self.play(formula1[1].animate.set_color(BLUE), ApplyWave(formula1[1], amplitude=.05))
         self.play(Create(y1), run_time=3)
         # A(Y_2)
-        self.play(formula1[3].animate.set_color(BLUE), ApplyWave(formula1[3], amplitude=.1))
+        self.play(formula1[3].animate.set_color(BLUE), ApplyWave(formula1[3], amplitude=.05))
         self.play(Create(y2), run_time=3)
         # A(Y_3)
-        self.play(formula1[5].animate.set_color(BLUE), ApplyWave(formula1[5], amplitude=.1))
+        self.play(formula1[5].animate.set_color(BLUE), ApplyWave(formula1[5], amplitude=.05))
         self.play(Create(y3), run_time=3)
 
         # todo make animations smoother using rate_functions (ease_in, ease_out)
         # A(G_1)
-        self.add_subcaption("Wenn wir den Umfang der G Dreiecke abziehen, kürzt sich ein Teil mit dem "
-                            "Umfang der Y Dreiecke weg.")
-        self.play(formula1[8].animate.set_color(RED), ApplyWave(formula1[8], amplitude=.1))
+        self.add_subcaption("Wenn wir den Umfang der G_i abziehen, kürzt sich ein Teil mit dem "
+                            "Umfang der Y_i weg.", duration=4)
+        self.play(formula1[8].animate.set_color(RED), ApplyWave(formula1[8], amplitude=.05))
         self.play(Create(g1.arcs[0]))
         self.play(Uncreate(y3.arcs[2]))
         self.play(Create(intersecting_triangle.arcs[1].reverse_direction()))
@@ -558,7 +558,7 @@ class Scene6(MovingCameraScene):
         self.play(Uncreate(y2.arcs[1]))
 
         # A(G_2)
-        self.play(formula1[10].animate.set_color(RED), ApplyWave(formula1[10], amplitude=.1))
+        self.play(formula1[10].animate.set_color(RED), ApplyWave(formula1[10], amplitude=.05))
         self.play(Create(g2.arcs[0]))
         self.play(Uncreate(y1.arcs[2]))
         self.play(Create(intersecting_triangle2.arcs[0].reverse_direction()))
@@ -566,7 +566,7 @@ class Scene6(MovingCameraScene):
         self.play(Uncreate(y3.arcs[1]))
 
         # A(G_3)
-        self.play(formula1[12].animate.set_color(RED), ApplyWave(formula1[12], amplitude=.1))
+        self.play(formula1[12].animate.set_color(RED), ApplyWave(formula1[12], amplitude=.05))
         self.play(Create(g3.arcs[0]))
         self.play(Uncreate(y2.arcs[2]))
         self.play(Create(intersecting_triangle2.arcs[2].reverse_direction()))
@@ -574,8 +574,8 @@ class Scene6(MovingCameraScene):
         self.play(Uncreate(y1.arcs[1]))
         self.remove(*[intersecting_triangle.arcs[i] for i in range(3)])
 
-        self.add_subcaption("Wir sehen, dass wir also insgesamt zweimal den Umfang des inneren Dreiecks "
-                            "aufsummiert haben sowie den alternierenden Umfang des Hexagons.", duration=5)
+        self.add_subcaption("Wir sehen, dass wir zweimal den Umfang des inneren Dreiecks "
+                            "sowie den alternierenden Umfang des Hexagons aufsummiert haben.", duration=7)
         self.wait(5)
 
         formula2 = MathTex(r'\mathrm{altPer}(P) - 2 \cdot \mathrm{Per}(T_P) = 0', font_size=17) \
@@ -583,7 +583,7 @@ class Scene6(MovingCameraScene):
         self.play(TransformFromCopy(formula1, formula2))
         self.wait(3)
 
-        self.add_subcaption("Und so kommen wir auf die Behauptung, die wir zeigen wollten.")
+        self.add_subcaption("Insgesamt folgt unsere Behauptung.", duration=3)
         formula3 = MathTex(r'\mathrm{altPer}(P) = 2 \cdot \mathrm{Per}(T_P)', font_size=17) \
             .next_to(formula2, DOWN)
         self.play(TransformFromCopy(formula2, formula3))
@@ -609,17 +609,20 @@ class Scene7(MovingCameraScene):
         hexagon = HyperbolicPolygon.from_polar(phis, color=[RED, BLUE, RED, BLUE, RED, BLUE], add_dots=False,
                                                stroke_width=2)
 
-        self.add_subcaption("Schauen wir uns nun ein hyperbolisches Hexagon an "
-                            "mit Kreisen, die tangential zum großen Kreis stehen, wobei "
-                            "sich benachbarte Kreise in exakt einem Punkt berühren.", duration=10)
+        self.add_subcaption("Jetzt beweisen wir endlich den Sieben-Kreise-Satz.", duration=3)
+        self.wait(3)
+
+        self.add_subcaption("Schauen wir uns hierfür ein hyperbolisches Hexagon "
+                            "mit Kreisen an, die tangential zum großen Kreis liegen,", duration=5)
         self.play(Create(hexagon), run_time=4)
         inner_circles = HexagonCircles(hexagon, first_circle_radius=.4, color=GREEN, stroke_width=2)
         inner_intersections = get_intersections_of_n_tangent_circles(inner_circles.circles, color=YELLOW, radius=.03)
         # todo maybe also add
         #  outer_intersections = get_intersections_of_circles_with_unit_circle(hexagon_circles.circles)
         inner_intersection_points = get_intersection_points_of_n_tangent_circles(inner_circles.circles)
-
         self.play(Create(inner_circles[0]), run_time=1)
+
+        self.add_subcaption("wobei sich benachbarte Kreise in exakt einem Punkt berühren.", duration=5)
         for i in range(1, 6):
             self.play(Create(inner_circles.circles[i]), run_time=1)
             self.play(Create(inner_intersections[i - 1]), run_time=.5)
@@ -630,8 +633,8 @@ class Scene7(MovingCameraScene):
         self.play(self.camera.frame.animate.set(width=4).move_to([.8, 0, 0]))
 
         self.add_subcaption("Wenn wir nun den alternierenden Umfang dieses Hexagons betrachten, sehen wir, "
-                            "dass dieser genau null ist, da die einzelnen Stücke in den Kreisen sich genau "
-                            "rauskürzen.", duration=5)
+                            "dass dieser genau null ist, da sich die einzelnen Stücke in den Kreisen rauskürzen.",
+                            duration=9)
 
         formula = MathTex(r'\mathrm{AltPer}(P)', '=', '0', '+', '0',
                           font_size=18).move_to([1.15, 0, 0], LEFT)
@@ -673,7 +676,9 @@ class Scene7(MovingCameraScene):
         grey_arcs.append(
             self._perform_arc_transform(plus_5, zero_5, zero_0, 5, inner_intersection_points, hexagon.polygon_points))
 
-        self.add_subcaption("Und das entspricht genau dem Umfang des Dreiecks in der Mitte. ", duration=3)
+        self.add_subcaption(
+            "Und das entspricht genau dem Umfang des Dreiecks in der Mitte aufgrund des Satzes, "
+            "den wir gerade eben bewiesen haben.", duration=6)
         diagonals = HexagonMainDiagonals(hexagon, stroke_width=2)
 
         # replace formula with formula2 in order to animate it
@@ -682,8 +687,9 @@ class Scene7(MovingCameraScene):
         self.remove(formula[0], formula[1], formula[2])
 
         self.play(formula2.animate.set(font_size=14).move_to([1.1, 0, 0], LEFT))
-        formula3 = MathTex(r'= \mathrm{Per}(T_P)', font_size=14).next_to(formula2, buff=.05)
+        formula3 = MathTex(r'= \mathrm{Per}(T_P)', font_size=14).next_to(formula2, buff=.05)  # todo make \pm 2*
         self.play(Write(formula3))
+        self.wait(3)
         self.play(Create(diagonals), run_time=3)
 
         self.add_subcaption("Also treffen sich die Hauptdiagonalen des Hexagons in einem Punkt.", duration=3)
@@ -700,9 +706,10 @@ class Scene7(MovingCameraScene):
         # turn hexagon arcs white again
         self.play(Create(intersection_dot), *[hexagon.arcs[i].animate.set_color(WHITE) for i in range(6)])
         self.play(Flash(intersection_dot, line_stroke_width=2), FadeOut(formula2, formula3))
+        self.wait(1)
 
-        self.add_subcaption("Nun müssen wir nur noch die Transformation vom hyperbolischen Raum in den euklidischen "
-                            "Raum durchführen.", duration=3)
+        self.add_subcaption("Nun müssen wir nur noch die Transformation vom Poincaré-Modell in das Klein-Modell "
+                            "durchführen.", duration=4)
 
         # transform hyperbolic hexagon to euclidean hexagon
         euclidean_hexagon = EuclideanHexagon(phis, stroke_width=2)
@@ -723,12 +730,14 @@ class Scene7(MovingCameraScene):
                     for i in range(len(inner_intersections))],
                   circle.animate.set_color(RED_E),
                   run_time=3)
-
-        self.add_subcaption("Im Klein Modell gilt die Aussage aufgrund der Isometrie zwischen den beiden Räumen "
-                            "immer noch und damit haben wir gewonnen.", duration=6)
-        self.play(Flash(euclidean_intersection_dot, line_stroke_width=2))
-
         self.wait(2)
+        self.add_subcaption("Die Aussage gilt auch hier, weil die Schnittpunkte der "
+                            "Diagonalen weiterhin durch einen Punkt verlaufen.", duration=6)
+        self.wait(6)
+        self.add_subcaption("Das entspricht genau dem Szenario aus dem ursprünglichen "
+                            "Sieben-Kreise-Satz, den wir somit bewiesen haben.",
+                            duration=6)
+        self.wait(6)
         proof_square = Square(side_length=.15, stroke_width=2).move_to([2, -1, 0], DOWN)
         self.play(Create(proof_square), run_time=2)
 
