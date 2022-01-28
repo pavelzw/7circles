@@ -5,7 +5,8 @@ import numpy as np
 from manim import Scene, Circle, Dot, Create, FadeIn, Line, \
     Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Text, UP, Write, \
     DOWN, Tex, BLUE, GREEN, WHITE, PURPLE, GREY, PINK, Uncreate, AnimationGroup, Unwrite, ImageMobject, LEFT, RIGHT, \
-    MarkupText, Polygon, Group, PI, DecimalNumber, ValueTracker, FadeOut, ArcBetweenPoints
+    MarkupText, Polygon, Group, PI, DecimalNumber, ValueTracker, FadeOut, ArcBetweenPoints, ShowPassingFlash, \
+    DrawBorderThenFill
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, mobius_transform, \
@@ -316,7 +317,7 @@ class HyperbolicModels(MovingCameraScene):
         MY_BLUE = "#22c1dd"
 
         title = MarkupText(
-            f'<span underline="single" underline_color="white">Modelle für die hyperbolische Ebene</span>').scale(
+            "Modelle für die hyperbolische Ebene").scale(
             0.8).shift(3.5 * UP)
 
         klein_model = ImageMobject("tessellation_klein.png").scale(0.7).move_to(klein_origin)
@@ -348,12 +349,20 @@ class HyperbolicModels(MovingCameraScene):
         pcircle = Circle(color=MY_BLUE, stroke_width=1).scale(scale_back).move_to(poincare_origin)
 
         ptri1 = HyperbolicPolygon(p1,
-                                  stroke_width=1).scale(scale_back)
+                                  stroke_width=1.5, dot_radius=.02, color=YELLOW, dot_color=YELLOW).scale(
+            scale_back)
         ptri1.move_to(ptri1.get_center() * scale_back).shift(poincare_origin)
         ptri2 = HyperbolicPolygon(p2,
-                                  stroke_width=1).scale(scale_back)
+                                  stroke_width=1.5, dot_radius=.02, color=YELLOW, dot_color=YELLOW).scale(
+            scale_back)
         ptri2.move_to(ptri2.get_center() * scale_back).shift(poincare_origin)
         # self.add(ktri1, ktri2, ptri1, ptri2)
+
+        ptri1_text = Tex(r"$\Delta_1$").next_to(ptri1).scale(.6).shift(0.5 * LEFT)
+
+        ptri2_text = Tex(r"$\Delta_2$").next_to(ptri2).scale(.6).shift(0.3 * LEFT)
+
+        ptri_size_text = Tex(r"$A(\Delta_1) = A(\Delta_2)$", font_size=40).next_to(pcircle, buff=.5)
 
         phis = [[0.4, 2], [1.3, 6], [3.5, 5], [4, 1.5]]
 
@@ -464,69 +473,84 @@ class HyperbolicModels(MovingCameraScene):
         #           Uncreate(p_point), Unwrite(p_point_text))
         #
         # self.wait(2)
-
-        self.play(Create(p_moving_dot), Write(p_distance_text))
-        self.play(Write(p_distance_number))
-
-        self.wait(2)
-
-        p_distance_number.add_updater(lambda d: d.set_value(p_distance_tracker.get_value()))
-
-        steps = 30
-        frames = 300
-        duration = 5
-        frame_rate = duration / frames
-        batch_size = frames / steps
-        offset = 0
-
-        for t in range(1, frames):
-            if batch_size == 1:
-                r = t
-            else:
-                r = 1 + int(t / batch_size)
-
-            if t % batch_size == 1 or batch_size == 1:
-                offset = np.array(
-                    polar_to_point(p_moving_dot_phi, norm_factor / (batch_size * pow(r, 2))))
-            p_current_point = p_current_point + offset
-            pos = p_current_point * scale_back + np.array(poincare_origin)
-            moving_dot = Dot(pos, radius=0.08 / sqrt(r))
-
-            p_distance_number.font_size = 20
-
-            p_distance_tracker.set_value(np.exp(
-                hyperbolic_distance_function(center, p_current_point)))
-
-            self.play(Transform(p_moving_dot, moving_dot), run_time=frame_rate,
-                      rate_func=lambda a: a)
-            self.remove(p_moving_dot)
-            p_moving_dot = moving_dot
-
-        moving_dot = Dot(polar_to_point(p_moving_dot_phi) * scale_back + np.array(poincare_origin))
-
-        self.play(Transform(p_moving_dot, moving_dot), FadeOut(p_distance_number), FadeIn(p_distance_infty),
-                  run_time=.25)
-
-        self.wait(5)
-
-        self.play(FadeOut(p_moving_dot), FadeOut(p_distance_infty), FadeOut(p_distance_text))
-
-        self.wait(2)
-
+        #
+        # self.play(Create(p_moving_dot), Write(p_distance_text))
+        # self.play(Write(p_distance_number))
+        #
+        # self.wait(2)
+        #
+        # p_distance_number.add_updater(lambda d: d.set_value(p_distance_tracker.get_value()))
+        #
+        # steps = 30
+        # frames = 300
+        # duration = 5
+        # frame_rate = duration / frames
+        # batch_size = frames / steps
+        # offset = 0
+        #
+        # for t in range(1, frames):
+        #     if batch_size == 1:
+        #         r = t
+        #     else:
+        #         r = 1 + int(t / batch_size)
+        #
+        #     if t % batch_size == 1 or batch_size == 1:
+        #         offset = np.array(
+        #             polar_to_point(p_moving_dot_phi, norm_factor / (batch_size * pow(r, 2))))
+        #     p_current_point = p_current_point + offset
+        #     pos = p_current_point * scale_back + np.array(poincare_origin)
+        #     moving_dot = Dot(pos, radius=0.08 / sqrt(r))
+        #
+        #     p_distance_number.font_size = 20
+        #
+        #     p_distance_tracker.set_value(np.exp(
+        #         hyperbolic_distance_function(center, p_current_point)))
+        #
+        #     self.play(Transform(p_moving_dot, moving_dot), run_time=frame_rate,
+        #               rate_func=lambda a: a)
+        #     self.remove(p_moving_dot)
+        #     p_moving_dot = moving_dot
+        #
+        # moving_dot = Dot(polar_to_point(p_moving_dot_phi) * scale_back + np.array(poincare_origin))
+        #
+        # self.play(Transform(p_moving_dot, moving_dot), FadeOut(p_distance_number), FadeIn(p_distance_infty),
+        #           run_time=.25)
+        #
+        # self.wait(5)
+        #
+        # self.play(FadeOut(p_moving_dot), FadeOut(p_distance_infty), FadeOut(p_distance_text))
+        #
+        # self.wait(2)
+        #
         # self.play(FadeIn(poincare_model), FadeOut(pcircle))
-#
-# self.wait(3)
-#
-# self.play(self.camera.frame.animate.scale(1.25).move_to(center), FadeIn(klein_model), FadeIn(klein_text))
-#
-# self.wait(5)
-#
-# self.add(kcircle)
-# self.play(self.camera.frame.animate.scale(0.8).move_to(np.add(klein_origin, [-1, 0.4, 0])),
-#          FadeOut(poincare_model), FadeOut(poincare_text))
-#
-# self.wait(2)
-#
-# self.play(Indicate(kcircle, color=MY_BLUE))
-#
-# self.wait(5)
+        #
+        # self.play(Create(ptri1), run_time=2)
+        # self.play(Write(ptri1_text))
+        #
+        # self.wait(1)
+        #
+        # self.play(Create(ptri2), run_time=2)
+        # self.play(Write(ptri2_text))
+        #
+        # self.wait(1)
+        #
+        # self.play(Write(ptri_size_text), run_time=2)
+        #
+        # self.wait(4)
+        #
+        # self.play(Uncreate(ptri1), Uncreate(ptri2), Uncreate(ptri1_text), Uncreate(ptri2_text),
+        #           Uncreate(ptri_size_text), run_time=2)
+        #
+        # self.play(self.camera.frame.animate.scale(1.25).move_to(center), FadeIn(klein_model), FadeIn(klein_text))
+        #
+        # self.wait(5)
+        #
+        self.add(kcircle)
+        self.play(self.camera.frame.animate.scale(0.8).move_to(np.add(klein_origin, [-1, 0.4, 0])),
+                  FadeOut(poincare_model), FadeOut(poincare_text), FadeOut(klein_model))
+
+        self.wait(2)
+
+        # self.play(Indicate(kcircle, color=MY_BLUE))
+        #
+        # self.wait(5)
