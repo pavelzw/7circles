@@ -3,7 +3,7 @@ from typing import Union
 import numpy as np
 from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut, FadeIn, PURPLE, WHITE, YELLOW, GREEN, \
     Uncreate, RED, VGroup, LEFT, DOWN, Dot, TransformFromCopy, Transform, Flash, MathTex, ReplacementTransform, \
-    ApplyWave, Group, GREY, GREEN_E, YELLOW_E, RED_E, Unwrite, Square, Indicate, UP
+    ApplyWave, Group, GREY, GREEN_E, YELLOW_E, RED_E, Unwrite, Square, Indicate, UP, TexTemplate, Circumscribe
 from manim.utils import rate_functions
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
@@ -43,18 +43,18 @@ class Scene1(MovingCameraScene):
 
         self.play(Create(hexagon),
                   run_time=timings.pop(),
-                  subcaption="Betrachten wir nun einmal ein ideales Hexagon.")
+                  subcaption="Betrachten wir nun ein ideales Hexagon.")
         self.play(Write(hexagon_label))
         self.play(Create(diagonals),
                   run_time=timings.pop(),
-                  subcaption="Wenn wir bei diesem Hexagon nun die "
+                  subcaption="Wenn wir bei diesem Hexagon die "
                              "gegenüberliegenden Seiten verbinden, sehen wir,")
 
         triangle = IntersectionTriangle(diagonals, color=GREEN, add_dots=False, stroke_width=2)
         triangle_label = MathTex('T_P', color=GREEN, font_size=15).move_to([-.2, .25, 0])
         self.play(Create(triangle), Write(triangle_label),
                   run_time=timings.pop(),
-                  subcaption="dass ein Dreieck in der Mitte entsteht.")
+                  subcaption="dass ein Dreieck in der Mitte entsteht. Nennen wir dieses Dreieck T_P.")
         self.play(Flash(triangle, color=GREEN, line_stroke_width=2))
 
         self.wait(timings.pop())
@@ -63,9 +63,9 @@ class Scene1(MovingCameraScene):
 
         hexagon_colored = HyperbolicPolygon.from_polar(phis, color=[RED, BLUE, RED, BLUE, RED, BLUE],
                                                        add_dots=False, stroke_width=2)
-        self.add_subcaption("Wir zeigen nun den folgenden Satz: Für jedes ideale Hexagon gilt, dass der "
+        self.add_subcaption("Wir zeigen jetzt den folgenden Satz: Für jedes ideale Hexagon gilt, dass der "
                             "alternierende Umfang bis auf das Vorzeichen genau zweimal dem Umfang von "
-                            "dem Dreieck T_P entspricht", duration=10)
+                            "T_P entspricht.", duration=10)
         self.play(Create(hexagon_colored), run_time=timings.pop())
         self.remove(hexagon)
 
@@ -133,13 +133,26 @@ class Scene2(MovingCameraScene):
         triangle = HyperbolicPolygon([p1, p2, p3], color=[BLUE, WHITE, WHITE], stroke_width=2)
         triangle.dots[0].set_color(BLUE)
         triangle.dots[1].set_color(BLUE)
-        self.add_foreground_mobjects(triangle.arcs[0], triangle.dots[0], triangle.dots[1])
-        self.add_subcaption("Wir betrachten nun ein semiideales Dreieck. Es hat zwei Knoten am Rand des Kreises - "
-                            "also ideale Punkte - sowie einen Knoten in der hyperbolischen Ebene.", duration=6)
-        self.play(Create(triangle, run_time=3))
+        triangle_dot = Dot(triangle.polygon_points[2], radius=.01)
+        self.add_subcaption("Für den Beweis definieren wir uns zuerst den Begriff des semiidealen Dreiecks. ",
+                            duration=4)
         self.wait(3)
+        self.play(Create(triangle.arcs[0]), run_time=1)
+        self.add_subcaption("Es hat zwei Ecken am Rand des Kreises - "
+                            "also ideale Punkte - sowie eine Ecke in der hyperbolischen Ebene.", duration=6)
+        self.add_foreground_mobjects(triangle.arcs[0])
+        self.play(Create(triangle.arcs[1]), run_time=1)
+        self.add(triangle_dot)
+        self.play(Create(triangle.arcs[2]), run_time=1)
+        self.add_foreground_mobjects(triangle.dots[0])
+        self.play(Create(triangle.dots[0]))
+        self.add_foreground_mobjects(triangle.dots[1])
+        self.play(Create(triangle.dots[1]))
+        self.wait(1.5)
+        self.play(Create(triangle.dots[2]))
+        self.wait(2.5)
 
-        self.play(FadeOut(triangle))
+        self.play(FadeOut(triangle, triangle_dot))
         self.clear()
         self.add(circle)
         self.add_foreground_mobject(circle)
@@ -148,8 +161,9 @@ class Scene2(MovingCameraScene):
         hexagon = HyperbolicPolygon.from_polar(phis, add_dots=False, stroke_width=2)
         diagonals = HexagonMainDiagonals(hexagon, stroke_width=2)
 
-        self.play(FadeIn(hexagon, diagonals), self.camera.frame.animate.set(width=4),
-                  subcaption="In unserem idealen Sechseck gibt es drei semiideale Dreiecke")
+        self.add_subcaption("In unserem idealen Sechseck gibt es drei solcher Dreiecke:", duration=3)
+        self.play(FadeIn(hexagon, diagonals), self.camera.frame.animate.set(width=4))
+        self.wait(2)
 
         y1, y2, y3, g1, g2, g3 = get_y_g_triangles(hexagon)
         y1_label = MathTex('Y_1', font_size=15).move_to([.5, 0, 0])
@@ -164,15 +178,15 @@ class Scene2(MovingCameraScene):
         self.play(FadeOut(y3))
 
         self.add_subcaption("Auf den jeweils gegenüberliegenden Seiten gibt es "
-                            "außerdem noch drei weitere semiideale Dreiecke, welche das innere Dreieck T_P schneiden.",
-                            duration=3)
-        self.wait(3)
+                            "außerdem noch drei weitere semiideale Dreiecke, die das innere Dreieck T_P schneiden.",
+                            duration=8)
+        self.wait(8)
         self.play(FadeIn(g1), Write(g1_label), subcaption="Die nennen wir G1, ")
         self.play(FadeOut(g1), FadeIn(g2), Write(g2_label), subcaption="G2 ")
-        self.play(FadeOut(g2), FadeIn(g3), Write(g3_label), subcaption="sowie G3.")
+        self.play(FadeOut(g2), FadeIn(g3), Write(g3_label), subcaption="und G3.")
         self.play(FadeOut(g3))
 
-        self.wait(5)
+        self.wait(3)
 
         # transition to Scene3
         self.play(Unwrite(y1_label), Unwrite(y2_label), Unwrite(y3_label),
@@ -196,14 +210,17 @@ class Scene3(MovingCameraScene):
         p2 = polar_to_point(2.1)
         p3 = polar_to_point(5) * 0.3
         print(p1, p2, p3)
+        self.wait(1)
         triangle = HyperbolicPolygon([p1, p2, p3], add_dots=False)
         self.add_subcaption("Wir definieren uns eine ähnliche Größe wie den alternierenden Umfang "
-                            "für hyperbolische Dreiecke.", duration=3)
-        self.play(Create(triangle), run_time=3)
+                            "für hyperbolische Dreiecke.", duration=4)
+        self.play(Create(triangle), run_time=3)  # todo add v_label
 
-        # make meeting point of triangle more round
+        # make intersection point of triangle more round
         dot = Dot(triangle.polygon_points[2], radius=.02)
         self.add(dot)
+
+        self.wait(3)
 
         circle1_radius = .2
         circle1_center = (1 - circle1_radius) * p1
@@ -212,8 +229,10 @@ class Scene3(MovingCameraScene):
         circle1 = Circle(radius=circle1_radius, color=GREEN, fill_opacity=.5).move_to(circle1_center)
         circle2 = Circle(radius=circle2_radius, color=GREEN, fill_opacity=.5).move_to(circle2_center)
         self.add_foreground_mobjects(circle1, circle2)
-        self.play(Create(circle1), Create(circle2),
-                  subcaption="Wenn wir disjunkte Horodisks von den beiden idealen Knoten des Dreiecks entfernen, ")
+        self.add_subcaption("Wenn wir disjunkte Horodisks von den beiden idealen Knoten des Dreiecks entfernen, ",
+                            duration=5)
+        self.play(Create(VGroup(circle1, circle2)), run_time=3)
+        self.wait(2)
 
         # L1'
         arc = triangle.arcs[1]
@@ -240,24 +259,32 @@ class Scene3(MovingCameraScene):
                                                                                arc.circle_center, arc.radius)
         l3_prime = HyperbolicArcBetweenPoints(intersection1, intersection2, color=RED)
         l3_prime_label = Tex("$L_3'$", color=RED, font_size=20).move_to([.2, .55, 0])
-        self.play(Create(l3_prime), Write(l3_prime_label),
-                  subcaption="Und L_3' als Verbindung zwischen den idealen Punkten.")
+        self.add_subcaption("und L_3'.", duration=2)
+        self.play(Create(l3_prime), Write(l3_prime_label))
+        self.wait(2)
 
         self.play(self.camera.frame.animate.set(width=4).move_to([.8, 0, 0]))
 
-        formula = MathTex('A(V) = ', "L_1'", '+', "L_2'", '-', "L_3'", font_size=15)
+        template = TexTemplate()
+        template.add_to_preamble(r"\usepackage{mathtools}")
+        formula = MathTex(r'A(V) \coloneqq ', "L_1'", '+', "L_2'", '-', "L_3'", font_size=15, tex_template=template)
         formula[1].set_color(BLUE)
         formula[3].set_color(BLUE)
         formula[5].set_color(RED)
         formula.move_to([1.15, 0, 0], aligned_edge=LEFT)
 
-        self.add_subcaption("Jetzt können wir uns den alternierenden Umfang eines semiidealen Dreiecks definieren, "
-                            "indem wir die beiden blauen Längen aufeinander addieren und die rote abziehen.",
+        self.add_subcaption("Damit definieren wir uns den alternierenden Umfang eines semiidealen Dreiecks,",
                             duration=4)
-        self.play(Write(formula[0]))
-        self.play(TransformFromCopy(l1_prime_label, formula[1]))
-        self.play(Write(formula[2]), TransformFromCopy(l2_prime_label, formula[3]))
-        self.play(Write(formula[4]), TransformFromCopy(l3_prime_label, formula[5]))
+        self.wait(1)
+        self.play(Write(formula[0]), run_time=2)
+        self.wait(1)
+        self.add_subcaption("indem wir die beiden blauen Längen aufeinander addieren und die rote abziehen.",
+                            duration=4)
+        self.play(TransformFromCopy(l1_prime_label, formula[1]), run_time=1)
+
+        self.play(Write(formula[2]), TransformFromCopy(l2_prime_label, formula[3]), run_time=1)
+        self.play(Write(formula[4]), TransformFromCopy(l3_prime_label, formula[5]), run_time=1)
+        self.wait(2)
 
         # change small circle radius
         step_size_one_direction = 10
@@ -271,8 +298,9 @@ class Scene3(MovingCameraScene):
         print(circle1_radii_transition)
         num_steps = 2 * step_size_one_direction + 1
 
-        self.add_subcaption("A(V) hängt auch nicht von der Größe der einzelnen Kreise ab, da jeweils das gleiche "
-                            "dazuaddiert wird, was auch abgezogen wird.", duration=3)
+        self.add_subcaption("Der alternierende Umfang hängt nicht von der Größe der einzelnen Kreise ab, "
+                            "da die gleiche Länge sowohl dazuaddiert als auch abgezogen wird.", duration=6)
+        self.wait(2)
         for t in range(num_steps):
             radius = circle1_radii_transition[t]
             center = triangle.polygon_points[0] * (1 - radius)
@@ -329,7 +357,7 @@ class Scene4(MovingCameraScene):
         dot3 = Dot(y3.polygon_points[2], radius=.04)
 
         self.add_subcaption("Die Dreiecke G_k und Y_k teilen sich jeweils genau einen Knoten "
-                            "für k = 1, 2, 3.", duration=4)
+                            "für k = 1, 2, 3.", duration=6)
         self.play(FadeIn(y1, g1, dot1))
         self.play(Flash(dot1, line_stroke_width=1, line_length=.1, color=WHITE))
         self.play(FadeOut(y1, g1, dot1), FadeIn(y2, g2, dot2))
@@ -339,8 +367,29 @@ class Scene4(MovingCameraScene):
         self.play(FadeOut(y3, g3, dot3))
 
         self.add_subcaption("Es gibt jeweils eine Isometrie I_k, die die gegenüberliegende Dreiecke "
-                            "aufeinander abbildet. Diese können wir uns wie folgt definieren.", duration=3)
+                            "aufeinander abbildet.", duration=5)
 
+        y1, y2, y3, g1, g2, g3 = get_y_g_triangles(hexagon, YELLOW, YELLOW)
+        isometry_label = MathTex(f"I_1", font_size=30).move_to([1.5, 0, 0])
+        for i, (y, g) in enumerate(zip([y1, y2, y3], [g1, g2, g3])):
+            if i == 0:
+                self.play(FadeIn(y), Write(isometry_label))
+            else:
+                self.play(FadeIn(y),
+                          Transform(isometry_label, MathTex(f"I_{i + 1}", font_size=30).move_to([1.5, 0, 0])))
+            self.play(ReplacementTransform(y, g))
+            self.wait(1 / 3)
+            if i == 2:
+                self.play(FadeOut(g), Unwrite(isometry_label))
+            else:
+                self.play(FadeOut(g))
+
+        self.add_subcaption("Diese können wir uns folgendermaßen konstruieren.", duration=2)
+        self.wait(2)
+
+        self.add_subcaption("Mithilfe sogenannter Möbiustransformationen, Isometrien in "
+                            "der hyperbolischen Ebene, ", duration=5)
+        self.wait(5)
         # isometry explanation
         p = y1.polygon_points[2]
         zero = np.array([0, 0, 0])
@@ -351,16 +400,22 @@ class Scene4(MovingCameraScene):
         transformed_diagonals = HexagonMainDiagonals(transformed_hexagon, stroke_width=2)
         dot_p = Dot(p, radius=.05, color=YELLOW)
         self.add_foreground_mobjects(dot_p)
+        self.add_subcaption("können wir den Schnittpunkt der beiden Dreiecke auf den Ursprung abbilden.",
+                            duration=3)
         self.play(Create(dot_p))
 
         self.play(dot_p.animate.move_to(mobius_transform(p)),
                   ReplacementTransform(hexagon, transformed_hexagon),
                   ReplacementTransform(diagonals, transformed_diagonals), run_time=2)
+        self.wait(3)
+
         self.add_subcaption("Die beiden Diagonalen, die den Punkt schneiden, sind nun beides Geraden durch den "
-                            "Ursprung. Deshalb können wir einfach eine Punktspiegelung am Ursprung machen "
-                            "und können so das rechte Dreieck auf das linke Dreieck transformieren.", duration=8)
+                            "Ursprung.", duration=3)
+        self.wait(1)
         self.play(Indicate(transformed_diagonals.arc1), Indicate(transformed_diagonals.arc3))
-        self.wait(2)
+        self.wait(4)
+        self.add_subcaption("Deshalb können wir einfach eine Punktspiegelung am Ursprung durchführen, "
+                            "sodass das rechte Dreieck auf das linke transformiert wird.", duration=7)
         triangle1 = HyperbolicPolygon([transformed_hexagon_points[-1], transformed_hexagon_points[0], zero],
                                       add_dots=False, color=YELLOW)
         triangle2 = HyperbolicPolygon([transformed_hexagon_points[2], transformed_hexagon_points[3], zero],
@@ -372,10 +427,14 @@ class Scene4(MovingCameraScene):
         isometry_formula = MathTex('I_1(Y_1) = G_1', font_size=20).move_to([1.35, 0, 0], LEFT)
         self.play(Write(y1_label), Write(g1_label))
         self.play(ReplacementTransform(triangle1, triangle2), Write(isometry_formula))
+        self.wait(4)
 
-        self.wait(3)
-        self.add_subcaption("Das ganze geht natürlich nicht nur für das erste Dreieckspaar, sondern für alle.")
-        self.play(Transform(isometry_formula, MathTex('I_k(Y_k) = G_k', font_size=20).move_to([1.35, 0, 0], LEFT)))
+        self.add_subcaption("Das ganze geht natürlich nicht nur für das erste Dreieckspaar, sondern für alle.",
+                            duration=3)
+        self.wait(2)
+        isometry_formula_transformed = MathTex('I_k(Y_k) = G_k', font_size=20).move_to([1.35, 0, 0], LEFT)
+        self.play(Transform(isometry_formula, isometry_formula_transformed),
+                  Circumscribe(isometry_formula, stroke_width=1, fade_out=True))
 
         self.wait(5)
 
