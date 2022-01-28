@@ -6,7 +6,7 @@ from manim import Scene, Circle, Dot, Create, FadeIn, Line, \
     Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Text, UP, Write, \
     DOWN, Tex, BLUE, GREEN, WHITE, PURPLE, GREY, PINK, Uncreate, AnimationGroup, Unwrite, ImageMobject, LEFT, RIGHT, \
     MarkupText, Polygon, Group, PI, DecimalNumber, ValueTracker, FadeOut, ArcBetweenPoints, ShowPassingFlash, \
-    DrawBorderThenFill, Indicate
+    DrawBorderThenFill, Indicate, Arrow, VGroup
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, mobius_transform, \
@@ -425,6 +425,16 @@ class HyperbolicModels(MovingCameraScene):
 
         ktri_size_text = Tex(r"$A(\Delta_1) = A(\Delta_2)$", font_size=40).next_to(kcircle, LEFT, buff=.5)
 
+        arrow_lr = Arrow(start=2.5 * LEFT, end=2.5 * RIGHT, stroke_width=4, max_tip_length_to_length_ratio=.5)
+        arrow_rl = Arrow(start=2.5 * RIGHT, end=2.5 * LEFT, stroke_width=4, max_tip_length_to_length_ratio=.5)
+        arrow_group = VGroup(arrow_lr, arrow_rl).arrange(DOWN)
+        arrow_group.shift(DOWN)
+
+        f_text = Tex(r"$f$", font_size=40).next_to(arrow_lr, UP, buff=0)
+        f_inv_text = Tex(r"$f^{-1}$", font_size=40).next_to(arrow_rl, DOWN, buff=0)
+
+        self.add(kcircle, pcircle, arrow_group, f_text, f_inv_text)
+
         self.play(Write(title))
         self.add_foreground_mobject(title)
         self.wait(1)
@@ -634,4 +644,18 @@ class HyperbolicModels(MovingCameraScene):
 
         self.play(self.camera.frame.animate.scale(1.25).move_to(center), FadeIn(poincare_model), FadeIn(poincare_text))
 
+        self.wait(2)
+
+        self.play(poincare_model.animate.scale(0.7).shift(1.5 * LEFT),
+                  klein_model.animate.scale(0.7).shift(1.5 * RIGHT))
+
+        self.wait(2)
+
+        self.play(Create(arrow_group))
+
+        self.wait(4)
+
+        self.play(Write(f_text), Write(f_inv_text))
+
         self.wait(5)
+
