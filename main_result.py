@@ -340,9 +340,6 @@ class Scene4(MovingCameraScene):
 
         self.add_subcaption("Es gibt jeweils eine Isometrie I_k, die die gegenüberliegende Dreiecke "
                             "aufeinander abbildet. Diese können wir uns wie folgt definieren.", duration=3)
-        # self.play(FadeIn(y1))
-        # self.play(ReplacementTransform(y1, g1))
-        # self.play(FadeOut(g1))
 
         # isometry explanation
         p = y1.polygon_points[2]

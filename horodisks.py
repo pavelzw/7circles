@@ -1,22 +1,19 @@
 from math import pi
+
 from manim import *
-
-import numpy as np
 from manim import Scene, Square, Circle, Dot, Group, Text, Create, FadeIn, FadeOut, MoveAlongPath, Line, WHITE, BLUE, \
-    GREEN_B, Transform, MovingCameraScene, Uncreate, \
-    VGroup, DecimalNumber, RIGHT, Tex, LEFT, UP, MathTex, Write, Indicate, TransformFromCopy, RED, \
-    DOWN, GREY_B, ORANGE, ArcBetweenPoints, BLUE_B, Rotate, NumberPlane, YELLOW, always_redraw, MovingCamera
+    Transform, MovingCameraScene, Uncreate, \
+    VGroup, Tex, MathTex, Write, RED, \
+    NumberPlane
 
-from geometry_util import polar_to_point, hyperbolic_distance_function, create_min_circle_radius, moving_circle, \
-    moving_line, get_intersection_in_unit_circle_of_two_tangent_circles
-from hexagon_util import create_phis, create_radius_transition
-from hyperbolic_polygon import HyperbolicPolygon, HyperbolicArcBetweenPoints
+from geometry_util import moving_circle, \
+    moving_line
 
 
 class Scene1(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 8
-        def_ball = MathTex(r'\mathrm{B}(z_0,r)=\{z:\mathrm{dist}(z,z_0)\leq r\}', font_size=20).move_to([0, -2, 0])
+        def_ball = MathTex(r'B(z_0,r)=\{z:\mathrm{dist}(z,z_0)= r\}', font_size=20).move_to([0, -2, 0])
         def_dist_eukl = MathTex(r'\mathrm{dist_e}(a,b)=|b-a|', font_size=20).move_to([-2, -1.6, 0])
         def_dist_hyp = MathTex(r'\mathrm{dist_h}(a,b)=\ln \frac{(a-c)(b-d)}{(a-b)(c-d)}', font_size=20).move_to(
             [2, -1.6, 0])
@@ -41,15 +38,35 @@ class Scene1(MovingCameraScene):
         radius = Line(start=[-2, 0, 0], end=[-2.75, 0, 0], color=RED, stroke_width=2)
         grid = NumberPlane(x_range=[-8, -2, .25], y_range=[1, 9, .25], background_line_style={
             "stroke_color": GREY, "stroke_width": .5}).move_to([-3, 0, 0])
-        self.play(Write(def_ball))
+        self.play(Write(def_ball))  # todo add black box underneath
 
         # euklidische situation
         self.play(FadeIn(grid))
         self.play(FadeIn(eucl_dot), FadeIn(eucl_dot_tex))
         self.play(Create(eucl_circles[2]))
-        self.play(Create(radius))
-        # todo moving radius https://docs.manim.community/en/stable/examples.html?highlight=grid
-        self.play(FadeOut(radius))
+        # moving radius
+        dot = Dot(radius=0.0)
+        dot.move_to(eucl_circles[2].point_from_proportion(0))
+        self.t_offset = 0
+
+        def get_line_to_circle():
+            return Line([-2, 0, 0], dot.get_center(), stroke_width=2, color=BLUE_E)
+
+        def go_around_circle(mob, dt):
+            self.t_offset += (dt * .25)
+            # print(self.t_offset)
+            mob.move_to(eucl_circles[2].point_from_proportion(self.t_offset % 1))
+
+        dot.add_updater(go_around_circle)
+        origin_to_circle_line = always_redraw(get_line_to_circle)
+        self.add(origin_to_circle_line)
+        self.add(dot)
+        self.wait(4)  # todo tweak wait duration
+
+        dot.remove_updater(go_around_circle)
+        self.wait(2)
+        self.remove(origin_to_circle_line)
+
         self.play(Create(eucl_circles[0]), Create(eucl_circles[1]))
         circle_radius_group = VGroup(*eucl_circles, eucl_dot, eucl_dot_tex)
         self.play(Write(def_dist_eukl))
