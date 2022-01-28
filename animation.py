@@ -5,7 +5,7 @@ import numpy as np
 from manim import Scene, Circle, Dot, Create, FadeIn, Line, \
     Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Text, UP, Write, \
     DOWN, Tex, BLUE, GREEN, WHITE, PURPLE, GREY, PINK, Uncreate, AnimationGroup, Unwrite, ImageMobject, LEFT, RIGHT, \
-    MarkupText, Polygon, Group, PI, DecimalNumber, ValueTracker, FadeOut
+    MarkupText, Polygon, Group, PI, DecimalNumber, ValueTracker, FadeOut, ArcBetweenPoints
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, mobius_transform, \
@@ -388,7 +388,11 @@ class HyperbolicModels(MovingCameraScene):
         p_distance_number = DecimalNumber(0.0,
                                           num_decimal_places=2, show_ellipsis=True, group_with_commas=False,
                                           font_size=20).next_to(p_distance_text, buff=.05)
+        p_distance_infty = Tex(r"$\infty$", font_size=20).next_to(p_distance_text, buff=.05)
         p_distance_tracker = ValueTracker(0.0)
+
+        p_arc = ArcBetweenPoints(polar_to_point(p_moving_dot_phi), polar_to_point(p_moving_dot_phi - PI),
+                                 arc_center=center)
 
         k_geodesics_raw = [Line(polar_to_point(x), polar_to_point(y)) for [x, y] in phis]
         k_geodesics = [geo.scale(scale_back).move_to(geo.get_center() * scale_back).shift(poincare_origin) for geo in
@@ -413,12 +417,11 @@ class HyperbolicModels(MovingCameraScene):
         # self.play(Write(klein_text), FadeIn(klein_model), run_time=3)
         # self.wait(3)
         #
-        self.add(pcircle)
-        # self.add(p_geodesics[0], p_geodesics[1], p_geodesics[2], p_geodesics[3])
-        # self.add(p_geodesics[0], p_point, p_point_text)
-        # self.play(self.camera.frame.animate.scale(0.8).move_to(np.add(poincare_origin, [0, 0.4, 0])),
-        #          FadeOut(klein_model), FadeOut(klein_text), FadeOut(poincare_model))
-
+        # self.add(pcircle)
+        # # self.add(p_geodesics[0], p_geodesics[1], p_geodesics[2], p_geodesics[3])
+        # # self.add(p_geodesics[0], p_point, p_point_text)
+        # self.play(self.camera.frame.animate.scale(0.8).move_to(np.add(poincare_origin, [1, 0.4, 0])),
+        #           FadeOut(klein_model), FadeOut(klein_text), FadeOut(poincare_model))
         #
         # self.wait(2)
         #
@@ -433,8 +436,8 @@ class HyperbolicModels(MovingCameraScene):
         #
         # self.wait(2)
         #
-        #
-        # self.play(Uncreate(p_geodesics[0]), Uncreate(p_geodesics[1]), Uncreate(p_geodesics[2]), Create(p_point), Write(p_point_text))
+        # self.play(Uncreate(p_geodesics[1]), Uncreate(p_geodesics[2]), Uncreate(p_geodesics[3]), Create(p_point),
+        #           Write(p_point_text))
         #
         # self.add_foreground_mobject(p_point)
         # self.add_foreground_mobject(p_point_text)
@@ -450,14 +453,15 @@ class HyperbolicModels(MovingCameraScene):
         #
         # self.wait(2)
         #
-        # self.play(Uncreate(p_point_moved_geodesics[0]),
-        #          Uncreate(p_point_moved_geodesics[1]),
-        #          Uncreate(p_point_moved_geodesics[2]),
-        #          Uncreate(p_point_moved_geodesics[3]),
-        #          Uncreate(p_point_moved_geodesics[4]),
-        #          Uncreate(p_point_moved_geodesics[5]),
-        #          Uncreate(p_point_moved_geodesics[6]),
-        #          Uncreate(p_point), Unwrite(p_point_text))
+        # self.play(Uncreate(p_geodesics[0]),
+        #           Uncreate(p_point_moved_geodesics[0]),
+        #           Uncreate(p_point_moved_geodesics[1]),
+        #           Uncreate(p_point_moved_geodesics[2]),
+        #           Uncreate(p_point_moved_geodesics[3]),
+        #           Uncreate(p_point_moved_geodesics[4]),
+        #           Uncreate(p_point_moved_geodesics[5]),
+        #           Uncreate(p_point_moved_geodesics[6]),
+        #           Uncreate(p_point), Unwrite(p_point_text))
         #
         # self.wait(2)
 
@@ -468,11 +472,14 @@ class HyperbolicModels(MovingCameraScene):
 
         p_distance_number.add_updater(lambda d: d.set_value(p_distance_tracker.get_value()))
 
-        batch_size = 1
-        frame_rate = 1 / (6 * batch_size)
+        steps = 30
+        frames = 300
+        duration = 5
+        frame_rate = duration / frames
+        batch_size = frames / steps
         offset = 0
 
-        for t in range(1, 30 * batch_size):
+        for t in range(1, frames):
             if batch_size == 1:
                 r = t
             else:
@@ -495,16 +502,27 @@ class HyperbolicModels(MovingCameraScene):
             self.remove(p_moving_dot)
             p_moving_dot = moving_dot
 
-        self.play(FadeOut(p_moving_dot), FadeOut(p_distance_number), FadeOut(p_distance_text))
+        moving_dot = Dot(polar_to_point(p_moving_dot_phi) * scale_back + np.array(poincare_origin))
+
+        self.play(Transform(p_moving_dot, moving_dot), FadeOut(p_distance_number), FadeIn(p_distance_infty),
+                  run_time=.25)
+
+        self.wait(5)
+
+        self.play(FadeOut(p_moving_dot), FadeOut(p_distance_infty), FadeOut(p_distance_text))
+
+        self.wait(2)
+
+        # self.play(FadeIn(poincare_model), FadeOut(pcircle))
 #
-# self.wait(2)
+# self.wait(3)
 #
 # self.play(self.camera.frame.animate.scale(1.25).move_to(center), FadeIn(klein_model), FadeIn(klein_text))
 #
 # self.wait(5)
 #
 # self.add(kcircle)
-# self.play(self.camera.frame.animate.scale(0.8).move_to(np.add(klein_origin, [0, 0.4, 0])),
+# self.play(self.camera.frame.animate.scale(0.8).move_to(np.add(klein_origin, [-1, 0.4, 0])),
 #          FadeOut(poincare_model), FadeOut(poincare_text))
 #
 # self.wait(2)
@@ -512,4 +530,3 @@ class HyperbolicModels(MovingCameraScene):
 # self.play(Indicate(kcircle, color=MY_BLUE))
 #
 # self.wait(5)
-#
