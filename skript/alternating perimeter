@@ -2,6 +2,7 @@ Scene 1:
 Nachdem wir ein Gefühl für Radien und Zentren im hyperbolischen Raum bekommen haben,
  schauen wir uns jetzt hyperbolische Vielecke ( bzw Sechsecke) an, um daraufhin den alternierenden Umfang definieren zu können,
  der für unser Haupttheorem von großer Bedeutung ist.
+> animation start
 Ein Hyperbolisches Vieleck ist wieder wie im euklidischen definiert, mit dem Unterschied, dass die Geodätischen,
  die die Ecken verbinden, nicht Geraden sind, sondern unsere bekannten Kreissegmente. (Benedikt wiederholungsanimation)
 Die Ecken des Vielecks können überall in der hyperbolischen Ebene liegen.
@@ -14,16 +15,20 @@ Bei Sechsecken kann man durch die gerade Anzahl an Ecken außerdem einen alterni
 
 Scene2:
 Betrachten wir nun also den alternierenden Umfang eines idealen Sechsecks.
-Hier ergibt sich das Problem, dass die einzelnen Segment S_k unendliche Länge haben, da sie ja den Rand berühren:
-Mit einem kleinen Trick können wir dieses Problem aber umgehen.
-Die Länge eines S_k in einem nicht idealen Sechseck ist nämlich endlich.
+Hier ergibt sich das Problem, dass die einzelnen Segment S_k unendliche Länge haben, da sie ja den Rand berühren.
+Geodätensegmente, die allerdings nicht den Rand berühren, haben endliche Länge
+Mit diesem kleinen Trick können wir dieses Problem aber umgehen.
+Denn so können wir den Umfang in einem nicht idealen Seckseck tatsächlich explizit berechnen,
+    da dessen Kanten endliche Länge haben
 
 Scene3:
 Betrachte dazu eine Folge {Pn} an hyperbolischen (nicht idealen) Sechsecken, die gegen ein ideales Sechseck Pinf konvergieren.
- Setze außerdem an jeden Eckpunkt eine Disk Di, sodass aufeinanderfolgende sich nicht überlappen und berechne nun
+ Setze außerdem an jeden Eckpunkt eine Disk Di, sodass aufeinanderfolgende sich nicht überlappen.
+  Wir sehen, dass die Längen S_k' endlich sind. Somit können wir den alterierenden Umfang der P_n tilde berechnen
     -> altPer(Pn) = (S1' + S3' + S5') - (S2' + S4' + S6') wobei Si' die Länge Si ist, allerding nur bis zu den Grenzen der Disks
  Wir sehen, falls wir Di ersetzen durch Dj mit anderem Radius, addieren und subtrahieren wir den gleichen Betrag
-  auf beiden Seiten, also für Si und Si-1, sodass der altPer unabhängig von der Größe unserer Disks ist (also auch gleich für Disks = 0)
+  auf beiden Seiten, in diesem Fall für S1 und S6, sodass der altPer unabhängig von der Größe unserer Disks ist (also auch gleich für Disks = 0)
+  Daraus folgt, dass der altPer von Pn gleich dem von Pn tilde (also mit Disks) ist.
  Lassen wir n gegen unendlich laufen, sehen wir, dass
     -> altPer(Pinf) = (S1' + S3' + S5') - (S2' + S4' + S6') mit beliebigen Disks Di. Da die Längen Si' nun aber endlich sind
        konnten wir tatsächlich einen sinnvolle Berechnung für den alternierenden Umfang finden.
