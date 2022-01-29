@@ -7,20 +7,23 @@ from manim import Scene, Square, Circle, Dot, Group, Text, Create, FadeIn, FadeO
     NumberPlane
 
 from geometry_util import moving_circle, \
-    moving_line
+    moving_line, polar_to_point
 
 
 class Scene1(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 8
+        self.wait(4)
         def_ball = MathTex(r'B(z_0,r)=\{z:\mathrm{dist}(z,z_0)= r\}', font_size=20).move_to([0, -2, 0])
         def_dist_eukl = MathTex(r'\mathrm{dist_e}(a,b)=|b-a|', font_size=20).move_to([-2, -1.6, 0])
         def_dist_hyp = MathTex(r'\mathrm{dist_h}(a,b)=\ln \frac{(a-c)(b-d)}{(a-b)(c-d)}', font_size=20).move_to(
             [2, -1.6, 0])
-
+        radius_tex = MathTex(r'r', font_size=18, color=RED)
         title_hyp = Tex(r'Hyperbolischer Raum', font_size=25, stroke_width=.5).move_to([2, 1.7, 0])
         subtitle_hyp = Tex(r'Poincar\'{e}-Modell', font_size=18, stroke_width=.5).move_to([2, 1.5, 0])
         title_eucl = Tex(r'Euklidischer Raum', font_size=25, stroke_width=.5).move_to([-2, 1.7, 0])
+        black_background = Rectangle(width=3, height=.5, color=BLACK, fill_opacity=1).move_to([0, -2, 0])
+        white_rectangle = Rectangle(width=3, height=.5, color=WHITE, stroke_width=2).move_to([0, -2, 0])
         self.add_foreground_mobjects(title_eucl)
         separating_line = Line(start=[0, 8, 0], end=[0, -3, 0], stroke_width=2)
         self.play(Write(title_eucl))
@@ -35,22 +38,22 @@ class Scene1(MovingCameraScene):
                         Circle(arc_center=[-2, 0, 0], color=BLUE, stroke_width=2, radius=.5),
                         Circle(arc_center=[-2, 0, 0], color=BLUE_E, stroke_width=2, radius=.75)]
         eucl_mov_points = np.array([[-2, 0, 0], [-2.5, 0, 0], [-3, 0, 0], [-1.5, 0, 0]])
-        radius = Line(start=[-2, 0, 0], end=[-2.75, 0, 0], color=RED, stroke_width=2)
+        radius_red = Line(start=[-2, 0, 0], end=[-1.25, 0, 0], color=RED, stroke_width=2)
         grid = NumberPlane(x_range=[-8, -2, .25], y_range=[1, 9, .25], background_line_style={
             "stroke_color": GREY, "stroke_width": .5}).move_to([-3, 0, 0])
-        self.play(Write(def_ball))  # todo add black box underneath
 
         # euklidische situation
         self.play(FadeIn(grid))
         self.play(FadeIn(eucl_dot), FadeIn(eucl_dot_tex))
         self.play(Create(eucl_circles[2]))
+
         # moving radius
         dot = Dot(radius=0.0)
         dot.move_to(eucl_circles[2].point_from_proportion(0))
         self.t_offset = 0
 
         def get_line_to_circle():
-            return Line([-2, 0, 0], dot.get_center(), stroke_width=2, color=BLUE_E)
+            return Line([-2, 0, 0], dot.get_center(), stroke_width=2, color=RED)
 
         def go_around_circle(mob, dt):
             self.t_offset += (dt * .25)
@@ -59,13 +62,18 @@ class Scene1(MovingCameraScene):
 
         dot.add_updater(go_around_circle)
         origin_to_circle_line = always_redraw(get_line_to_circle)
+        self.play(Create(radius_red))
+        self.play(FadeIn(radius_tex.next_to(radius_red, direction=0.3 * UP)))
+        self.wait(2)
+        self.play(FadeOut(radius_tex))
+        self.remove(radius_red)
         self.add(origin_to_circle_line)
         self.add(dot)
-        self.wait(4)  # todo tweak wait duration
+        self.wait(4.01)
 
         dot.remove_updater(go_around_circle)
         self.wait(2)
-        self.remove(origin_to_circle_line)
+        self.play(FadeOut(origin_to_circle_line))
 
         self.play(Create(eucl_circles[0]), Create(eucl_circles[1]))
         circle_radius_group = VGroup(*eucl_circles, eucl_dot, eucl_dot_tex)
@@ -73,6 +81,11 @@ class Scene1(MovingCameraScene):
         self.wait(2)
 
         # hyperbolische situation
+        self.play(FadeIn(black_background), Create(white_rectangle))
+        self.play(Write(def_ball))
+        self.wait(2)
+        self.play(Write(def_dist_hyp))
+        self.wait(2)
         center = [2, 0, 0]
         start_points = np.array([center, center, center, center])
         length = [1 / 2, 1 / 2, -3 / 2]  # 1 is 1 unit to the left, -3 is 3 units to the right, way of circles moving
@@ -87,7 +100,7 @@ class Scene1(MovingCameraScene):
         self.play(FadeIn(circle[0]))
         self.wait(duration=2)
         self.play(Create(circle[1]), Create(circle[2]), Create(circle[3]))
-        self.play(Write(def_dist_hyp))
+        self.wait(2)
 
         # circles moving along a line 3 times
         for t in range(3):
@@ -111,6 +124,40 @@ class Scene1(MovingCameraScene):
                       MoveAlongPath(circle[0], arcs[0]), MoveAlongPath(circle[3], arcs[1]),
                       MoveAlongPath(circle[2], arcs[2]), MoveAlongPath(circle[1], arcs[3]), run_time=2)
             self.wait(duration=1)
+
+        self.play(*[FadeOut(mob) for mob in self.mobjects])
+
+        # radius convergence
+        self.play(self.camera.frame.animate.set(width=8).move_to([2, 0, 0]))
+        self.play(FadeIn(outer_circle))
+        self.play(FadeIn(circle[0]), Create(circle[3]))
+        self.play(Write(def_dist_hyp.next_to(circle[0])))  # todo weird positioning
+        self.wait(2)
+        # todo finish last segment hyperbolic disks
+        # todo build moving radius into scene smoother
+
+        # moving hyperbolic radius
+        dot = Dot(radius=0.0)
+        dot.move_to(circle[3].point_from_proportion(0))
+        self.t_offset = 0
+
+        def get_line_to_circle_h():  # polar to point for coord of circle[0]
+            return Line(circle[0].get_center(), dot.get_center(), stroke_width=2, color=RED)
+
+        def go_around_circle_h(mob, dt):
+            self.t_offset += (dt * .25)
+            # print(self.t_offset)
+            mob.move_to(circle[3].point_from_proportion(self.t_offset % 1))
+
+        dot.add_updater(go_around_circle_h)
+        origin_to_circle_line = always_redraw(get_line_to_circle_h)
+        self.remove(radius_red)
+        self.add(origin_to_circle_line)
+        self.add(dot)
+        self.wait(4.01)
+        dot.remove_updater(go_around_circle_h)
+        self.wait(2)
+        self.play(FadeOut(origin_to_circle_line))
 
 
 class EuclideanCircles(Scene):
