@@ -8,6 +8,7 @@ from manim import Scene, Square, Circle, Dot, Group, Text, Create, FadeIn, FadeO
 
 from geometry_util import moving_circle, \
     moving_line, polar_to_point
+from hyperbolic_polygon import HyperbolicArcBetweenPoints
 
 
 class Scene1(MovingCameraScene):
@@ -131,7 +132,7 @@ class Scene1(MovingCameraScene):
         self.play(self.camera.frame.animate.set(width=8).move_to([2, 0, 0]))
         self.play(FadeIn(outer_circle))
         self.play(FadeIn(circle[0]), Create(circle[3]))
-        self.play(Write(def_dist_hyp.next_to(circle[0])))  # todo weird positioning
+        self.play(Write(def_dist_hyp.move_to([2, -1.3, 0])))  # todo weird positioning
         self.wait(2)
         # todo finish last segment hyperbolic disks
         # todo build moving radius into scene smoother
@@ -141,8 +142,10 @@ class Scene1(MovingCameraScene):
         dot.move_to(circle[3].point_from_proportion(0))
         self.t_offset = 0
 
-        def get_line_to_circle_h():  # polar to point for coord of circle[0]
-            return Line(circle[0].get_center(), dot.get_center(), stroke_width=2, color=RED)
+        def get_line_to_circle_h():  # measuring hyperbolic distance
+            return HyperbolicArcBetweenPoints(dot.get_center(), circle[0].get_center(), stroke_width=2,
+                                              color=RED)  # todo wrong arc
+            # return Line(circle[0].get_center(), dot.get_center(), stroke_width=2, color=RED)
 
         def go_around_circle_h(mob, dt):
             self.t_offset += (dt * .25)
