@@ -312,7 +312,7 @@ class Scene3(MovingCameraScene):
             intersection = get_intersection_in_unit_circle_of_two_tangent_circles(center, radius,
                                                                                   arc.circle_center, arc.radius)
             new_l2_prime = HyperbolicArcBetweenPoints(intersection, triangle.polygon_points[2], color=BLUE,
-                                                      stroke_width=HEXAGON_STROKE_WIDTH)
+                                                      stroke_width=HEXAGON_STROKE_WIDTH).reverse_direction()
 
             # total runtime 2 seconds
             self.play(Transform(circle1, new_circle), Transform(l2_prime, new_l2_prime),
