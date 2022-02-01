@@ -6,6 +6,7 @@ from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut, 
     ApplyWave, Group, GREY, GREEN_E, YELLOW_E, RED_E, Unwrite, Square, Indicate, UP, TexTemplate, Circumscribe
 from manim.utils import rate_functions
 
+from animation_constants import OUTER_CIRCLE_COLOR, HEXAGON_STROKE_WIDTH, HEXAGON_DOT_CIRCLE_RADIUS
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, get_intersection_in_unit_circle_of_two_tangent_circles, \
     get_intersections_of_n_tangent_circles, get_intersection_points_of_n_tangent_circles, get_intersection_from_angles, \
@@ -17,18 +18,8 @@ from hyperbolic_polygon import HyperbolicPolygon, HyperbolicArcBetweenPoints
 class Scene1(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 6
-        timings = [5,  # hexagon
-                   6,  # diagonals
-                   2,  # triangle
-                   5,  # wait
-                   6,  # colored_hexagon
-                   10,  # proposition
-                   5,  # wait
-                   ]
-        # timings = [.1, .1, .1, .1, .1, 10]
-        timings.reverse()
 
-        circle = Circle()
+        circle = Circle(color=OUTER_CIRCLE_COLOR)
         self.add_foreground_mobjects(circle)
         self.play(Create(circle))
 
@@ -36,28 +27,28 @@ class Scene1(MovingCameraScene):
         # phis = HexagonAngles(np.array([1.80224806, 2.30601184, 2.77326535, 3.20993453, 4.48582486, 6.15595698]))
         phis = [1.80224806, 2.30601184, 2.77326535, 3.20993453, 4.48582486, 6.15595698]
         print(f'Phis = {phis}')
-        hexagon = HyperbolicPolygon.from_polar(phis, add_dots=False, stroke_width=2)
+        hexagon = HyperbolicPolygon.from_polar(phis, add_dots=False, stroke_width=HEXAGON_STROKE_WIDTH)
         hexagon_label = MathTex('P', font_size=15).move_to([-.05, .8, 0])
         print(hexagon.phis)
-        diagonals = HexagonMainDiagonals(hexagon, stroke_width=2)
+        diagonals = HexagonMainDiagonals(hexagon, stroke_width=HEXAGON_STROKE_WIDTH)
 
         self.play(Create(hexagon),
-                  run_time=timings.pop(),
+                  run_time=5,
                   subcaption="Betrachten wir nun ein ideales Hexagon.")
         self.play(Write(hexagon_label))
         self.play(Create(diagonals),
-                  run_time=timings.pop(),
+                  run_time=6,
                   subcaption="Wenn wir bei diesem Hexagon die "
                              "gegenüberliegenden Seiten verbinden, sehen wir,")
 
-        triangle = IntersectionTriangle(diagonals, color=GREEN, add_dots=False, stroke_width=2)
+        triangle = IntersectionTriangle(diagonals, color=GREEN, add_dots=False, stroke_width=HEXAGON_STROKE_WIDTH)
         triangle_label = MathTex('T_P', color=GREEN, font_size=15).move_to([-.2, .25, 0])
         self.play(Create(triangle), Write(triangle_label),
-                  run_time=timings.pop(),
+                  run_time=2,
                   subcaption="dass ein Dreieck in der Mitte entsteht. Nennen wir dieses Dreieck T_P.")
-        self.play(Flash(triangle, color=GREEN, line_stroke_width=2))
+        self.play(Flash(triangle, color=GREEN, line_stroke_width=HEXAGON_STROKE_WIDTH))
 
-        self.wait(timings.pop())
+        self.wait(5)
 
         self.play(self.camera.frame.animate.set(width=4).move_to([.8, 0, 0]))
 
@@ -66,7 +57,7 @@ class Scene1(MovingCameraScene):
         self.add_subcaption("Wir zeigen jetzt den folgenden Satz: Für jedes ideale Hexagon gilt, dass der "
                             "alternierende Umfang bis auf das Vorzeichen genau zweimal dem Umfang von "
                             "T_P entspricht.", duration=10)
-        self.play(Create(hexagon_colored), run_time=timings.pop())
+        self.play(Create(hexagon_colored), run_time=6)
         self.remove(hexagon)
 
         proposition = Tex(r'Für jedes ideale Hexagon $P$ gilt:', font_size=11).move_to([1.9, .1, 0])
@@ -78,7 +69,7 @@ class Scene1(MovingCameraScene):
         self.play(TransformFromCopy(VGroup(*hexagon_colored.arcs), altper))
         self.play(Write(equal), TransformFromCopy(triangle, per))
 
-        self.wait(timings.pop())
+        self.wait(10)
 
         # transition to Scene2
         self.play(FadeOut(triangle, triangle_label, hexagon_colored, hexagon_label, diagonals, proposition, formula),
@@ -87,7 +78,8 @@ class Scene1(MovingCameraScene):
 
 def get_y_g_triangles(hexagon: HyperbolicPolygon,
                       color_y: Union[str, list] = YELLOW,
-                      color_g: Union[str, list] = GREEN):
+                      color_g: Union[str, list] = GREEN,
+                      **kwargs):
     diagonals = HexagonMainDiagonals(hexagon)
     c1, r1 = diagonals.arc1.circle_center, diagonals.arc1.radius
     c2, r2 = diagonals.arc2.circle_center, diagonals.arc2.radius
@@ -98,19 +90,19 @@ def get_y_g_triangles(hexagon: HyperbolicPolygon,
 
     # y triangles
     y1 = HyperbolicPolygon([hexagon.polygon_points[5], hexagon.polygon_points[0], intersection2],
-                           add_dots=False, color=color_y)
+                           add_dots=False, color=color_y, **kwargs)
     y2 = HyperbolicPolygon([hexagon.polygon_points[1], hexagon.polygon_points[2], intersection1],
-                           add_dots=False, color=color_y)
+                           add_dots=False, color=color_y, **kwargs)
     y3 = HyperbolicPolygon([hexagon.polygon_points[3], hexagon.polygon_points[4], intersection3],
-                           add_dots=False, color=color_y)
+                           add_dots=False, color=color_y, **kwargs)
 
     # g triangles
     g1 = HyperbolicPolygon([hexagon.polygon_points[2], hexagon.polygon_points[3], intersection2],
-                           add_dots=False, color=color_g)
+                           add_dots=False, color=color_g, **kwargs)
     g2 = HyperbolicPolygon([hexagon.polygon_points[4], hexagon.polygon_points[5], intersection1],
-                           add_dots=False, color=color_g)
+                           add_dots=False, color=color_g, **kwargs)
     g3 = HyperbolicPolygon([hexagon.polygon_points[0], hexagon.polygon_points[1], intersection3],
-                           add_dots=False, color=color_g)
+                           add_dots=False, color=color_g, **kwargs)
 
     return y1, y2, y3, g1, g2, g3
 
@@ -118,11 +110,8 @@ def get_y_g_triangles(hexagon: HyperbolicPolygon,
 class Scene2(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 6
-        timings = []
-        # timings = [.1, .1, .1, .1, .1, 10]
-        timings.reverse()
 
-        circle = Circle()
+        circle = Circle(color=OUTER_CIRCLE_COLOR)
         self.add(circle)
 
         p1 = polar_to_point(.2)
@@ -130,10 +119,10 @@ class Scene2(MovingCameraScene):
         p3 = polar_to_point(0.7) * 0.3
         print(p1, p2, p3)
 
-        triangle = HyperbolicPolygon([p1, p2, p3], color=[BLUE, WHITE, WHITE], stroke_width=2)
+        triangle = HyperbolicPolygon([p1, p2, p3], color=[BLUE, WHITE, WHITE], stroke_width=HEXAGON_STROKE_WIDTH)
         triangle.dots[0].set_color(BLUE)
         triangle.dots[1].set_color(BLUE)
-        triangle_dot = Dot(triangle.polygon_points[2], radius=.01)
+        triangle_dot = Dot(triangle.polygon_points[2], radius=HEXAGON_DOT_CIRCLE_RADIUS)
         self.add_subcaption("Für den Beweis definieren wir uns zuerst den Begriff des semiidealen Dreiecks. ",
                             duration=4)
         self.wait(3)
@@ -158,14 +147,14 @@ class Scene2(MovingCameraScene):
         self.add_foreground_mobject(circle)
 
         phis = [.3, 1.6, 2.2, 3.4, 4.3, 5.9]
-        hexagon = HyperbolicPolygon.from_polar(phis, add_dots=False, stroke_width=2)
-        diagonals = HexagonMainDiagonals(hexagon, stroke_width=2)
+        hexagon = HyperbolicPolygon.from_polar(phis, add_dots=False, stroke_width=HEXAGON_STROKE_WIDTH)
+        diagonals = HexagonMainDiagonals(hexagon, stroke_width=HEXAGON_STROKE_WIDTH)
 
         self.add_subcaption("In unserem idealen Sechseck gibt es drei solcher Dreiecke:", duration=3)
         self.play(FadeIn(hexagon, diagonals), self.camera.frame.animate.set(width=4))
         self.wait(2)
 
-        y1, y2, y3, g1, g2, g3 = get_y_g_triangles(hexagon)
+        y1, y2, y3, g1, g2, g3 = get_y_g_triangles(hexagon, stroke_width=HEXAGON_STROKE_WIDTH)
         y1_label = MathTex('Y_1', font_size=15).move_to([.5, 0, 0])
         y2_label = MathTex('Y_2', font_size=15).move_to([-.2, .55, 0])
         y3_label = MathTex('Y_3', font_size=15).move_to([-.35, -.25, 0])
@@ -198,11 +187,8 @@ class Scene2(MovingCameraScene):
 class Scene3(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 4
-        timings = []
-        # timings = [.1, .1, .1, .1, .1, 10]
-        timings.reverse()
 
-        circle = Circle()
+        circle = Circle(color=OUTER_CIRCLE_COLOR)
         self.add_foreground_mobject(circle)
         self.add(circle)
 
@@ -211,13 +197,13 @@ class Scene3(MovingCameraScene):
         p3 = polar_to_point(5) * 0.3
         print(p1, p2, p3)
         self.wait(1)
-        triangle = HyperbolicPolygon([p1, p2, p3], add_dots=False)
+        triangle = HyperbolicPolygon([p1, p2, p3], add_dots=False, stroke_width=HEXAGON_STROKE_WIDTH)
         self.add_subcaption("Wir definieren uns eine ähnliche Größe wie den alternierenden Umfang "
                             "für hyperbolische Dreiecke.", duration=4)
         self.play(Create(triangle), run_time=3)  # todo add v_label
 
         # make intersection point of triangle more round
-        dot = Dot(triangle.polygon_points[2], radius=.02)
+        dot = Dot(triangle.polygon_points[2], radius=HEXAGON_DOT_CIRCLE_RADIUS)
         self.add(dot)
 
         self.wait(3)
@@ -226,8 +212,10 @@ class Scene3(MovingCameraScene):
         circle1_center = (1 - circle1_radius) * p1
         circle2_radius = .15
         circle2_center = (1 - circle2_radius) * p2
-        circle1 = Circle(radius=circle1_radius, color=GREEN, fill_opacity=.5).move_to(circle1_center)
-        circle2 = Circle(radius=circle2_radius, color=GREEN, fill_opacity=.5).move_to(circle2_center)
+        circle1 = Circle(radius=circle1_radius, color=GREEN, fill_opacity=.5, stroke_width=HEXAGON_STROKE_WIDTH) \
+            .move_to(circle1_center)
+        circle2 = Circle(radius=circle2_radius, color=GREEN, fill_opacity=.5, stroke_width=HEXAGON_STROKE_WIDTH) \
+            .move_to(circle2_center)
         self.add_foreground_mobjects(circle1, circle2)
         self.add_subcaption("Wenn wir disjunkte Horodisks von den beiden idealen Knoten des Dreiecks entfernen, ",
                             duration=5)
@@ -238,7 +226,8 @@ class Scene3(MovingCameraScene):
         arc = triangle.arcs[1]
         intersection = get_intersection_in_unit_circle_of_two_tangent_circles(circle2_center, circle2_radius,
                                                                               arc.circle_center, arc.radius)
-        l1_prime = HyperbolicArcBetweenPoints(intersection, triangle.polygon_points[2], color=BLUE)
+        l1_prime = HyperbolicArcBetweenPoints(intersection, triangle.polygon_points[2], color=BLUE,
+                                              stroke_width=HEXAGON_STROKE_WIDTH)
         l1_prime_label = Tex("$L_1'$", color=BLUE, font_size=20).move_to([-.3, .1, 0])
         self.play(Create(l1_prime), Write(l1_prime_label), subcaption="erhalten wir die Längen L_1',")
         dot.set_color(BLUE)
@@ -247,7 +236,8 @@ class Scene3(MovingCameraScene):
         arc = triangle.arcs[2]
         intersection = get_intersection_in_unit_circle_of_two_tangent_circles(circle1_center, circle1_radius,
                                                                               arc.circle_center, arc.radius)
-        l2_prime = HyperbolicArcBetweenPoints(intersection, triangle.polygon_points[2], color=BLUE).reverse_direction()
+        l2_prime = HyperbolicArcBetweenPoints(intersection, triangle.polygon_points[2], color=BLUE,
+                                              stroke_width=HEXAGON_STROKE_WIDTH).reverse_direction()
         l2_prime_label = Tex("$L_2'$", color=BLUE, font_size=20).move_to([.4, -.25, 0])
         self.play(Create(l2_prime), Write(l2_prime_label), subcaption="L_2'")
 
@@ -257,7 +247,8 @@ class Scene3(MovingCameraScene):
                                                                                arc.circle_center, arc.radius)
         intersection2 = get_intersection_in_unit_circle_of_two_tangent_circles(circle2_center, circle2_radius,
                                                                                arc.circle_center, arc.radius)
-        l3_prime = HyperbolicArcBetweenPoints(intersection1, intersection2, color=RED)
+        l3_prime = HyperbolicArcBetweenPoints(intersection1, intersection2, color=RED,
+                                              stroke_width=HEXAGON_STROKE_WIDTH)
         l3_prime_label = Tex("$L_3'$", color=RED, font_size=20).move_to([.2, .55, 0])
         self.add_subcaption("und L_3'.", duration=2)
         self.play(Create(l3_prime), Write(l3_prime_label))
@@ -304,7 +295,7 @@ class Scene3(MovingCameraScene):
         for t in range(num_steps):
             radius = circle1_radii_transition[t]
             center = triangle.polygon_points[0] * (1 - radius)
-            new_circle = Circle(radius, color=GREEN, fill_opacity=.5) \
+            new_circle = Circle(radius, color=GREEN, fill_opacity=.5, stroke_width=HEXAGON_STROKE_WIDTH) \
                 .move_to(center)
 
             # L3'
@@ -313,13 +304,15 @@ class Scene3(MovingCameraScene):
                                                                                    arc.circle_center, arc.radius)
             intersection2 = get_intersection_in_unit_circle_of_two_tangent_circles(circle2_center, circle2_radius,
                                                                                    arc.circle_center, arc.radius)
-            new_l3_prime = HyperbolicArcBetweenPoints(intersection1, intersection2, color=RED)
+            new_l3_prime = HyperbolicArcBetweenPoints(intersection1, intersection2, color=RED,
+                                                      stroke_width=HEXAGON_STROKE_WIDTH)
 
             # L2'
             arc = triangle.arcs[2]
             intersection = get_intersection_in_unit_circle_of_two_tangent_circles(center, radius,
                                                                                   arc.circle_center, arc.radius)
-            new_l2_prime = HyperbolicArcBetweenPoints(intersection, triangle.polygon_points[2], color=BLUE)
+            new_l2_prime = HyperbolicArcBetweenPoints(intersection, triangle.polygon_points[2], color=BLUE,
+                                                      stroke_width=HEXAGON_STROKE_WIDTH)
 
             # total runtime 2 seconds
             self.play(Transform(circle1, new_circle), Transform(l2_prime, new_l2_prime),
@@ -337,21 +330,18 @@ class Scene3(MovingCameraScene):
 class Scene4(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 6
-        timings = []
-        # timings = [.1, .1, .1, .1, .1, 10]
-        timings.reverse()
 
-        circle = Circle()
+        circle = Circle(color=OUTER_CIRCLE_COLOR)
         self.add_foreground_mobject(circle)
         self.add(circle)
 
         phis = [.3, 1.6, 2.2, 3.4, 4.3, 5.9]
-        hexagon = HyperbolicPolygon.from_polar(phis, add_dots=False, stroke_width=2)
-        diagonals = HexagonMainDiagonals(hexagon, stroke_width=2)
+        hexagon = HyperbolicPolygon.from_polar(phis, add_dots=False, stroke_width=HEXAGON_STROKE_WIDTH)
+        diagonals = HexagonMainDiagonals(hexagon, stroke_width=HEXAGON_STROKE_WIDTH)
         self.play(FadeIn(hexagon, diagonals))
         self.wait(2)
 
-        y1, y2, y3, g1, g2, g3 = get_y_g_triangles(hexagon)
+        y1, y2, y3, g1, g2, g3 = get_y_g_triangles(hexagon, stroke_width=HEXAGON_STROKE_WIDTH)
         dot1 = Dot(y1.polygon_points[2], radius=.04)
         dot2 = Dot(y2.polygon_points[2], radius=.04)
         dot3 = Dot(y3.polygon_points[2], radius=.04)
@@ -369,7 +359,7 @@ class Scene4(MovingCameraScene):
         self.add_subcaption("Es gibt jeweils eine Isometrie I_k, die die gegenüberliegende Dreiecke "
                             "aufeinander abbildet.", duration=5)
 
-        y1, y2, y3, g1, g2, g3 = get_y_g_triangles(hexagon, YELLOW, YELLOW)
+        y1, y2, y3, g1, g2, g3 = get_y_g_triangles(hexagon, YELLOW, YELLOW, stroke_width=HEXAGON_STROKE_WIDTH)
         isometry_label = MathTex(f"I_1", font_size=30).move_to([1.5, 0, 0])
         for i, (y, g) in enumerate(zip([y1, y2, y3], [g1, g2, g3])):
             if i == 0:
@@ -396,8 +386,9 @@ class Scene4(MovingCameraScene):
         # move hexagon s. t. p is at zero
         mobius_transform = mobius_transform_poincare_disk(p, zero)
         transformed_hexagon_points = [mobius_transform(point) for point in hexagon.polygon_points]
-        transformed_hexagon = HyperbolicPolygon(transformed_hexagon_points, add_dots=False, stroke_width=2)
-        transformed_diagonals = HexagonMainDiagonals(transformed_hexagon, stroke_width=2)
+        transformed_hexagon = HyperbolicPolygon(transformed_hexagon_points, add_dots=False,
+                                                stroke_width=HEXAGON_STROKE_WIDTH)
+        transformed_diagonals = HexagonMainDiagonals(transformed_hexagon, stroke_width=HEXAGON_STROKE_WIDTH)
         dot_p = Dot(p, radius=.05, color=YELLOW)
         self.add_foreground_mobjects(dot_p)
         self.add_subcaption("können wir den Schnittpunkt der beiden Dreiecke auf den Ursprung abbilden.",
@@ -417,9 +408,9 @@ class Scene4(MovingCameraScene):
         self.add_subcaption("Deshalb können wir einfach eine Punktspiegelung am Ursprung durchführen, "
                             "sodass das rechte Dreieck auf das linke transformiert wird.", duration=7)
         triangle1 = HyperbolicPolygon([transformed_hexagon_points[-1], transformed_hexagon_points[0], zero],
-                                      add_dots=False, color=YELLOW)
+                                      add_dots=False, color=YELLOW, stroke_width=HEXAGON_STROKE_WIDTH)
         triangle2 = HyperbolicPolygon([transformed_hexagon_points[2], transformed_hexagon_points[3], zero],
-                                      add_dots=False, color=YELLOW)
+                                      add_dots=False, color=YELLOW, stroke_width=HEXAGON_STROKE_WIDTH)
         self.play(FadeIn(triangle1))
         self.wait(2)
         y1_label = MathTex('Y_1', font_size=15).move_to([.35, -.2, 0])
@@ -442,8 +433,7 @@ class Scene4(MovingCameraScene):
         self.play(self.camera.frame.animate.move_to(isometry_formula.get_center()),
                   FadeOut(circle, g1_label, y1_label, transformed_hexagon, transformed_diagonals,
                           dot_p, triangle2),
-                  isometry_formula.animate.set(font_size=48)
-                  )
+                  isometry_formula.animate.set(font_size=48))
         self.remove(circle, dot_p)  # remove foreground mobjects
         self.wait(2)
 
@@ -451,9 +441,6 @@ class Scene4(MovingCameraScene):
 class Scene5(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 6
-        timings = []
-        # timings = [.1, .1, .1, .1, .1, 10]
-        timings.reverse()
         isometry_formula = MathTex('I_k(Y_k) = G_k')
         formula = MathTex(r'\Rightarrow A(Y_k) = A(G_k)')
         # todo align on equals sign
@@ -493,10 +480,10 @@ class Scene5(MovingCameraScene):
         self.wait(3.5)
 
         # transition to Scene6
-        circle = Circle()
+        circle = Circle(color=OUTER_CIRCLE_COLOR)
         phis = [.3, 1.6, 2.2, 3.4, 4.3, 5.9]
-        hexagon = HyperbolicPolygon.from_polar(phis, add_dots=False, stroke_width=2)
-        diagonals = HexagonMainDiagonals(hexagon, stroke_width=2)
+        hexagon = HyperbolicPolygon.from_polar(phis, add_dots=False, stroke_width=HEXAGON_STROKE_WIDTH)
+        diagonals = HexagonMainDiagonals(hexagon, stroke_width=HEXAGON_STROKE_WIDTH)
         new_formula = MathTex('0 &=', 'A(Y_1)', '+', 'A(Y_2)', '+', 'A(Y_3)', r'\\',
                               '&-(', 'A(G_1)', '+', 'A(G_2)', '+', 'A(G_3)', ')', font_size=17) \
             .move_to([1.25, .5, 0], aligned_edge=LEFT)
@@ -509,23 +496,23 @@ class Scene6(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 6
         self.camera.frame.move_to([.8, 0, 0])
-        timings = []
-        # timings = [.1, .1, .1, .1, .1, 10]
-        timings.reverse()
 
-        circle = Circle()
+        circle = Circle(color=OUTER_CIRCLE_COLOR)
         self.add_foreground_mobject(circle)
         self.add(circle)
 
         phis = [.3, 1.6, 2.2, 3.4, 4.3, 5.9]
-        hexagon = HyperbolicPolygon.from_polar(phis, add_dots=False, stroke_width=2)
-        diagonals = HexagonMainDiagonals(hexagon, stroke_width=2)
+        hexagon = HyperbolicPolygon.from_polar(phis, add_dots=False, stroke_width=HEXAGON_STROKE_WIDTH)
+        diagonals = HexagonMainDiagonals(hexagon, stroke_width=HEXAGON_STROKE_WIDTH)
         self.add(hexagon, diagonals)
 
         # todo add y, g labels
-        y1, y2, y3, g1, g2, g3 = get_y_g_triangles(hexagon, [RED, BLUE, BLUE], [BLUE, RED, RED])
-        intersecting_triangle = IntersectionTriangle(diagonals, color=RED)
-        intersecting_triangle2 = IntersectionTriangle(diagonals, color=PURPLE)
+        y1, y2, y3, g1, g2, g3 = get_y_g_triangles(hexagon, [RED, BLUE, BLUE], [BLUE, RED, RED],
+                                                   stroke_width=HEXAGON_STROKE_WIDTH)
+        intersecting_triangle = IntersectionTriangle(diagonals, color=RED, add_dots=False,
+                                                     stroke_width=HEXAGON_STROKE_WIDTH)
+        intersecting_triangle2 = IntersectionTriangle(diagonals, color=PURPLE, add_dots=False,
+                                                      stroke_width=HEXAGON_STROKE_WIDTH)
 
         formula1 = MathTex('0 &=', 'A(Y_1)', '+', 'A(Y_2)', '+', 'A(Y_3)', r'\\',
                            '&-(', 'A(G_1)', '+', 'A(G_2)', '+', 'A(G_3)', ')', font_size=17).move_to([1.25, .5, 0],
@@ -594,20 +581,19 @@ class Scene6(MovingCameraScene):
         self.play(self.camera.frame.animate.move_to([0, 0, 0]),
                   FadeOut(formula1, formula2, formula3, hexagon, intersecting_triangle2,
                           diagonals, *[triangle.arcs[0] for triangle in [g1, g2, g3, y1, y2, y3]]))
-        # todo dots fading out that weren't there before
         self.wait(3)
 
 
 class Scene7(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 6
-        circle = Circle()  # todo stroke_width=2?
+        circle = Circle(color=OUTER_CIRCLE_COLOR)
         self.add(circle)
 
         phis = HexagonAngles(np.array([.3, 1.6, 2.2, 3, 4.3]))
 
         hexagon = HyperbolicPolygon.from_polar(phis, color=[RED, BLUE, RED, BLUE, RED, BLUE], add_dots=False,
-                                               stroke_width=2)
+                                               stroke_width=HEXAGON_STROKE_WIDTH)
 
         self.add_subcaption("Jetzt beweisen wir endlich den Sieben-Kreise-Satz.", duration=3)
         self.wait(3)
@@ -615,7 +601,7 @@ class Scene7(MovingCameraScene):
         self.add_subcaption("Schauen wir uns hierfür ein hyperbolisches Hexagon "
                             "mit Kreisen an, die tangential zum großen Kreis liegen,", duration=5)
         self.play(Create(hexagon), run_time=4)
-        inner_circles = HexagonCircles(hexagon, first_circle_radius=.4, color=GREEN, stroke_width=2)
+        inner_circles = HexagonCircles(hexagon, first_circle_radius=.4, color=GREEN, stroke_width=HEXAGON_STROKE_WIDTH)
         inner_intersections = get_intersections_of_n_tangent_circles(inner_circles.circles, color=YELLOW, radius=.03)
         # todo maybe also add
         #  outer_intersections = get_intersections_of_circles_with_unit_circle(hexagon_circles.circles)
@@ -679,15 +665,15 @@ class Scene7(MovingCameraScene):
         self.add_subcaption(
             "Und das entspricht genau dem Umfang des Dreiecks in der Mitte aufgrund des Satzes, "
             "den wir gerade eben bewiesen haben.", duration=6)
-        diagonals = HexagonMainDiagonals(hexagon, stroke_width=2)
+        diagonals = HexagonMainDiagonals(hexagon, stroke_width=HEXAGON_STROKE_WIDTH)
 
         # replace formula with formula2 in order to animate it
         formula2 = MathTex(r'\mathrm{AltPer}(P) = 0', font_size=formula.font_size).move_to(formula.get_left(), LEFT)
         self.add(formula2)
         self.remove(formula[0], formula[1], formula[2])
 
-        self.play(formula2.animate.set(font_size=14).move_to([1.1, 0, 0], LEFT))
-        formula3 = MathTex(r'= \mathrm{Per}(T_P)', font_size=14).next_to(formula2, buff=.05)  # todo make \pm 2*
+        self.play(formula2.animate.set(font_size=12).move_to([1.1, 0, 0], LEFT))
+        formula3 = MathTex(r'= \pm 2 \cdot \mathrm{Per}(T_P)', font_size=12).next_to(formula2, buff=.05)
         self.play(Write(formula3))
         self.wait(3)
         self.play(Create(diagonals), run_time=3)
@@ -705,7 +691,7 @@ class Scene7(MovingCameraScene):
             hexagon.arcs[i].set_color(GREY)
         # turn hexagon arcs white again
         self.play(Create(intersection_dot), *[hexagon.arcs[i].animate.set_color(WHITE) for i in range(6)])
-        self.play(Flash(intersection_dot, line_stroke_width=2), FadeOut(formula2, formula3))
+        self.play(Flash(intersection_dot, line_stroke_width=HEXAGON_STROKE_WIDTH), FadeOut(formula2, formula3))
         self.wait(1)
 
         self.add_subcaption("Nun müssen wir nur noch die Transformation vom Poincaré-Modell in das Klein-Modell "
@@ -759,6 +745,8 @@ class Scene7(MovingCameraScene):
 
     @staticmethod
     def _get_half_arcs(intersection_points, polygon_points, i, col1, col2):
-        arc1 = HyperbolicArcBetweenPoints(intersection_points[i], polygon_points[i], color=col1, stroke_width=2)
-        arc2 = HyperbolicArcBetweenPoints(intersection_points[i - 1], polygon_points[i], color=col2, stroke_width=2)
+        arc1 = HyperbolicArcBetweenPoints(intersection_points[i], polygon_points[i], color=col1,
+                                          stroke_width=HEXAGON_STROKE_WIDTH)
+        arc2 = HyperbolicArcBetweenPoints(intersection_points[i - 1], polygon_points[i], color=col2,
+                                          stroke_width=HEXAGON_STROKE_WIDTH)
         return Group(arc1, arc2)
