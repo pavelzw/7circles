@@ -14,14 +14,23 @@ Hyperbolische Scheiben, die wir im Poincare Modell H^2 einbetten, sind genauso d
 Im Zentrum des H^2 entsprechen die hyperbolischen tatsächlich den euklidischen Kreisen.
 Doch ändern wir nun das hyperb Zentrum,
     so verändert sich auch das Verhalten der hypb Kreise im Gegensatz zu den euklidischen.
+    Was wir allerdings die ganze Zeit beaobachten können ist, dass auch wenn sich radius und Zentrum der KReise
+    unterscheiden, es sich auch im hyperbolischen um unsere altbekannten runde euklidische Kreise handelt.
 
-#zu folgendem gibt es keine animation
-Da hyberbolische Isometrien die Längen im hyperb Raum erhalten, sehen wir,
-    dass die Menge der hypb Disks identisch zu der der eukl sind,
-    also auch wenn sie sich anders verhalten zum Zentrum P, werden sie trotzdem als "gewohnte"
-    euklidische Disks gezeichnet
-
+betrachten wir den hyperbolischen radius etwas genauer.
+    Dieser wird über die hyperbolische Distanzfunktion gemessen, Diese misst den Abstand von zwei Punkten b und c
+    in der hyperbolischen Ebene über eine Log Funktion, in der auch Randpunkte a und d erscheinen, diese sind die
+    Schnittpunkte der Geotdätischen von b und c mit der Einheitsscheibe.
+    Auch der hyperb Radius besitzt vom Zentrum aus den gleichen Abstand zu jedem Punkt auf unserem Kreis,
+    auch wenn es für uns scheinbar nicht so wirkt
 
 Bewegen wir das hyp Zentrum und schauen uns die zugehörigen konzentrischen Kreise an, so konvergiert der Radius
     gegen unendlich für zentrum -> Rand
 Daher haben Horodisks einen unendlich großen Radius mit Zentrum auf dH^2
+
+
+# @pavel. Genug erklärt?
+Da hyberbolische Isometrien die Längen im hyperb Raum erhalten, sehen wir,
+    dass die Menge der hypb Disks identisch zu der der eukl sind,
+    also auch wenn sie sich anders verhalten zum Zentrum P, werden sie trotzdem als "gewohnte"
+    euklidische Disks gezeichnet
