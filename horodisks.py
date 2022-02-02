@@ -102,6 +102,7 @@ class Scene1(MovingCameraScene):
         # circle[0] is dot, circle[1] is smallest circle, circle[2] is middle circle, circle[3] is biggest circle
         self.play(FadeIn(outer_circle))
         self.play(FadeIn(circle[0]))
+        self.add_foreground_mobjects(circle[0])
         self.wait(duration=2)
         self.play(Create(circle[1]), Create(circle[2]), Create(circle[3]))
         self.wait(2)
@@ -138,7 +139,6 @@ class Scene1(MovingCameraScene):
                   Create(circle[3].move_to(polar_to_point(19 * PI / 12, 0.125))))
         self.play(Write(def_dist_hyp.move_to([0, -2, 0])))
         self.wait(2)
-        # todo finish last segment hyperbolic disks
 
         # moving hyperbolic radius
         dot = Dot(radius=0.0)
@@ -188,10 +188,35 @@ class Scene1(MovingCameraScene):
         self.wait(4.01)
         dot.remove_updater(go_around_circle_h)
         self.wait(2)
-        self.play(FadeOut(origin_to_circle_line))
+        self.play(FadeOut(origin_to_circle_line), FadeOut(def_dist_hyp))
         self.wait(2)
 
-        
+        # todo finish last segment hyperbolic disks
+
+        self.play(FadeIn(circle[1].move_to(polar_to_point(19 * PI / 12, .375))),
+                  FadeIn(circle[2].move_to(polar_to_point(19 * PI / 12, .25))))
+        start_points = np.array([polar_to_point(19 * PI / 12, .5),
+                                 polar_to_point(19 * PI / 12, .375),
+                                 polar_to_point(19 * PI / 12, .25),
+                                 polar_to_point(19 * PI / 12, .125)])
+        end_points = np.array([polar_to_point(19 * PI / 12),
+                               polar_to_point(19 * PI / 12, .75),
+                               polar_to_point(19 * PI / 12, .5),
+                               polar_to_point(19 * PI / 12, .25)])
+        lines = moving_line(start_points, end_points)
+        self.play(MoveAlongPath(circle[0], lines[0]), MoveAlongPath(circle[3], lines[3]),  # hyperbolic
+                  MoveAlongPath(circle[2], lines[2]), MoveAlongPath(circle[1], lines[1]), run_time=2)
+        self.wait(3)
+
+        unit_radius = HyperbolicArcBetweenPoints(circle[0].get_center(), circle[3].point_from_proportion(0), color=RED,
+                                                 stroke_width=2)
+        self.play(Create(unit_radius))
+        self.play(Create(radius_tex.next_to(unit_radius, direction=0.3 * UP)))
+        radius_length = MathTex(r'\mathrm{length_h}(r) = \infty', font_size=20)
+        self.play(Write(radius_length.move_to([0, -2, 0])))
+        self.wait(2)
+
+
 class EuclideanCircles(Scene):
     def construct(self):
         # euclidean situation in center
