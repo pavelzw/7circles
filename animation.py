@@ -1,20 +1,18 @@
-from cmath import sqrt
 from math import pi
 
 import numpy as np
 from manim import Scene, Circle, Dot, Create, FadeIn, Line, \
     Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Text, UP, Write, \
     DOWN, Tex, BLUE, GREEN, WHITE, PURPLE, GREY, PINK, Uncreate, AnimationGroup, Unwrite, ImageMobject, LEFT, RIGHT, \
-    MarkupText, Polygon, Group, PI, DecimalNumber, ValueTracker, FadeOut, ArcBetweenPoints, ShowPassingFlash, \
-    DrawBorderThenFill, Indicate, Arrow, VGroup
+    MarkupText, Polygon, PI, DecimalNumber, ValueTracker, ArcBetweenPoints, Arrow, VGroup, FadeOut, Indicate
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, mobius_transform, \
     tf_klein_to_poincare, get_intersections_of_n_tangent_circles, get_intersections_of_circles_with_unit_circle, \
     get_intersection_from_angles, get_parallel_to_line_through_point, tf_poincare_to_klein, \
-    get_both_intersections_line_with_unit_circle, hyperbolic_distance_function
+    get_both_intersections_line_with_unit_circle
 from hexagon import HexagonCircles, HexagonMainDiagonals, HyperbolicArcBetweenPoints
-from hexagon_util import create_phis, create_phi_transition, create_radius_transition
+from hexagon_util import create_phis, create_phi_transition
 from hyperbolic_polygon import HyperbolicPolygon
 
 
@@ -309,16 +307,18 @@ class ParallelAxiom(MovingCameraScene):
 
 class HyperbolicModels(MovingCameraScene):
     def construct(self):
-        center = [0, 0, 0]
+        center = np.array([0, 0, 0])
 
-        klein_origin = [3.5, -1, 0]
-        poincare_origin = [-3.5, -1, 0]
+        klein_origin = np.array([3.5, -1, 0])
+        poincare_origin = np.array([-3.5, -1, 0])
 
         MY_BLUE = "#22c1dd"
 
         title = MarkupText(
             "Modelle für die hyperbolische Ebene").scale(
             0.8).shift(3.5 * UP)
+
+        title2 = Text("Transformationen zwischen hyperbolischen Modellen").scale(.8).shift(3.5 * UP)
 
         klein_model = ImageMobject("tessellation_klein.png").scale(0.7).move_to(klein_origin)
         klein_text = Text("Klein-Modell").scale(0.6).move_to(3.5 * RIGHT + 2.2 * UP)
@@ -433,19 +433,22 @@ class HyperbolicModels(MovingCameraScene):
         f_text = Tex(r"$f$", font_size=40).next_to(arrow_lr, UP, buff=0)
         f_inv_text = Tex(r"$f^{-1}$", font_size=40).next_to(arrow_rl, DOWN, buff=0)
 
-        self.add(kcircle, pcircle, arrow_group, f_text, f_inv_text)
+        f_formula = Tex(r"$f(x,y) = \frac{1}{1+\sqrt{1-x^2-y^2}}(x,y)$", font_size=40).move_to(.5 * UP)
+        f_inv_formula = Tex(r"$f^{-1}(x,y) = \frac{1}{1+x^2+y^2}(2x,2y)$", font_size=40).move_to(2.5 * DOWN)
 
-        self.play(Write(title))
-        self.add_foreground_mobject(title)
-        self.wait(1)
+        # self.add(kcircle, pcircle, arrow_group, f_text, f_inv_text)
 
-        self.add_foreground_mobject(poincare_text)
-        self.play(Write(poincare_text), FadeIn(poincare_model), run_time=3)
-        self.wait(3)
+        elf.play(Write(title))
+        elf.add_foreground_mobject(title)
+        elf.wait(1)
 
-        self.add_foreground_mobject(klein_text)
-        self.play(Write(klein_text), FadeIn(klein_model), run_time=3)
-        self.wait(3)
+        elf.add_foreground_mobject(poincare_text)
+        elf.play(Write(poincare_text), FadeIn(poincare_model), run_time=3)
+        elf.wait(3)
+
+        elf.add_foreground_mobject(klein_text)
+        elf.play(Write(klein_text), FadeIn(klein_model), run_time=3)
+        elf.wait(3)
 
         self.add(pcircle)
         # self.add(p_geodesics[0], p_geodesics[1], p_geodesics[2], p_geodesics[3])
@@ -644,10 +647,16 @@ class HyperbolicModels(MovingCameraScene):
 
         self.play(self.camera.frame.animate.scale(1.25).move_to(center), FadeIn(poincare_model), FadeIn(poincare_text))
 
+        self.play(Transform(title, title2))
+
         self.wait(2)
 
         self.play(poincare_model.animate.scale(0.7).shift(1.5 * LEFT),
-                  klein_model.animate.scale(0.7).shift(1.5 * RIGHT))
+                  klein_model.animate.scale(0.7).shift(1.5 * RIGHT),
+                  poincare_text.animate.shift(1.5 * LEFT + .5 * DOWN),
+                  klein_text.animate.shift(1.5 * RIGHT + .5 * DOWN))
+
+        self.add(pcircle.scale(0.7).shift(1.5 * LEFT), kcircle.scale(0.7).shift(1.5 * RIGHT))
 
         self.wait(2)
 
@@ -657,5 +666,46 @@ class HyperbolicModels(MovingCameraScene):
 
         self.play(Write(f_text), Write(f_inv_text))
 
-        self.wait(5)
+        self.wait(2)
 
+        self.play(Write(f_formula))
+
+        self.wait(1)
+
+        self.play(Write(f_inv_formula))
+
+        p_geo0 = p_geodesics[0]
+        p_geo0 = p_geo0.shift(-poincare_origin).scale(0.7).move_to(p_geo0.get_center() * 0.7).shift(
+            poincare_origin + 1.5 * LEFT)
+        p_geo0_copy = p_geo0.copy()
+
+        p_geo1 = p_geodesics[2]
+        p_geo1 = p_geo1.shift(-poincare_origin).scale(0.7).move_to(p_geo1.get_center() * 0.7).shift(
+            poincare_origin + 1.5 * LEFT)
+
+        k_geo0 = k_geodesics[0]
+        k_geo0 = k_geo0.shift(-klein_origin).scale(0.7).move_to(k_geo0.get_center() * 0.7).shift(
+            klein_origin + 1.5 * RIGHT)
+
+        k_geo1 = k_geodesics[2]
+        k_geo1 = k_geo1.shift(-klein_origin).scale(0.7).move_to(k_geo1.get_center() * 0.7).shift(
+            klein_origin + 1.5 * RIGHT)
+        k_geo1_copy = k_geo1.copy()
+
+        self.play(Create(p_geo0), FadeOut(poincare_model))
+        self.add(p_geo0_copy)
+
+        self.wait(2)
+
+        self.play(Transform(p_geo0, k_geo0), FadeOut(klein_model), Indicate(f_text))
+
+        self.wait(1)
+
+        self.play(Create(k_geo1))
+
+        self.wait(1)
+
+        self.play(Transform(k_geo1, p_geo1), Indicate(f_inv_text))
+        self.add(k_geo1_copy)
+
+        self.wait(5)
