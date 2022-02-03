@@ -709,3 +709,105 @@ class HyperbolicModels(MovingCameraScene):
         self.add(k_geo1_copy)
 
         self.wait(5)
+
+
+class SevenCirclesHyperbolic(MovingCameraScene):
+    def construct(self):
+        self.camera.frame.width = 9
+
+        OUTER_CIRCLE_COLOR = WHITE
+        INNER_CIRCLE_COLOR = BLUE
+        INNER_INTERSECTION_COLOR = GREEN
+        OUTER_INTERSECTION_COLOR = GREY
+        HEXAGON_COLOR = PINK
+        DIAGONAL_COLOR = PURPLE
+        DIAGONAL_INTERSECTION_COLOR = YELLOW
+
+        title = Text("Der Sieben-Kreise-Satz").scale(0.8)
+
+        theorem_text = Tex(r"Sei $C_0\ $ein Kreis ", r"und $C_1, \ldots, C_6$ in $C_0$ enthaltene Kreise, ",
+                           "sodass jeder innere Kreis zu $C_0$ tangential ist ",
+                           "und je zwei nebeneinanderliegende innere Kreise ebenfalls zueinander tangential sind. ",
+                           "Dann treffen sich die drei hyperbolischen Diagonalen des von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildeten hyperbolischen Hexagons ",
+                           "in einem Punkt.", "",
+                           substrings_to_isolate=[r"$C_0\ $", r"$C_1, \ldots, C_6$", "zu $C_0$ tangential",
+                                                  "nebeneinanderliegende innere Kreise ebenfalls zueinander tangential",
+                                                  "hyperbolischen Diagonalen", "hyperbolischen Hexagons", "Punkt"],
+                           stroke_width=.05).set_color_by_tex(r"$C_0\ $",
+                                                              OUTER_CIRCLE_COLOR).set_color_by_tex(
+            r"$C_1, \ldots, C_6$",
+            INNER_CIRCLE_COLOR).set_color_by_tex(
+            "zu $C_0$ tangential",
+            OUTER_INTERSECTION_COLOR).set_color_by_tex(
+            "nebeneinanderliegende innere Kreise ebenfalls zueinander tangential",
+            INNER_INTERSECTION_COLOR).set_color_by_tex(
+            "hyperbolischen Diagonalen", DIAGONAL_COLOR).set_color_by_tex(
+            "hyperbolischen Hexagons", HEXAGON_COLOR).set_color_by_tex("Punkt", DIAGONAL_INTERSECTION_COLOR).scale(
+            0.5).move_to([0, -2, 0])
+
+        circle = Circle(color=OUTER_CIRCLE_COLOR)
+        phis = create_phis(min_dist=.9, max_dist=1.2)
+        first_circle_radius = .4
+
+        hexagon = HyperbolicPolygon([polar_to_point(phi) for phi in phis], color=PINK)
+        hexagon_circles = HexagonCircles(hexagon, first_circle_radius)
+        inner_intersections = get_intersections_of_n_tangent_circles(hexagon_circles.circles,
+                                                                     color=INNER_INTERSECTION_COLOR)
+        outer_intersections = get_intersections_of_circles_with_unit_circle(hexagon_circles.circles,
+                                                                            color=OUTER_INTERSECTION_COLOR)
+        split_phis = [[phis[0], phis[1]], [phis[2], phis[3]], [phis[4], phis[5]]]
+        diagonals = [HyperbolicArcBetweenPoints(x, y, color=DIAGONAL_COLOR) for [x, y] in split_phis]
+        diagonal_intersection = Dot(get_intersection_from_angles(phis[0], phis[3], phis[1], phis[4]),
+                                    color=DIAGONAL_INTERSECTION_COLOR)
+
+        self.camera.shift(0.8 * DOWN)
+        self.play(Write(title.shift(1.5 * UP).scale(.7)))
+        # self.add_subcaption("Wir beschäftigen uns heute mit dem Sieben-Kreise-Satz. Unser Ziel ist es diesen über "
+        # "einen interessanten Weg, der hyperbolische Geometrie mit einschließt zu beweisen.")
+        self.wait(4)
+        # self.add_subcaption("Aber zuerst einmal: Was sagt der Sieben-Kreise-Satz überhaupt aus?")
+
+        self.play(Write(theorem_text[0], run_time=.2))
+        self.play(Write(theorem_text[1], run_time=.4))
+        self.play(Write(theorem_text[2], run_time=.4))
+
+        self.play(FadeIn(circle))
+
+        self.play(Write(theorem_text[3], run_time=.2))
+        self.play(Write(theorem_text[4], run_time=.6))
+        self.play(Write(theorem_text[5], run_time=1.8))
+
+        self.play(Create(hexagon_circles, run_time=5))
+
+        self.play(Write(theorem_text[6], run_time=1.6))
+        self.play(Write(theorem_text[7], run_time=1.2))
+        self.play(Write(theorem_text[8], run_time=.2))
+
+        for i in range(6):
+            self.play(Create(outer_intersections[i], run_time=.5))
+
+        self.play(Write(theorem_text[9]), run_time=.6)
+        self.play(Write(theorem_text[10]), run_time=4.6)
+        self.play(Write(theorem_text[11]), run_time=.2)
+
+        for i in range(6):
+            self.play(Create(inner_intersections[i], run_time=.5))
+
+        self.play(Write(theorem_text[12]), run_time=1.2)
+        self.play(Write(theorem_text[13]), run_time=.8)
+        self.play(Write(theorem_text[14]), run_time=5)
+        self.play(Write(theorem_text[15]), run_time=.6)
+
+        self.play(Create(hexagon, run_time=5))
+        for x in diagonals:
+            self.play(Create(x), run_time=1)
+
+        self.play(Write(theorem_text[16]), run_time=.6)
+        self.play(Write(theorem_text[17]), run_time=.2)
+        self.play(Write(theorem_text[18], run_time=.2))
+        self.play(Write(theorem_text[19]))
+
+        self.play(Create(diagonal_intersection))
+        self.wait(1)
+        self.play(Flash(diagonal_intersection))
+        self.wait(1)
