@@ -212,10 +212,11 @@ class Scene1(MovingCameraScene):
         unit_radius = HyperbolicArcBetweenPoints(circle[0].get_center(), circle[3].point_from_proportion(0), color=RED,
                                                  stroke_width=2)
         self.play(Create(unit_radius))
-        self.play(Create(radius_tex.next_to(unit_radius, direction=0.15 * UP + 0.2 * LEFT)))
+        self.play(Create(radius_tex.next_to(unit_radius, direction=0.05 * UP + 0.1 * LEFT)))
         radius_length = MathTex(r'\mathrm{length_h}(r) = \infty', font_size=25)
         self.play(Write(radius_length.move_to([0, -2, 0])))
         self.wait(2)
+        # todo maybe wait longer before scene1 paulinas_scene is gonna start (much talk, little animation)
 
 
 class EuclideanCircles(Scene):
