@@ -10,7 +10,7 @@ from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, mobius_transform, \
     tf_klein_to_poincare, get_intersections_of_n_tangent_circles, get_intersections_of_circles_with_unit_circle, \
     get_intersection_from_angles, get_parallel_to_line_through_point, tf_poincare_to_klein, \
-    get_both_intersections_line_with_unit_circle
+    get_both_intersections_line_with_unit_circle, hyperbolic_distance_function
 from hexagon import HexagonCircles, HexagonMainDiagonals, HyperbolicArcBetweenPoints
 from hexagon_util import create_phis, create_phi_transition
 from hyperbolic_polygon import HyperbolicPolygon
@@ -438,17 +438,17 @@ class HyperbolicModels(MovingCameraScene):
 
         # self.add(kcircle, pcircle, arrow_group, f_text, f_inv_text)
 
-        elf.play(Write(title))
-        elf.add_foreground_mobject(title)
-        elf.wait(1)
+        self.play(Write(title))
+        self.add_foreground_mobject(title)
+        self.wait(1)
 
-        elf.add_foreground_mobject(poincare_text)
-        elf.play(Write(poincare_text), FadeIn(poincare_model), run_time=3)
-        elf.wait(3)
+        self.add_foreground_mobject(poincare_text)
+        self.play(Write(poincare_text), FadeIn(poincare_model), run_time=3)
+        self.wait(3)
 
-        elf.add_foreground_mobject(klein_text)
-        elf.play(Write(klein_text), FadeIn(klein_model), run_time=3)
-        elf.wait(3)
+        self.add_foreground_mobject(klein_text)
+        self.play(Write(klein_text), FadeIn(klein_model), run_time=3)
+        self.wait(3)
 
         self.add(pcircle)
         # self.add(p_geodesics[0], p_geodesics[1], p_geodesics[2], p_geodesics[3])
@@ -523,7 +523,7 @@ class HyperbolicModels(MovingCameraScene):
                     polar_to_point(p_moving_dot_phi, norm_factor / (batch_size * pow(r, 2))))
             p_current_point = p_current_point + offset
             pos = p_current_point * scale_back + np.array(poincare_origin)
-            moving_dot = Dot(pos, radius=0.08 / sqrt(r))
+            moving_dot = Dot(pos, radius=0.08 / np.sqrt(r))
 
             p_distance_number.font_size = 20
 
