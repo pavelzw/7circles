@@ -28,12 +28,13 @@ class Scene1(MovingCameraScene):
         title_eucl = Tex(r'Euklidischer Raum', font_size=25, stroke_width=.5).move_to([-2, 1.7, 0])
         black_background = Rectangle(width=3, height=.5, color=BLACK, fill_opacity=1).move_to([0, -2, 0])
         white_rectangle = Rectangle(width=3, height=.5, color=WHITE, stroke_width=2).move_to([0, -2, 0])
-        self.add_foreground_mobjects(title_eucl)
-        separating_line = Line(start=[0, 8, 0], end=[0, -3, 0], stroke_width=2)
-        self.play(Write(title_eucl))
-        self.play(FadeIn(separating_line))
         self.play(Write(title_hyp))
         self.play(Write(subtitle_hyp))
+        separating_line = Line(start=[0, 8, 0], end=[0, -3, 0], stroke_width=2)
+        self.play(FadeIn(separating_line))
+        self.add_foreground_mobjects(title_eucl)
+        self.play(Write(title_eucl))
+
         self.wait(2)
         # euklidischer fall
         eucl_dot = Dot([-2, 0, 0], color=WHITE, radius=.03, stroke_width=2)
@@ -174,8 +175,9 @@ class Scene1(MovingCameraScene):
         self.play(FadeIn(abcd_group[0]), FadeIn(abcd_group[4].next_to(a, direction=.5 * RIGHT)))
         self.play(FadeIn(abcd_group[3]), FadeIn(abcd_group[7].next_to(d, direction=.5 * DOWN)))
         self.play(Create(unit_arc), FadeOut(start_radius))
+        self.wait(1)
         self.play(Indicate(def_dist_hyp, color=ORANGE))
-        self.wait(2)
+        self.wait(3)
         self.play(FadeOut(abcd_group), FadeOut(unit_arc), FadeIn(start_radius))
         self.wait(2)
         self.play(FadeIn(radius_tex.next_to(start_radius, direction=0.15 * UP)))
@@ -191,10 +193,9 @@ class Scene1(MovingCameraScene):
         self.play(FadeOut(origin_to_circle_line), FadeOut(def_dist_hyp))
         self.wait(2)
 
-        # todo finish last segment hyperbolic disks
-
         self.play(FadeIn(circle[1].move_to(polar_to_point(19 * PI / 12, .375))),
                   FadeIn(circle[2].move_to(polar_to_point(19 * PI / 12, .25))))
+        self.wait(2)
         start_points = np.array([polar_to_point(19 * PI / 12, .5),
                                  polar_to_point(19 * PI / 12, .375),
                                  polar_to_point(19 * PI / 12, .25),
@@ -211,8 +212,8 @@ class Scene1(MovingCameraScene):
         unit_radius = HyperbolicArcBetweenPoints(circle[0].get_center(), circle[3].point_from_proportion(0), color=RED,
                                                  stroke_width=2)
         self.play(Create(unit_radius))
-        self.play(Create(radius_tex.next_to(unit_radius, direction=0.3 * UP)))
-        radius_length = MathTex(r'\mathrm{length_h}(r) = \infty', font_size=20)
+        self.play(Create(radius_tex.next_to(unit_radius, direction=0.15 * UP + 0.2 * LEFT)))
+        radius_length = MathTex(r'\mathrm{length_h}(r) = \infty', font_size=25)
         self.play(Write(radius_length.move_to([0, -2, 0])))
         self.wait(2)
 

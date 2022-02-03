@@ -6,30 +6,34 @@ Nachdem wir ein Gefühl für Radien und Zentren im hyperbolischen Raum bekommen 
 Ein Hyperbolisches Vieleck ist wieder wie im euklidischen definiert, mit dem Unterschied, dass die Geodätischen,
  die die Ecken verbinden, nicht Geraden sind, sondern unsere bekannten Kreissegmente. (Benedikt wiederholungsanimation)
 Die Ecken des Vielecks können überall in der hyperbolischen Ebene liegen.
-Falls Die Ecken allesamt auf dH^2 liegen, so nennen wir unser Polygon ideal
+Falls Die Ecken allesamt auf dem Rand der Poincarescheibe liegen, so nennen wir unser Polygon ideal
 Auch im hyperbolischen Vieleck kann man den Umfang definieren, wie im euklidischen als die Summe der Länge der Seiten.
  Zu beachten ist nur wieder, dass wir den hyperbolischen Abstand der Eckpunkte messen.
 Bei Sechsecken kann man durch die gerade Anzahl an Ecken außerdem einen alternierenden Umfang definieren.
- Anstatt also die Summe der Kanten zu nehmen, berechnen wir die alternierende Summe, d.h.
-    -> S1 + S2 + S3 + S4 + S5 + S6 wird zu (S1 + S3 + S5) - (S2 + S4 + S6)
+ Anstatt also die Summe aller Kanten zu nehmen, berechnen wir die alternierende Summe, subtrahieren also jede zweite
+ Geodätische.
+
 
 Scene2:
 Betrachten wir nun also den alternierenden Umfang eines idealen Sechsecks.
 Hier ergibt sich das Problem, dass die einzelnen Segment S_k unendliche Länge haben, da sie ja den Rand berühren.
+    Wir können also den alternierenden Umfang nicht direkt berechnen.
 Geodätensegmente, die allerdings nicht den Rand berühren, haben endliche Länge
-Mit diesem kleinen Trick können wir dieses Problem aber umgehen.
-Denn so können wir den Umfang in einem nicht idealen Seckseck tatsächlich explizit berechnen,
-    da dessen Kanten endliche Länge haben
+Mit diesem kleinen Trick können wir unser Problem umgehen, indem wir also den Umfang eines nicht idealen Sechsecks
+     explizit berechnen, da dessen Kanten endliche Länge haben, und diesen Umfang auf ein ideales Sechseck zurückführen.
 
 Scene3:
 Betrachte dazu eine Folge {Pn} an hyperbolischen (nicht idealen) Sechsecken, die gegen ein ideales Sechseck Pinf konvergieren.
- Setze außerdem an jeden Eckpunkt eine Disk Di, sodass aufeinanderfolgende sich nicht überlappen.
-  Wir sehen, dass die Längen S_k' endlich sind. Somit können wir den alterierenden Umfang der P_n tilde berechnen
-    -> altPer(Pn) = (S1' + S3' + S5') - (S2' + S4' + S6') wobei Si' die Länge Si ist, allerding nur bis zu den Grenzen der Disks
+ Setzen wir nun an jeden Eckpunkt von Pn eine Disk Di, sodass aufeinanderfolgende Disks sich nicht überlappen.
+  Wir sehen, dass die Längen S_k tilde endlich sind. Somit können wir den alterierenden Umfang unserer
+  transformierten Sechsecke P_n tilde explizit berechnen
+     wobei Si tilde die Länge Si ist, allerdings nur bis zu den Grenzen der Disks
  Wir sehen, falls wir Di ersetzen durch Dj mit anderem Radius, addieren und subtrahieren wir den gleichen Betrag
-  auf beiden Seiten, in diesem Fall für S1 und S6, sodass der altPer unabhängig von der Größe unserer Disks ist (also auch gleich für Disks = 0)
+  auf beiden Seiten, in diesem Fall für S1 und S6, sodass der altPer unabhängig von der Größe unserer Disks ist (
+    also sogar falls unsere Disks einen Radius von 0 haben
   Daraus folgt, dass der altPer von Pn gleich dem von Pn tilde (also mit Disks) ist.
- Lassen wir n gegen unendlich laufen, sehen wir, dass
-    -> altPer(Pinf) = (S1' + S3' + S5') - (S2' + S4' + S6') mit beliebigen Disks Di. Da die Längen Si' nun aber endlich sind
+ Lassen wir n gegen unendlich laufen, sehen wir, dass der alternierende Umfang von Pinf gleich dem von
+    Pinf tilde mit beliebigen Disks Di ist.
+ Da die Längen Si tilde nun aber endlich sind
        konnten wir tatsächlich einen sinnvolle Berechnung für den alternierenden Umfang finden.
 

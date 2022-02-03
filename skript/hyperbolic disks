@@ -8,25 +8,27 @@ Betrachten wir zunächst das Verhalten von Kreisen und Radien im hyperbolischen 
     Im euklidischen hat ein Kreis ein Zentrum P, sodass jeder Punkt auf dem Kreis
         die gleiche Distanz zu diesem P hat. Hier messen wir die Distanz natürlich mit der
             euklidischen Distanzfunktion
-Hyperbolische Scheiben, die wir im Poincare Modell H^2 einbetten, sind genauso definiert,
+Hyperbolische Scheiben, die wir im Poincare Modell einbetten, sind genauso definiert,
     wie euklidische Kreise, mit dem Unterschied, dass die hyperbolische Distanzfunktion zum Messen
     von Längen benutzt wird.
-Im Zentrum des H^2 entsprechen die hyperbolischen tatsächlich den euklidischen Kreisen.
-Doch ändern wir nun das hyperb Zentrum,
-    so verändert sich auch das Verhalten der hypb Kreise im Gegensatz zu den euklidischen.
-    Was wir allerdings die ganze Zeit beaobachten können ist, dass auch wenn sich radius und Zentrum der KReise
-    unterscheiden, es sich auch im hyperbolischen um unsere altbekannten runde euklidische Kreise handelt.
+Im Zentrum der Poincare Scheibe entsprechen die hyperbolischen tatsächlich den euklidischen Kreisen.
+Doch ändern wir nun das Zentrum,
+    so verändert sich auch das Verhalten der hyperbolischen Kreise im Gegensatz zu den euklidischen.
+    Was wir allerdings die ganze Zeit beobachten können ist, dass auch wenn sich der Radius und Zentrum der Kreise in
+    den beiden Modellen unterscheiden,
+    es sich auch im hyperbolischen um unsere altbekannten runden euklidischen Kreise handelt.
 
 betrachten wir den hyperbolischen radius etwas genauer.
-    Dieser wird über die hyperbolische Distanzfunktion gemessen, Diese misst den Abstand von zwei Punkten b und c
-    in der hyperbolischen Ebene über eine Log Funktion, in der auch Randpunkte a und d erscheinen, diese sind die
-    Schnittpunkte der Geotdätischen von b und c mit der Einheitsscheibe.
-    Auch der hyperb Radius besitzt vom Zentrum aus den gleichen Abstand zu jedem Punkt auf unserem Kreis,
+    Dieser wird über die hyperbolische Distanzfunktion gemessen, welche den Abstand von zwei Punkten b und c
+    in der hyperbolischen Ebene misst, dies passiert über eine Log Funktion, in der auch Randpunkte a und d erscheinen.
+    diese sind die Schnittpunkte der Geodätischen von b und c mit der Einheitsscheibe.
+    Auch der hyperb Radius besitzt vom Zentrum aus den gleichen hyperbolischen Abstand zu jedem Punkt auf unserem Kreis,
     auch wenn es für uns scheinbar nicht so wirkt
 
-Bewegen wir das hyp Zentrum und schauen uns die zugehörigen konzentrischen Kreise an, so konvergiert der Radius
-    gegen unendlich für zentrum -> Rand
-Daher haben Horodisks einen unendlich großen Radius mit Zentrum auf dH^2
+Bewegen wir das hyp Zentrum und schauen uns die zugehörigen konzentrischen Kreise an, so konvergiert der hyperb. Radius
+    gegen unendlich
+Eine Horodisk besitzt also einen unendlichen Radius, denn ihr Zentrum liegt auf dem Rand unseres Poincare Models.
+
 
 
 # @pavel. Genug erklärt?

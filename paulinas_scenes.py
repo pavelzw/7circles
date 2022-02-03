@@ -42,6 +42,7 @@ class Scene1(MovingCameraScene):
                                       Tex(r'Ideales\, Sechseck', font_size=20, color=GREEN_B,
                                           stroke_width=1)).arrange(aligned_edge=LEFT, direction=DOWN)
         position = [[-3, 1.3, 0], [0, 1.3, 0], [3, 1.3, 0], [-3, -1.3, 0], [0, -1.3, 0], [3, -1.3, 0]]
+        self.wait(13)
         for i in range(0, 6):
             if i == 5:
                 self.play(Write(text_non_ideal_ideal.move_to(position[i]), stroke_width=.5))
@@ -55,7 +56,7 @@ class Scene1(MovingCameraScene):
                     hexagon = HyperbolicPolygon.from_polar(phis, add_dots=False, stroke_width=2, color=GREEN_B)
                     group = VGroup(hexagon, Circle(color=WHITE)).move_to(position[i])
                     self.play(FadeIn(group[1]))
-                    self.play(Create(group[0]), run_time=2, rate_func=lambda a: a)
+                    self.play(Create(group[0]), run_time=2.3, rate_func=lambda a: a)
                 else:
                     self.play(FadeIn(Circle(color=WHITE).move_to(position[i])))
                     for k in range(0, 6):
@@ -157,9 +158,8 @@ class Scene2(MovingCameraScene):
 
         distance_text = MathTex(r'\mathrm{length}(S_1)=', font_size=20).move_to([2, 0, 0], aligned_edge=LEFT)
         infinity = MathTex(r'\infty', font_size=20).next_to(distance_text, buff=.05)
-
         self.play(Write(VGroup(distance_text, infinity), stroke_width=.5))
-        self.wait(1)
+        self.wait(4)
         distance_number = DecimalNumber(6343.242564,
                                         num_decimal_places=2, show_ellipsis=True, group_with_commas=False,
                                         font_size=20).next_to(distance_text, buff=.05)
@@ -194,12 +194,12 @@ class Scene2(MovingCameraScene):
                           Transform(s_0, Dot(interp_point1, radius=.02, color=GREEN_D)),
                           Transform(s_1, Dot(interp_point2, radius=.02, color=GREEN_D)),
                           Transform(distance_number, infinity),
-                          run_time=.1, rate_func=lambda a: a)
+                          run_time=.15, rate_func=lambda a: a)
             else:
                 self.play(Transform(arc_colored, new_arc),
                           Transform(s_0, Dot(interp_point1, radius=.02, color=GREEN_D)),
                           Transform(s_1, Dot(interp_point2, radius=.02, color=GREEN_D)),
-                          distance_number.animate.set_value(distance), run_time=0.1,
+                          distance_number.animate.set_value(distance), run_time=0.15,
                           rate_func=lambda a: a)
         self.remove(s_0, s_1)
         self.wait(3)
@@ -292,13 +292,13 @@ class Scene3(MovingCameraScene):  # former TransformingNonIdealIntoIdeal
         transformed_arc2 = dynamic_arcs[5]
         alt_per = MathTex(r'= \mathrm{AltPer}(P_1)', font_size=20).next_to(altper_tilde, buff=.05)
         alt_sum = MathTex(r'= S_1 - S_2 + S_3 - S_4 + S_5 - S_6', font_size=20).next_to(altsum_tilde, direction=DOWN)
+        self.wait(3)
         # changing disk in size
         step_size_one_direction = 10
         s_k = [hex_n_ideal.polygon_points[0], hex_n_ideal.polygon_points[1], hex_n_ideal.polygon_points[2],
                hex_n_ideal.polygon_points[3], hex_n_ideal.polygon_points[4], hex_n_ideal.polygon_points[5]]
         arc_k = [hex_n_ideal.arcs[0], hex_n_ideal.arcs[1], hex_n_ideal.arcs[2], hex_n_ideal.arcs[3],
                  hex_n_ideal.arcs[4], hex_n_ideal.arcs[5]]
-        # todo make green circles hyperbolic circles
 
         # transforming disk at s_0
         circle1_radii_transition = [circle_radius[0] * (
@@ -334,8 +334,8 @@ class Scene3(MovingCameraScene):  # former TransformingNonIdealIntoIdeal
                                         radius=arc_k[5].radius, stroke_width=2).reverse_direction()
             self.play(Transform(transformed_disk, new_circle), Transform(transformed_arc1, arc_new1),
                       Transform(transformed_arc2, arc_new2), rate_func=lambda a: a,
-                      run_time=3 / num_steps)
-
+                      run_time=5 / num_steps)
+        self.wait(6)
         # transforming all disks
         transformed_disks = VGroup(disks[0], disks[1], disks[2], disks[3], disks[4], disks[5])
         transformed_arcs = VGroup(dynamic_arcs[0], dynamic_arcs[1], dynamic_arcs[2], dynamic_arcs[3], dynamic_arcs[4],
@@ -418,10 +418,11 @@ class Scene3(MovingCameraScene):  # former TransformingNonIdealIntoIdeal
                             MathTex(r'= S_1 - S_2 + S_3 - S_4 + S_5 - S_6', font_size=20),
                             MathTex(r'=\tilde{S_1}-\tilde{S_2} + \tilde{S_3} - \tilde{S_4} + \tilde{S_5}-\tilde{S_6}',
                                     font_size=20),
-                            MathTex(r'=\mathrm{AltPer}(P)', font_size=20)).arrange(DOWN, aligned_edge=LEFT).move_to(
+                            MathTex(r'=\mathrm{AltPer}(\tilde{P}_\infty)', font_size=20)).arrange(DOWN,
+                                                                                                  aligned_edge=LEFT).move_to(
             [1.2, 0, 0], LEFT)
         self.play(FadeOut(konvergenz), Write(end_result, stroke_width=.5))
-        self.wait(3)
+        self.wait(7)
 
 
 class NonIdealHexagonAnimation(Scene):
