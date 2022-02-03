@@ -42,7 +42,7 @@ class Scene1(MovingCameraScene):
                                       Tex(r'Ideales\, Sechseck', font_size=20, color=GREEN_B,
                                           stroke_width=1)).arrange(aligned_edge=LEFT, direction=DOWN)
         position = [[-3, 1.3, 0], [0, 1.3, 0], [3, 1.3, 0], [-3, -1.3, 0], [0, -1.3, 0], [3, -1.3, 0]]
-        self.wait(13)
+        self.wait(13)  # todo do some animation here
         for i in range(0, 6):
             if i == 5:
                 self.play(Write(text_non_ideal_ideal.move_to(position[i]), stroke_width=.5))
@@ -122,6 +122,9 @@ class Scene1(MovingCameraScene):
         self.play(Write(sum2[0], stroke_width=.5))
         self.play(TransformFromCopy(VGroup(hexagon_bi_colored, *s_k_colored), sum2[1]))
         self.wait(3)
+        self.play(*[FadeOut(mob) for mob in self.mobjects])
+        self.play(FadeIn(Circle(color=WHITE)))
+        self.wait(1)
 
 
 class Scene2(MovingCameraScene):
@@ -168,7 +171,7 @@ class Scene2(MovingCameraScene):
         self.remove(infinity)
         self.add(distance_number, s_0, s_1)
         label = VGroup(distance_text, distance_number)
-        step_size = 50
+        step_size = 75
         for t in range(1, step_size):
             if t < step_size / 2:
                 transition = 2 * t / step_size
@@ -194,18 +197,21 @@ class Scene2(MovingCameraScene):
                           Transform(s_0, Dot(interp_point1, radius=.02, color=GREEN_D)),
                           Transform(s_1, Dot(interp_point2, radius=.02, color=GREEN_D)),
                           Transform(distance_number, infinity),
-                          run_time=.15, rate_func=lambda a: a)
+                          run_time=.1, rate_func=lambda a: a)
             else:
                 self.play(Transform(arc_colored, new_arc),
                           Transform(s_0, Dot(interp_point1, radius=.02, color=GREEN_D)),
                           Transform(s_1, Dot(interp_point2, radius=.02, color=GREEN_D)),
-                          distance_number.animate.set_value(distance), run_time=0.15,
+                          distance_number.animate.set_value(distance), run_time=0.1,
                           rate_func=lambda a: a)
         self.remove(s_0, s_1)
         self.wait(3)
+        self.play(*[FadeOut(mob) for mob in self.mobjects])
+        self.play(FadeIn(Circle(color=WHITE)))
+        self.wait(1)
 
 
-class Scene3(MovingCameraScene):  # former TransformingNonIdealIntoIdeal
+class Scene3(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 6
         circle = Circle(color=WHITE)
@@ -294,7 +300,7 @@ class Scene3(MovingCameraScene):  # former TransformingNonIdealIntoIdeal
         alt_sum = MathTex(r'= S_1 - S_2 + S_3 - S_4 + S_5 - S_6', font_size=20).next_to(altsum_tilde, direction=DOWN)
         self.wait(3)
         # changing disk in size
-        step_size_one_direction = 10
+        step_size_one_direction = 20
         s_k = [hex_n_ideal.polygon_points[0], hex_n_ideal.polygon_points[1], hex_n_ideal.polygon_points[2],
                hex_n_ideal.polygon_points[3], hex_n_ideal.polygon_points[4], hex_n_ideal.polygon_points[5]]
         arc_k = [hex_n_ideal.arcs[0], hex_n_ideal.arcs[1], hex_n_ideal.arcs[2], hex_n_ideal.arcs[3],
@@ -334,7 +340,7 @@ class Scene3(MovingCameraScene):  # former TransformingNonIdealIntoIdeal
                                         radius=arc_k[5].radius, stroke_width=2).reverse_direction()
             self.play(Transform(transformed_disk, new_circle), Transform(transformed_arc1, arc_new1),
                       Transform(transformed_arc2, arc_new2), rate_func=lambda a: a,
-                      run_time=5 / num_steps)
+                      run_time=3 / num_steps)
         self.wait(6)
         # transforming all disks
         transformed_disks = VGroup(disks[0], disks[1], disks[2], disks[3], disks[4], disks[5])
