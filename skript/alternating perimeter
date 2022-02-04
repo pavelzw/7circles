@@ -17,12 +17,12 @@ Bei Sechsecken kann man durch die gerade Anzahl an Ecken außerdem einen alterni
 
 Scene2:
 Betrachten wir nun also den alternierenden Umfang eines idealen Sechsecks.
-Hier ergibt sich das Problem, dass die einzelnen Segment S_k unendliche Länge haben, da sie ja den Rand berühren.
-    Wir können also den alternierenden Umfang nicht direkt berechnen.
-Geodätensegmente, die allerdings nicht den Rand berühren, haben endliche Länge
-Mit diesem kleinen Trick können wir unser Problem umgehen, indem wir also im folgenden den Umfang
-    eines nicht idealen Sechsecks explizit berechnen, da dessen Kanten endliche Länge haben,
-    und diesen Umfang auf ein ideales Sechseck zurückführen.
+Hier ergibt sich das Problem, dass die einzelnen Segmente S_k unendliche Länge haben, da sie den Rand berühren.
+    Wir können den alternierenden Umfang also nicht direkt berechnen.
+Geodätensegmente, die nicht den Rand berühren, haben allerdings endliche Länge
+Das können wir uns im Folgenden zunutze machen:
+    Wir führen den alternierenden Umfang eines idealen Sechsecks auf den eines nichtidealen Hexagons zurück.
+    Da dessen Kanten endliche Länge haben, können wir den alternierenden Umfang hier explizit berechnen.
 
 Scene3:
 Betrachte dazu eine Folge {Pn} an hyperbolischen (nicht idealen) Sechsecken, die gegen ein ideales Sechseck Pinf konvergieren.

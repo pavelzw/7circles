@@ -156,10 +156,10 @@ class Scene2(MovingCameraScene):
         point2 = hexagon.polygon_points[1]
         arc = hexagon.arcs[0]
 
-        distance_text = MathTex(r'\mathrm{length}(S_1)=', font_size=20).move_to([2, 0, 0], aligned_edge=LEFT)
+        distance_text = MathTex(r'\mathrm{length}(S_1)=', font_size=20).move_to([1.2, 0, 0], aligned_edge=LEFT)
         infinity = MathTex(r'\infty', font_size=20).next_to(distance_text, buff=.05)
         self.play(Write(VGroup(distance_text, infinity), stroke_width=.5))
-        self.wait(4)
+        self.wait(6)
         distance_number = DecimalNumber(6343.242564,
                                         num_decimal_places=2, show_ellipsis=True, group_with_commas=False,
                                         font_size=20).next_to(distance_text, buff=.05)
@@ -168,7 +168,7 @@ class Scene2(MovingCameraScene):
         self.remove(infinity)
         self.add(distance_number, s_0, s_1)
         label = VGroup(distance_text, distance_number)
-        step_size = 75
+        step_size = 450
         for t in range(1, step_size):
             if t < step_size / 2:
                 transition = 2 * t / step_size
@@ -187,22 +187,24 @@ class Scene2(MovingCameraScene):
                 hyperbolic_distance_function(interp_point2, interp_point1))
             distance_number.font_size = 20
             label.arrange(buff=.05)
-            label.move_to([2, 0, 0], aligned_edge=LEFT)
+            label.move_to([1.2, 0, 0], aligned_edge=LEFT)
 
             if t == step_size - 1:
                 self.play(Transform(arc_colored, new_arc),
                           Transform(s_0, Dot(interp_point1, radius=.02, color=GREEN_D)),
                           Transform(s_1, Dot(interp_point2, radius=.02, color=GREEN_D)),
                           Transform(distance_number, infinity),
-                          run_time=.1, rate_func=lambda a: a)
+                          run_time=1 / 60, rate_func=lambda a: a)
             else:
                 self.play(Transform(arc_colored, new_arc),
                           Transform(s_0, Dot(interp_point1, radius=.02, color=GREEN_D)),
                           Transform(s_1, Dot(interp_point2, radius=.02, color=GREEN_D)),
-                          distance_number.animate.set_value(distance), run_time=0.1,
+                          distance_number.animate.set_value(distance), run_time=1 / 60,
                           rate_func=lambda a: a)
         self.remove(s_0, s_1)
-        self.wait(3)
+        self.wait(10)
+
+        # transition to Scene3
         self.play(*[FadeOut(mob) for mob in self.mobjects])
         self.play(FadeIn(Circle(color=WHITE)))
         self.wait(1)
