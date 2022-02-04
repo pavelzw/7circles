@@ -304,6 +304,10 @@ class ParallelAxiom(MovingCameraScene):
         question = Text("Wie stellt man die hyperbolischen Ebene im Euklidischen dar?").scale(0.7).move_to(center)
 
         self.camera.frame.move_to(center)
+        self.add_subcaption("Axiomatisch unterscheidet sich der hyperbolische Raum vom Euklidischen", duration=3)
+        self.wait(3)
+        self.add_subcaption("durch das nicht gelten des Parallelenaxiom", duration=2)
+        self.wait(1)
         self.play(Create(title))
         self.add_subcaption("Das Parallelenaxiom sagt aus, dass zu jeder Gerade g", duration=3)
         self.play(Create(g))
@@ -321,11 +325,11 @@ class ParallelAxiom(MovingCameraScene):
         self.add_subcaption(
             "Parallel heißt hier einfach, dass sich die beiden Geraden nicht schneiden.", duration=3)
         self.wait(5)
-        self.add_subcaption("In der hyperbolischen Geometrie ist diese Eigenschaft nicht gegeben.", duration=3)
+        self.add_subcaption("In hyperbolischer Geometrie ist diese Eigenschaft nicht gegeben.", duration=3)
         self.wait(3)
         self.add_subcaption(
             "Dort gibt es für jedes solche g und P mehrere, sogar unendlich viele Geraden durch P, die zu g parallel sind also g nicht schneiden.",
-            duration=4)
+            duration=6)
 
         self.play(Create(similar_lines[0]))
         self.play(Create(similar_lines[1]))
@@ -334,14 +338,15 @@ class ParallelAxiom(MovingCameraScene):
 
         self.add_subcaption(
             "Unsere Darstellung hier ist aber irreführend, denn natürlich schneiden alle außer der ursprünglichen Gerade $h$ $g$ wenn wir den Geraden nur lange genug folgen.",
-            duration=4)
+            duration=7)
         self.wait(4)
         self.add_subcaption(
             "Allgemein haben wir das Problem, dass wir einen Raum in dem hyperbolische Geometrie herrscht in einem euklidischen zweidimensionalen Video darstellen wollen.",
             duration=4)
         self.wait(4)
-        self.add_subcaption("Die Frage ist also: Wie stellt man die hyperbolischen Ebene im Euklidischen dar?",
-                            duration=4)
+        self.add_subcaption(
+            "Die Frage die wir uns jetzt also stellen müssen ist: Wie stellt man die hyperbolischen Ebene im Euklidischen dar?",
+            duration=5)
         self.play(uncreate)
         self.wait(1)
         self.play(Write(question))
