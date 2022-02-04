@@ -700,15 +700,19 @@ class HyperbolicModelsKlein(MovingCameraScene):
 
         self.add_subcaption(
             "Nun betrachten wir das Klein-Modell. Wir werden starke Ähnlichkeiten zum Poincare-Modell erkennen.",
-            duration=5)
+            duration=7)
 
-        self.wait(5)
+        self.wait(4)
 
         self.add(kcircle)
         self.play(self.camera.frame.animate.scale(0.8).move_to(np.add(klein_origin, [-1, 0.4, 0])),
                   FadeOut(poincare_model), FadeOut(poincare_text), FadeOut(klein_model))
 
         self.wait(2)
+
+        self.add_subcaption(
+            "Der größte Unterschied ist, dass Geodätische hier tatsächlich euklidischen Geraden entsprechen.",
+            duration=6)
 
         self.play(Create(k_geodesics[0]))
         self.play(Create(k_geodesics[1]))
@@ -719,6 +723,10 @@ class HyperbolicModelsKlein(MovingCameraScene):
 
         self.play(Uncreate(k_geodesics[1]), Uncreate(k_geodesics[2]), Uncreate(k_geodesics[3]), Create(k_point),
                   Write(k_point_text))
+
+        self.add_subcaption(
+            "Da diese aber wie im Poincare-Modell durch den Einheitskreis beschränkt werden gilt auch hier das Parallelenaxiom.",
+            duration=7)
 
         self.add_foreground_mobject(k_point)
         self.add_foreground_mobject(k_point_text)
@@ -743,9 +751,14 @@ class HyperbolicModelsKlein(MovingCameraScene):
                   Uncreate(k_point_geodesics[5]),
                   Uncreate(k_point), Unwrite(k_point_text))
 
-        self.wait(2)
+        self.add_subcaption("Ebenso gibt es im Klein-Modell eine starke Verzerrung des Raumes", duration=4)
+
+        self.wait(3)
 
         self.play(FadeIn(klein_model), FadeOut(kcircle))
+
+        self.add_subcaption("Hier sehen wir die gleiche Parkettierung der hyperbolischen Ebene im Klein-Modell",
+                            duration=6)
 
         self.play(Create(kpoints1[0]),
                   Create(kpoints1[1]),
@@ -762,6 +775,8 @@ class HyperbolicModelsKlein(MovingCameraScene):
         self.play(Write(ktri2_text))
 
         self.wait(1)
+
+        self.add_subcaption("Zum Rand hin werden Distanzen also auch hier immer größer", duration=4)
 
         self.play(Write(ktri_size_text), run_time=2)
 
@@ -782,6 +797,12 @@ class HyperbolicModelsKlein(MovingCameraScene):
 
         self.play(self.camera.frame.animate.scale(1.25).move_to(center), FadeIn(poincare_model), FadeIn(poincare_text))
 
+        self.add_subcaption(
+            "Da beide Modelle den gleichen Raum darstellen, ist es naheliegend, dass es Abbildungen gibt, die Punkte der Modelle miteinander identifizieren",
+            duration=8)
+
+        self.wait(1)
+
         self.play(Transform(title, title2))
 
         self.wait(2)
@@ -793,13 +814,17 @@ class HyperbolicModelsKlein(MovingCameraScene):
 
         self.add(pcircle.scale(0.7).shift(1.5 * LEFT), kcircle.scale(0.7).shift(1.5 * RIGHT))
 
-        self.wait(2)
+        self.wait(3)
+
+        self.add_subcaption("Tatsächlich gibt es diese, wir nennen sie f und f^-1. ", duration=4)
 
         self.play(Create(arrow_group))
 
-        self.wait(4)
+        self.wait(3)
 
         self.play(Write(f_text), Write(f_inv_text))
+
+        self.add_subcaption("Die Formeln für diese Abbildungen sind tatsächlich ziemlich einfach.", duration=4)
 
         self.wait(2)
 
@@ -827,6 +852,10 @@ class HyperbolicModelsKlein(MovingCameraScene):
             klein_origin + 1.5 * RIGHT)
         k_geo1_copy = k_geo1.copy()
 
+        self.add_subcaption(
+            "Mit f und f^-1 können wir jetzt also einfach Objekte aus dem einen Modell ins andere übertragen. Insbesondere Geodätische.",
+            duration=7)
+
         self.play(Create(p_geo0), FadeOut(poincare_model))
         self.add(p_geo0_copy)
 
@@ -837,13 +866,27 @@ class HyperbolicModelsKlein(MovingCameraScene):
         self.wait(1)
 
         self.play(Create(k_geo1))
+        self.add(k_geo1_copy)
 
         self.wait(1)
 
         self.play(Transform(k_geo1, p_geo1), Indicate(f_inv_text))
-        self.add(k_geo1_copy)
+
+        self.add_subcaption(
+            "Da die Abbildungen punktweise agieren bleiben insbesondere auch Schnittpunkte zwischen Geodätischen erhalten.",
+            duration=5)
 
         self.wait(5)
+
+        self.add_subcaption("Das liefert uns unsere Umformulierung des Sieben-Kreise-Satzes.", duration=4)
+
+        everything = VGroup(p_geo0_copy, p_geo1, k_geo1_copy, k_geo0, pcircle, kcircle, f_text, f_inv_text, f_formula,
+                            f_inv_formula, arrow_lr, arrow_rl, title2)
+
+        self.wait(3)
+
+        endDot = Dot(color=BLACK)
+        self.play(Transform(everything, endDot))
 
 
 class SevenCirclesHyperbolic(MovingCameraScene):
