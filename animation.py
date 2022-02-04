@@ -5,7 +5,7 @@ from manim import Scene, Circle, Dot, Create, FadeIn, Line, \
     Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Text, UP, Write, \
     DOWN, Tex, BLUE, GREEN, WHITE, PURPLE, GREY, PINK, Uncreate, AnimationGroup, Unwrite, ImageMobject, LEFT, RIGHT, \
     MarkupText, Polygon, PI, DecimalNumber, ValueTracker, ArcBetweenPoints, Arrow, VGroup, FadeOut, Indicate, \
-    ReplacementTransform
+    ReplacementTransform, BLACK
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, mobius_transform, \
@@ -169,14 +169,24 @@ class SevenCircles(MovingCameraScene):
         diagonal_intersection = Dot(get_intersection_from_angles(phis[0], phis[3], phis[1], phis[4]),
                                     color=DIAGONAL_INTERSECTION_COLOR)
 
+        everything = VGroup(title, circle, theorem_text, hexagon, hexagon_circles, diagonal_intersection)
+        for x in inner_intersections:
+            everything.add(x)
+        for x in outer_intersections:
+            everything.add(x)
+        for x in diagonals:
+            everything.add(x)
+
+        self.add_subcaption("Wir beschäftigen uns heute mit dem Sieben-Kreise-Satz", duration=3)
         self.play(Write(title))
-        # self.add_subcaption("Wir beschäftigen uns heute mit dem Sieben-Kreise-Satz. Unser Ziel ist es diesen über "
-        # "einen interessanten Weg, der hyperbolische Geometrie mit einschließt zu beweisen.")
-        self.wait(4)
-        # self.add_subcaption("Aber zuerst einmal: Was sagt der Sieben-Kreise-Satz überhaupt aus?")
+
+        self.wait(2)
+        self.add_subcaption("Der Sieben-Kreise-Satz sagt Folgendes aus:", duration=2)
 
         self.play(title.animate.shift(1.5 * UP).scale(0.7), self.camera.frame.animate.shift(0.8 * DOWN))
         self.wait(1)
+
+        self.add_subcaption("Sei C_0 ein Kreis", duration=2)
 
         self.play(Write(theorem_text[0], run_time=.2))
         self.play(Write(theorem_text[1], run_time=.4))
@@ -184,11 +194,15 @@ class SevenCircles(MovingCameraScene):
 
         self.play(FadeIn(circle))
 
+        self.add_subcaption("und C_1,...,C_6 in C_0 enthaltene Kreise", duration=4)
+
         self.play(Write(theorem_text[3], run_time=.2))
         self.play(Write(theorem_text[4], run_time=.6))
         self.play(Write(theorem_text[5], run_time=1.8))
 
         self.play(Create(hexagon_circles, run_time=5))
+
+        self.add_subcaption("sodass jeder innere Kreis zum äußeren Kreis tangential ist", duration=5)
 
         self.play(Write(theorem_text[6], run_time=1.6))
         self.play(Write(theorem_text[7], run_time=1.2))
@@ -197,6 +211,9 @@ class SevenCircles(MovingCameraScene):
         for i in range(6):
             self.play(Create(outer_intersections[i], run_time=.5))
 
+        self.add_subcaption("und je zwei nebeneinanderliegende innere Kreise ebenfalls zueinander tangential sind.",
+                            duration=8)
+
         self.play(Write(theorem_text[9]), run_time=.6)
         self.play(Write(theorem_text[10]), run_time=4.6)
         self.play(Write(theorem_text[11]), run_time=.2)
@@ -204,14 +221,23 @@ class SevenCircles(MovingCameraScene):
         for i in range(6):
             self.play(Create(inner_intersections[i], run_time=.5))
 
+        self.add_subcaption("Dann treffen sich die drei Diagonalen ",
+                            duration=2)
+
         self.play(Write(theorem_text[12]), run_time=1.2)
         self.play(Write(theorem_text[13]), run_time=.8)
+
+        self.add_subcaption("des von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildeten Hexagons",
+                            duration=6)
+
         self.play(Write(theorem_text[14]), run_time=5)
         self.play(Write(theorem_text[15]), run_time=.6)
 
         self.play(Create(hexagon, run_time=5))
         for x in diagonals:
             self.play(Create(x), run_time=1)
+
+        self.add_subcaption("in einem Punkt", duration=3)
 
         self.play(Write(theorem_text[16]), run_time=.6)
         self.play(Write(theorem_text[17]), run_time=.2)
@@ -222,6 +248,23 @@ class SevenCircles(MovingCameraScene):
         self.wait(1)
         self.play(Flash(diagonal_intersection))
         self.wait(1)
+
+        self.add_subcaption("Unser Ziel ist es also jetzt diesen Satz zu beweisen.", duration=4)
+        self.wait(4)
+
+        self.add_subcaption(
+            "Das wird uns mithilfe einer Einbettung des Problems in einen hyperbolischen Rahmen gelingen.", duration=5)
+        self.wait(5)
+
+        self.add_subcaption("Zuerst werden wir dafür ein klein wenig in hyperbolische Geometrie einführen,", duration=4)
+        self.wait(4)
+        self.add_subcaption(
+            "um das Problem mit diesem neugewonnenen Wissen umzuformulieren und dann weiter zu bearbeiten.", duration=4)
+        self.wait(3)
+
+        endDot = Dot(color=BLACK)
+        self.add(endDot)
+        self.play(Transform(everything, endDot), run_time=2)
 
 
 class ParallelAxiom(MovingCameraScene):
