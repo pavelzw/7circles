@@ -55,12 +55,12 @@ class Scene1(MovingCameraScene):
                     hexagon = HyperbolicPolygon.from_polar(phis, add_dots=False, stroke_width=2, color=GREEN_B)
                     group = VGroup(hexagon, Circle(color=WHITE)).move_to(position[i])
                     self.play(FadeIn(group[1]))
-                    self.play(Create(group[0]), run_time=2.3, rate_func=lambda a: a)
+                    self.play(Create(group[0]), run_time=2.5, rate_func=lambda a: a)
                 else:
                     self.play(FadeIn(Circle(color=WHITE).move_to(position[i])))
                     for k in range(0, 6):
                         self.add(hexagon.dots[k])
-                        self.play(Create(group[0].arcs[k]), run_time=0.3, rate_func=lambda a: a)
+                        self.play(Create(group[0].arcs[k]), run_time=0.4, rate_func=lambda a: a)
 
         self.wait(2)
         self.play(*[FadeOut(mob) for mob in self.mobjects])
@@ -74,10 +74,8 @@ class Scene1(MovingCameraScene):
 
         hexagon = HyperbolicPolygon.from_polar(phis, radius, dot_radius=0.01, stroke_width=2)
         hex_name = MathTex('P', font_size=15).move_to([0.6, 0.4, 0])
-        for i in range(0, 6):
-            self.add(hexagon.dots[i])
-            self.play(Create(hexagon.arcs[i]))
-        self.play(Indicate(hexagon, color=WHITE), Indicate(hex_name, color=WHITE))
+
+        self.play(FadeIn(hexagon, hex_name))
         self.wait(2)
 
         arc = HyperbolicPolygon.from_polar(phis, radius, dot_radius=0.01, color=BLUE, stroke_width=2).arcs
@@ -120,7 +118,7 @@ class Scene1(MovingCameraScene):
         self.wait(2)
         self.play(Write(sum2[0], stroke_width=.5))
         self.play(TransformFromCopy(VGroup(hexagon_bi_colored, *s_k_colored), sum2[1]))
-        self.wait(3)
+        self.wait(5)
         self.play(*[FadeOut(mob) for mob in self.mobjects])
         self.play(FadeIn(Circle(color=WHITE)))
         self.wait(1)

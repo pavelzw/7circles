@@ -1,17 +1,18 @@
-Scene 1:
-Nachdem wir ein Gefühl für Radien und Zentren im hyperbolischen Raum bekommen haben,
- schauen wir uns jetzt hyperbolische Vielecke ( bzw Sechsecke) an, um daraufhin den alternierenden Umfang definieren zu können,
+Scene0:
+Nachdem wir ein Gefühl für Kreise im hyperbolischen Raum bekommen haben,
+ schauen wir uns jetzt hyperbolische Sechsecke an, um daraufhin den alternierenden Umfang definieren zu können,
  der für unser Haupttheorem von großer Bedeutung ist.
-> animation start
-Ein Hyperbolisches Vieleck ist wieder wie im euklidischen definiert, mit dem Unterschied, dass die Geodätischen,
- die die Ecken verbinden, nicht Geraden sind, sondern unsere bekannten Kreissegmente. (Benedikt wiederholungsanimation)
+
+Scene1:
+Ein Hyperbolisches Vieleck ist wie im euklidischen definiert. Allerdings sind die Kurven,
+ die die Ecken verbinden, keine Geraden sondern wie immer im Poincare-Modell Kreissegmente.
 Die Ecken des Vielecks können überall in der hyperbolischen Ebene liegen.
-Falls Die Ecken allesamt auf dem Rand der Poincarescheibe liegen, so nennen wir unser Polygon ideal
-Auch im hyperbolischen Vieleck kann man den Umfang definieren, wie im euklidischen als die Summe der Länge der Seiten.
- Zu beachten ist nur wieder, dass wir den hyperbolischen Abstand der Eckpunkte messen.
+Falls Die Ecken allesamt auf dem Rand der Poincarescheibe liegen, so nennen wir unser Polygon ideal.
+Wie im Euklidischen kann man in einem hyperbolischen Vieleck den Umfang als die Summe der Seitenlängen definieren.
+ Zu beachten ist, dass wir den *hyperbolischen* Abstand der Eckpunkte messen.
 Bei Sechsecken kann man durch die gerade Anzahl an Ecken außerdem einen alternierenden Umfang definieren.
- Anstatt also die Summe aller Kanten zu nehmen, berechnen wir die alternierende Summe, subtrahieren also jede zweite
- Geodätische.
+ Anstatt die Summe aller Seitenlängen zu nehmen, berechnen wir nun die alternierende Summe, subtrahieren also jede zweite
+ Länge.
 
 
 Scene2:
