@@ -354,7 +354,7 @@ class ParallelAxiom(MovingCameraScene):
         self.play(Unwrite(question))
 
 
-class HyperbolicModels(MovingCameraScene):
+class HyperbolicModelsPoincare(MovingCameraScene):
     def construct(self):
         center = np.array([0, 0, 0])
 
@@ -367,17 +367,10 @@ class HyperbolicModels(MovingCameraScene):
             "Modelle für die hyperbolische Ebene").scale(
             0.8).shift(3.5 * UP)
 
-        title2 = Text("Transformationen zwischen hyperbolischen Modellen").scale(.8).shift(3.5 * UP)
-
         klein_model = ImageMobject("tessellation_klein.png").scale(0.7).move_to(klein_origin)
         klein_text = Text("Klein-Modell").scale(0.6).move_to(3.5 * RIGHT + 2.2 * UP)
         poincare_model = ImageMobject("tessellation_poincare.png").scale(0.7).move_to(poincare_origin)
         poincare_text = Text("Poincaré-Modell").scale(0.6).move_to(3.5 * LEFT + 2.2 * UP)
-
-        # self.add(title, klein_model, klein_text, poincare_model, poincare_text)
-
-        k1 = np.array([[0, 0, 0], [2, 0, 0], [1.24, 1.58, 0]])
-        k2 = np.array([[-0.46, 1.95, 0], [-1.81, 0.89, 0], [-1.49, 1.86, 0]])
 
         p1 = np.array([[0., 0., 0.], [1.25, 0, 0], [0.78, 0.98, 0]])
         p2 = np.array([[-.28, 1.23, 0], [-1.12, 0.55, 0], [-1.12, 1.42, 0]])
@@ -388,14 +381,7 @@ class HyperbolicModels(MovingCameraScene):
         p1 = scale_front * p1
         p2 = scale_front * p2
 
-        raw_ktri1 = Polygon(*k1, color=YELLOW, stroke_width=1.5).shift(klein_origin)
-        kpoints1 = [Dot(np.add(p, klein_origin), color=YELLOW, radius=.06) for p in k1]
-        raw_ktri2 = Polygon(*k2, color=YELLOW, stroke_width=1.5).shift(klein_origin)
-        kpoints2 = [Dot(np.add(p, klein_origin), color=YELLOW, radius=.06) for p in k2]
-
         pcircle = Circle(color=MY_BLUE, stroke_width=1).scale(scale_back).move_to(poincare_origin)
-
-        kcircle = Circle(color=MY_BLUE, stroke_width=1).scale(scale_back).move_to(klein_origin)
 
         ptri1 = HyperbolicPolygon(p1,
                                   stroke_width=1.5, dot_radius=.02, color=YELLOW, dot_color=YELLOW).scale(
@@ -440,9 +426,12 @@ class HyperbolicModels(MovingCameraScene):
         p_moving_dot_phi = 5 * PI / 3
         norm_factor = 6 / pow(PI, 2)
 
+        p_origin = Dot(poincare_origin)
+        p_origin_text = Tex("0", font_size=20).next_to(p_origin, LEFT)
+
         p_current_point = np.array(center)
 
-        p_distance_text = Text("Abstand vom Ursprung: ", font_size=20).next_to(pcircle, buff=.2)
+        p_distance_text = Tex("dist$(0,P)$: ", font_size=20).next_to(pcircle, buff=.2)
         p_distance_number = DecimalNumber(0.0,
                                           num_decimal_places=2, show_ellipsis=True, group_with_commas=False,
                                           font_size=20).next_to(p_distance_text, buff=.05)
@@ -452,78 +441,72 @@ class HyperbolicModels(MovingCameraScene):
         p_arc = ArcBetweenPoints(polar_to_point(p_moving_dot_phi), polar_to_point(p_moving_dot_phi - PI),
                                  arc_center=center)
 
-        k_geodesics_raw = [Line(polar_to_point(x), polar_to_point(y)) for [x, y] in phis]
-        k_geodesics = [geo.scale(scale_back).move_to(geo.get_center() * scale_back).shift(klein_origin) for geo in
-                       k_geodesics_raw]
+        self.add_subcaption("Es gibt verschiedene Modelle für die hyperbolische Ebene.", duration=3)
 
-        k_point = Dot(point_coords)
-        k_point.move_to(k_point.get_center() * scale_back).shift(klein_origin)
-
-        k_point_text = Text("P").scale(0.8).next_to(k_point)
-
-        k_point_geodesics_intersections = [
-            get_both_intersections_line_with_unit_circle(point_coords, polar_to_point(phi))
-            for phi in point_geodesic_point_phis]
-        k_point_geodesics_raw = [Line(x, y, color=MY_BLUE) for [x, y] in k_point_geodesics_intersections]
-        k_point_geodesics = [l.scale(scale_back).move_to(l.get_center() * scale_back).shift(klein_origin) for l in
-                             k_point_geodesics_raw]
-
-        ktri1_text = Tex(r"$\Delta_1$").next_to(raw_ktri1, LEFT).scale(.6).shift(0.7 * RIGHT)
-
-        ktri2_text = Tex(r"$\Delta_2$").next_to(raw_ktri2, LEFT).scale(.6).shift(0.4 * RIGHT)
-
-        ktri_size_text = Tex(r"$A(\Delta_1) = A(\Delta_2)$", font_size=40).next_to(kcircle, LEFT, buff=.5)
-
-        arrow_lr = Arrow(start=2.5 * LEFT, end=2.5 * RIGHT, stroke_width=4, max_tip_length_to_length_ratio=.5)
-        arrow_rl = Arrow(start=2.5 * RIGHT, end=2.5 * LEFT, stroke_width=4, max_tip_length_to_length_ratio=.5)
-        arrow_group = VGroup(arrow_lr, arrow_rl).arrange(DOWN)
-        arrow_group.shift(DOWN)
-
-        f_text = Tex(r"$f$", font_size=40).next_to(arrow_lr, UP, buff=0)
-        f_inv_text = Tex(r"$f^{-1}$", font_size=40).next_to(arrow_rl, DOWN, buff=0)
-
-        f_formula = Tex(r"$f(x,y) = \frac{1}{1+\sqrt{1-x^2-y^2}}(x,y)$", font_size=40).move_to(.5 * UP)
-        f_inv_formula = Tex(r"$f^{-1}(x,y) = \frac{1}{1+x^2+y^2}(2x,2y)$", font_size=40).move_to(2.5 * DOWN)
-
-        # self.add(kcircle, pcircle, arrow_group, f_text, f_inv_text)
-
-        self.play(Write(title))
+        self.play(Write(title), run_time=2)
         self.add_foreground_mobject(title)
         self.wait(1)
 
+        self.add_subcaption("Solche Modelle sind einfach Abbildungen von der hyperbolischen in die euklidische Ebene",
+                            duration=5)
+
+        self.wait(5)
+
+        self.add_subcaption("Wir beschäftigen uns genauer mit dem Poincare-", duration=3)
+
         self.add_foreground_mobject(poincare_text)
         self.play(Write(poincare_text), FadeIn(poincare_model), run_time=3)
-        self.wait(3)
+
+        self.add_subcaption("und dem Klein-Modell.", duration=3)
 
         self.add_foreground_mobject(klein_text)
         self.play(Write(klein_text), FadeIn(klein_model), run_time=3)
         self.wait(3)
 
+        self.add_subcaption("Zuerst schauen wir uns das Poincare-Modell etwas genauer an.", duration=3)
+
         self.add(pcircle)
-        # self.add(p_geodesics[0], p_geodesics[1], p_geodesics[2], p_geodesics[3])
-        # self.add(p_geodesics[0], p_point, p_point_text)
         self.play(self.camera.frame.animate.scale(0.8).move_to(np.add(poincare_origin, [1, 0.4, 0])),
                   FadeOut(klein_model), FadeOut(klein_text), FadeOut(poincare_model))
 
-        self.wait(2)
+        self.wait(1)
+
+        self.add_subcaption(
+            "Die Darstellung der hyperbolischen Ebene im Poincare-Modell beschränkt sich auf die Einheitsscheibe",
+            duration=6)
+
+        self.wait(3)
 
         self.play(Indicate(pcircle, color=MY_BLUE))
 
         self.wait(2)
+
+        self.add_subcaption("Die Geodätischen - also quasi die geraden Linien - der hyperbolischen Ebene sind ",
+                            duration=4)
 
         self.play(Create(p_geodesics[0]))
         self.play(Create(p_geodesics[1]))
         self.play(Create(p_geodesics[2]))
         self.play(Create(p_geodesics[3]))
 
-        self.wait(2)
+        self.add_subcaption("in diesem Modell Kreissegmente, die den Einheitskreis im rechten Winkel schneiden",
+                            duration=4)
+
+        self.wait(4)
+
+        self.add_subcaption("Damit sieht man auch gut, dass das Parallelenaxiom hier gilt:", duration=3)
 
         self.play(Uncreate(p_geodesics[1]), Uncreate(p_geodesics[2]), Uncreate(p_geodesics[3]), Create(p_point),
-                  Write(p_point_text))
+                  Write(p_point_text), run_time=3)
+
+        self.add_subcaption("Für einen Punkt P und eine Geodätische findet man", duration=3)
 
         self.add_foreground_mobject(p_point)
         self.add_foreground_mobject(p_point_text)
-        self.wait(2)
+        self.wait(1)
+
+        self.add_subcaption(
+            "beliebig viele andere Geodätischen die P aber nicht die ursprünglische Geodätische schneiden.", duration=6)
 
         self.play(Create(p_point_moved_geodesics[0]))
         self.play(Create(p_point_moved_geodesics[1]))
@@ -532,6 +515,10 @@ class HyperbolicModels(MovingCameraScene):
         self.play(Create(p_point_moved_geodesics[4]))
         self.play(Create(p_point_moved_geodesics[5]))
         self.play(Create(p_point_moved_geodesics[6]))
+
+        self.add_subcaption(
+            "Auch wenn das Poincare-Modell es so aussehen lässt, ist die hyperbolische Ebene aber keineswegs beschränkt.",
+            duration=5)
 
         self.wait(2)
 
@@ -547,10 +534,16 @@ class HyperbolicModels(MovingCameraScene):
 
         self.wait(2)
 
-        self.play(Create(p_moving_dot), Write(p_distance_text))
+        self.add_subcaption(
+            "Lassen wir einen Punkt in der hyperbolischen Ebene mit konstanter Geschwindigkeit gegen den Rand laufen,",
+            duration=5)
+
+        self.play(Create(p_moving_dot), Create(p_origin), Write(p_distance_text), Write(p_origin_text))
         self.play(Write(p_distance_number))
 
-        self.wait(2)
+        self.wait(3)
+
+        self.add_subcaption("so sehen wir, dass dieser den Rand des Poincare-Modell nie erreicht.", duration=5)
 
         p_distance_number.add_updater(lambda d: d.set_value(p_distance_tracker.get_value()))
 
@@ -586,16 +579,25 @@ class HyperbolicModels(MovingCameraScene):
 
         moving_dot = Dot(polar_to_point(p_moving_dot_phi) * scale_back + np.array(poincare_origin))
 
+        self.add_subcaption("Der Einheitskreis liegt im Unendlichen und gehört nicht zum Poincare-Modell",
+                            duration=5)
+
         self.play(Transform(p_moving_dot, moving_dot), FadeOut(p_distance_number), FadeIn(p_distance_infty),
                   run_time=.25)
 
-        self.wait(5)
+        self.wait(4)
 
         self.play(FadeOut(p_moving_dot), FadeOut(p_distance_infty), FadeOut(p_distance_text))
 
+        self.add_subcaption("Eine noch bessere Darstellung dieser Verzerrung liefert das folgende Bild", duration=3)
+
         self.wait(2)
 
-        self.play(FadeIn(poincare_model), FadeOut(pcircle))
+        self.play(FadeIn(poincare_model), FadeOut(pcircle), run_time=2)
+
+        self.add_subcaption(
+            "Das ist eine Parkettierung der hyperbolischen Ebene. All diese Dreiecke haben die gleiche Form und Fläche.",
+            duration=6)
 
         self.play(Create(ptri1), run_time=2)
         self.play(Write(ptri1_text))
@@ -609,12 +611,96 @@ class HyperbolicModels(MovingCameraScene):
 
         self.play(Write(ptri_size_text), run_time=2)
 
+        self.add_subcaption(
+            "Das Poincare-Modell liefert also eine stark verzerrte Darstellung des hyperbolischen Raumes.", duration=6)
+
         self.wait(4)
 
         self.play(Uncreate(ptri1), Uncreate(ptri2), Uncreate(ptri1_text), Uncreate(ptri2_text),
                   Uncreate(ptri_size_text), run_time=2)
 
         self.play(self.camera.frame.animate.scale(1.25).move_to(center), FadeIn(klein_model), FadeIn(klein_text))
+
+
+class HyperbolicModelsKlein(MovingCameraScene):
+    def construct(self):
+        center = np.array([0, 0, 0])
+
+        klein_origin = np.array([3.5, -1, 0])
+        poincare_origin = np.array([-3.5, -1, 0])
+
+        MY_BLUE = "#22c1dd"
+
+        title = MarkupText(
+            "Modelle für die hyperbolische Ebene").scale(
+            0.8).shift(3.5 * UP)
+
+        klein_model = ImageMobject("tessellation_klein.png").scale(0.7).move_to(klein_origin)
+        klein_text = Text("Klein-Modell").scale(0.6).move_to(3.5 * RIGHT + 2.2 * UP)
+        poincare_model = ImageMobject("tessellation_poincare.png").scale(0.7).move_to(poincare_origin)
+        poincare_text = Text("Poincaré-Modell").scale(0.6).move_to(3.5 * LEFT + 2.2 * UP)
+
+        title2 = Text("Transformationen zwischen hyperbolischen Modellen").scale(.8).shift(3.5 * UP)
+
+        scale_back = 2.5
+
+        phis = [[0.4, 2], [1.3, 6], [3.5, 5], [4, 1.5]]
+
+        k1 = np.array([[0, 0, 0], [2, 0, 0], [1.24, 1.58, 0]])
+        k2 = np.array([[-0.46, 1.95, 0], [-1.81, 0.89, 0], [-1.49, 1.86, 0]])
+
+        raw_ktri1 = Polygon(*k1, color=YELLOW, stroke_width=1.5).shift(klein_origin)
+        kpoints1 = [Dot(np.add(p, klein_origin), color=YELLOW, radius=.06) for p in k1]
+        raw_ktri2 = Polygon(*k2, color=YELLOW, stroke_width=1.5).shift(klein_origin)
+        kpoints2 = [Dot(np.add(p, klein_origin), color=YELLOW, radius=.06) for p in k2]
+
+        kcircle = Circle(color=MY_BLUE, stroke_width=1).scale(scale_back).move_to(klein_origin)
+        pcircle = Circle(color=MY_BLUE, stroke_width=1).scale(scale_back).move_to(poincare_origin)
+
+        p_geodesics_raw = [HyperbolicArcBetweenPoints(polar_to_point(x), polar_to_point(y)) for [x, y] in phis]
+        p_geodesics = [geo.scale(scale_back).move_to(geo.get_center() * scale_back).shift(poincare_origin) for geo in
+                       p_geodesics_raw]
+
+        k_geodesics_raw = [Line(polar_to_point(x), polar_to_point(y)) for [x, y] in phis]
+        k_geodesics = [geo.scale(scale_back).move_to(geo.get_center() * scale_back).shift(klein_origin) for geo in
+                       k_geodesics_raw]
+
+        point_coords = [0, -0.3, 0]
+        point_geodesic_point_phis = [0, 2.3, 2.9, 3.15, 3.4, 3.8, 4.1, 4.5, 5]
+        k_point = Dot(point_coords)
+        k_point.move_to(k_point.get_center() * scale_back).shift(klein_origin)
+
+        k_point_text = Text("P").scale(0.8).next_to(k_point)
+
+        k_point_geodesics_intersections = [
+            get_both_intersections_line_with_unit_circle(point_coords, polar_to_point(phi))
+            for phi in point_geodesic_point_phis]
+        k_point_geodesics_raw = [Line(x, y, color=MY_BLUE) for [x, y] in k_point_geodesics_intersections]
+        k_point_geodesics = [l.scale(scale_back).move_to(l.get_center() * scale_back).shift(klein_origin) for l in
+                             k_point_geodesics_raw]
+
+        ktri1_text = Tex(r"$\Delta_1$").next_to(raw_ktri1, LEFT).scale(.6).shift(0.7 * RIGHT)
+
+        ktri2_text = Tex(r"$\Delta_2$").next_to(raw_ktri2, LEFT).scale(.6).shift(0.4 * RIGHT)
+
+        ktri_size_text = Tex(r"$A(\Delta_1) = A(\Delta_2)$", font_size=40).next_to(kcircle, LEFT, buff=.5)
+
+        arrow_lr = Arrow(start=2.5 * LEFT, end=2.5 * RIGHT, stroke_width=4, max_tip_length_to_length_ratio=.5)
+        arrow_rl = Arrow(start=2.5 * RIGHT, end=2.5 * LEFT, stroke_width=4, max_tip_length_to_length_ratio=.5)
+        arrow_group = VGroup(arrow_lr, arrow_rl).arrange(DOWN)
+        arrow_group.shift(DOWN)
+
+        f_text = Tex(r"$f$", font_size=40).next_to(arrow_lr, UP, buff=0)
+        f_inv_text = Tex(r"$f^{-1}$", font_size=40).next_to(arrow_rl, DOWN, buff=0)
+
+        f_formula = Tex(r"$f(x,y) = \frac{1}{1+\sqrt{1-x^2-y^2}}(x,y)$", font_size=40).move_to(.5 * UP)
+        f_inv_formula = Tex(r"$f^{-1}(x,y) = \frac{1}{1+x^2+y^2}(2x,2y)$", font_size=40).move_to(2.5 * DOWN)
+
+        self.add(title, poincare_text, poincare_model, klein_text, klein_model)
+
+        self.add_subcaption(
+            "Nun betrachten wir das Klein-Modell. Wir werden starke Ähnlichkeiten zum Poincare-Modell erkennen.",
+            duration=5)
 
         self.wait(5)
 
