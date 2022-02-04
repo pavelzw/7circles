@@ -25,17 +25,14 @@ Das können wir uns im Folgenden zunutze machen:
     Da dessen Kanten endliche Länge haben, können wir den alternierenden Umfang hier explizit berechnen.
 
 Scene3:
-Betrachte dazu eine Folge {Pn} an hyperbolischen (nicht idealen) Sechsecken, die gegen ein ideales Sechseck Pinf konvergieren.
- Setzen wir nun an jeden Eckpunkt von Pn eine Disk Di, sodass aufeinanderfolgende Disks sich nicht überlappen.
-  Wir sehen, dass die Längen S_k tilde endlich sind. Somit können wir den alterierenden Umfang unserer
-  transformierten Sechsecke P_n tilde explizit berechnen
-     wobei Si tilde die Länge Si ist, allerdings nur bis zu den Grenzen der Disks
- Wir sehen, falls wir Di ersetzen durch Dj mit anderem Radius, addieren und subtrahieren wir den gleichen Betrag
-  auf beiden Seiten, in diesem Fall für S1 und S6, sodass der altPer unabhängig von der Größe unserer Disks ist (
-    also sogar falls unsere Disks einen Radius von 0 haben
-  Daraus folgt, dass der altPer von Pn gleich dem von Pn tilde (also mit Disks) ist.
- Lassen wir n gegen unendlich laufen, sehen wir, dass der alternierende Umfang von Pinf gleich dem von
-    Pinf tilde mit beliebigen Disks Di ist.
- Da die Längen Si tilde nun aber endlich sind
-       konnten wir tatsächlich einen sinnvolle Berechnung für den alternierenden Umfang finden.
-
+Betrachten wir dazu eine Folge {Pn} hyperbolischer nicht idealer Sechsecke, die gegen ein ideales Sechseck P_unendlich konvergieren.
+ Wir setzen nun an jeden Eckpunkt von Pn eine Disk Di, sodass sich aufeinanderfolgende Disks nicht überlappen.
+  Weiter definieren wir S_k tilde als die Kante bis zu den Grenzen der Disks.
+  Wir sehen, dass die Längen der S_k tilde endlich sind.
+ Falls wir den Radius einer Disk ändern, addieren und subtrahieren wir den gleichen Betrag
+  auf beiden Seiten, in diesem Fall für S1 und S6.
+  Der alternierende Umfang ist also unabhängig von der Größe unserer Disks - auch wenn unsere Disks einen Radius von 0 haben.
+  Daraus folgt, dass die alternierende Summe der Sk gleich der alternierenden Summe der Sk tilde ist.
+ Lassen wir n gegen unendlich laufen, so gilt dieser Zusammenhang immer noch.
+ Da die Längen S_k tilde nun aber endlich sind, haben wir tatsächlich eine sinnvolle Berechnung für
+    den alternierenden Umfang gefunden.

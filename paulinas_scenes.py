@@ -233,8 +233,8 @@ class Scene3(MovingCameraScene):
         # phis = np.array([0, 1, 2, 3, 4, 5])
         transition = create_radius_transition(radius=radius, step_size=step_size)
         hexagon = HyperbolicPolygon.from_polar(phis, transition[0], dot_radius=0.01, stroke_width=2)
-        self.play(Create(hexagon), run_time=5)
-        self.play(Write(p1, stroke_width=.5))
+        self.play(Create(hexagon), run_time=5)  # todo create without Dots in for loop
+        self.play(Write(p1, stroke_width=.5))  # todo keep it (move somewhere else though)
         self.play(FadeOut(p1))
         self.play(self.camera.frame.animate.move_to([1.5, 0, 0]))
         self.play(Write(konvergenz, stroke_width=.5))
@@ -247,7 +247,7 @@ class Scene3(MovingCameraScene):
         hexagon_new = HyperbolicPolygon.from_polar(phis, transition[-1], dot_radius=0.01, stroke_width=2)
         self.play(Transform(hexagon, hexagon_new), run_time=0.05,
                   rate_func=lambda a: a)
-        self.wait(duration=3)
+        self.wait(3)
 
         # with disks
         self.play(FadeOut(hexagon, konvergenz))
@@ -284,20 +284,15 @@ class Scene3(MovingCameraScene):
                 self.play(Write(label, stroke_width=.5))
                 self.wait(1)
                 self.play(FadeOut(label))
-        self.wait(3)
-        sum2 = altper_tilde, altsum_tilde = VGroup(MathTex(r'\mathrm{AltPer}(\tilde{P_1})', font_size=20),
-                                                   MathTex(
-                                                       r'= \tilde{S_1} - \tilde{S_2} + \tilde{S_3} - \tilde{S_4} + \tilde{S_5} - \tilde{S_6}',
-                                                       font_size=20)).arrange(direction=DOWN,
-                                                                              aligned_edge=LEFT).move_to([2.6, 1, 0])
-        self.play(TransformFromCopy(s_k_text, sum2))
-        self.wait(3)
+        formula = MathTex(r'&\tilde{S_1} - \tilde{S_2} + \tilde{S_3} - \tilde{S_4} + \tilde{S_5} - \tilde{S_6} \\',
+                          r'= \, &S_1 - S_2 + S_3 - S_4 + S_5 - S_6 \\',
+                          r'= \, &\mathrm{AltPer}(', 'P_1', ')',
+                          font_size=20).move_to([2.6, 1, 0])
+        self.play(TransformFromCopy(s_k_text, formula[0]))
+        self.wait(2)
         transformed_disk = disks[0]
         transformed_arc1 = dynamic_arcs[0]
         transformed_arc2 = dynamic_arcs[5]
-        alt_per = MathTex(r'= \mathrm{AltPer}(P_1)', font_size=20).next_to(altper_tilde, buff=.05)
-        alt_sum = MathTex(r'= S_1 - S_2 + S_3 - S_4 + S_5 - S_6', font_size=20).next_to(altsum_tilde, direction=DOWN)
-        self.wait(3)
         # changing disk in size
         step_size_one_direction = 20
         s_k = [hex_n_ideal.polygon_points[0], hex_n_ideal.polygon_points[1], hex_n_ideal.polygon_points[2],
@@ -340,7 +335,7 @@ class Scene3(MovingCameraScene):
             self.play(Transform(transformed_disk, new_circle), Transform(transformed_arc1, arc_new1),
                       Transform(transformed_arc2, arc_new2), rate_func=lambda a: a,
                       run_time=3 / num_steps)
-        self.wait(6)
+        self.wait(7)
         # transforming all disks
         transformed_disks = VGroup(disks[0], disks[1], disks[2], disks[3], disks[4], disks[5])
         transformed_arcs = VGroup(dynamic_arcs[0], dynamic_arcs[1], dynamic_arcs[2], dynamic_arcs[3], dynamic_arcs[4],
@@ -359,7 +354,8 @@ class Scene3(MovingCameraScene):
                     helping_dots.add(Dot(hex_n_ideal.polygon_points[i], color=ORANGE, radius=0.01))
                 self.add(helping_dots)
                 self.wait(2)
-                self.play(TransformFromCopy(altper_tilde, alt_per), TransformFromCopy(altsum_tilde, alt_sum))
+                self.play(TransformFromCopy(formula[0], formula[1]),
+                          TransformFromCopy(formula[0], VGroup(formula[2], formula[3], formula[4])))
                 self.wait(3)
                 self.remove(helping_dots)
             for i in range(0, 6):
@@ -383,7 +379,8 @@ class Scene3(MovingCameraScene):
             new_arcs_group = VGroup()
 
         self.wait(3)
-        self.play(FadeOut(s_k_text, sum2, alt_sum, alt_per), Write(konvergenz, stroke_width=.5))
+        self.play(FadeOut(s_k_text))
+        self.play(Write(konvergenz, stroke_width=.5))
         # transforming into ideal hexagon
         disks_group = VGroup(disks[0], disks[1], disks[2], disks[3], disks[4], disks[5])
         arc_group = VGroup(dynamic_arcs[0], dynamic_arcs[1], dynamic_arcs[2], dynamic_arcs[3], dynamic_arcs[4],
@@ -419,15 +416,14 @@ class Scene3(MovingCameraScene):
             new_disk_group = VGroup()  # nochmal leeren
             new_arc_group = VGroup()
         self.wait(2)
-        end_result = VGroup(MathTex(r'\mathrm{AltPer}(P_\infty)', font_size=20),
-                            MathTex(r'= S_1 - S_2 + S_3 - S_4 + S_5 - S_6', font_size=20),
-                            MathTex(r'=\tilde{S_1}-\tilde{S_2} + \tilde{S_3} - \tilde{S_4} + \tilde{S_5}-\tilde{S_6}',
-                                    font_size=20),
-                            MathTex(r'=\mathrm{AltPer}(\tilde{P}_\infty)', font_size=20)).arrange(DOWN,
-                                                                                                  aligned_edge=LEFT).move_to(
-            [1.2, 0, 0], LEFT)
-        self.play(FadeOut(konvergenz), Write(end_result, stroke_width=.5))
-        self.wait(7)
+        # todo fine tune position, also transform parentheses
+        self.play(FadeOut(konvergenz), formula.animate.shift(DOWN))
+        altper_infty = MathTex(r'P_\infty', font_size=20).move_to(formula[3].get_center())
+        self.play(Transform(formula[3], altper_infty))
+
+        self.wait(6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects])
+        self.wait(1)
 
 
 class NonIdealHexagonAnimation(Scene):
