@@ -4,7 +4,8 @@ import numpy as np
 from manim import Scene, Circle, Dot, Create, FadeIn, Line, \
     Transform, RED, ThreeDAxes, ApplyPointwiseFunction, MovingCameraScene, Flash, YELLOW, Text, UP, Write, \
     DOWN, Tex, BLUE, GREEN, WHITE, PURPLE, GREY, PINK, Uncreate, AnimationGroup, Unwrite, ImageMobject, LEFT, RIGHT, \
-    MarkupText, Polygon, PI, DecimalNumber, ValueTracker, ArcBetweenPoints, Arrow, VGroup, FadeOut, Indicate
+    MarkupText, Polygon, PI, DecimalNumber, ValueTracker, ArcBetweenPoints, Arrow, VGroup, FadeOut, Indicate, \
+    ReplacementTransform
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, mobius_transform, \
@@ -523,7 +524,7 @@ class HyperbolicModels(MovingCameraScene):
                     polar_to_point(p_moving_dot_phi, norm_factor / (batch_size * pow(r, 2))))
             p_current_point = p_current_point + offset
             pos = p_current_point * scale_back + np.array(poincare_origin)
-            moving_dot = Dot(pos, radius=0.08 / np.sqrt(r))
+            moving_dot = Dot(pos, radius=0.08)
 
             p_distance_number.font_size = 20
 
@@ -723,7 +724,7 @@ class SevenCirclesHyperbolic(MovingCameraScene):
         DIAGONAL_COLOR = PURPLE
         DIAGONAL_INTERSECTION_COLOR = YELLOW
 
-        title = Text("Der Sieben-Kreise-Satz").scale(0.8)
+        title = Text("Der hyperbolische Sieben-Kreise-Satz").scale(0.8)
 
         theorem_text = Tex(r"Sei $C_0\ $ein Kreis ", r"und $C_1, \ldots, C_6$ in $C_0$ enthaltene Kreise, ",
                            "sodass jeder innere Kreis zu $C_0$ tangential ist ",
@@ -749,65 +750,81 @@ class SevenCirclesHyperbolic(MovingCameraScene):
         phis = create_phis(min_dist=.9, max_dist=1.2)
         first_circle_radius = .4
 
-        hexagon = HyperbolicPolygon([polar_to_point(phi) for phi in phis], color=PINK)
+        hexagon = HyperbolicPolygon([polar_to_point(phi) for phi in phis], color=HEXAGON_COLOR,
+                                    dot_color=OUTER_INTERSECTION_COLOR)
         hexagon_circles = HexagonCircles(hexagon, first_circle_radius)
         inner_intersections = get_intersections_of_n_tangent_circles(hexagon_circles.circles,
                                                                      color=INNER_INTERSECTION_COLOR)
         outer_intersections = get_intersections_of_circles_with_unit_circle(hexagon_circles.circles,
                                                                             color=OUTER_INTERSECTION_COLOR)
-        split_phis = [[phis[0], phis[1]], [phis[2], phis[3]], [phis[4], phis[5]]]
-        diagonals = [HyperbolicArcBetweenPoints(x, y, color=DIAGONAL_COLOR) for [x, y] in split_phis]
-        diagonal_intersection = Dot(get_intersection_from_angles(phis[0], phis[3], phis[1], phis[4]),
-                                    color=DIAGONAL_INTERSECTION_COLOR)
+        diagonals = HexagonMainDiagonals(hexagon, color=DIAGONAL_COLOR)
+        diagonal_intersection = Dot(
+            tf_klein_to_poincare(get_intersection_from_angles(phis[0], phis[3], phis[1], phis[4])),
+            color=DIAGONAL_INTERSECTION_COLOR)
 
-        self.camera.shift(0.8 * DOWN)
+        eucl_hexagon = EuclideanHexagon(phis, color=HEXAGON_COLOR)
+        eucl_diagonals = get_diagonals(hexagon, color=DIAGONAL_COLOR)
+        eucl_intersection = Dot(get_intersection_from_angles(phis[0], phis[3], phis[1], phis[4]),
+                                color=DIAGONAL_INTERSECTION_COLOR)
+
+        self.camera.frame.shift(0.8 * DOWN)
         self.play(Write(title.shift(1.5 * UP).scale(.7)))
         # self.add_subcaption("Wir beschäftigen uns heute mit dem Sieben-Kreise-Satz. Unser Ziel ist es diesen über "
         # "einen interessanten Weg, der hyperbolische Geometrie mit einschließt zu beweisen.")
         self.wait(4)
         # self.add_subcaption("Aber zuerst einmal: Was sagt der Sieben-Kreise-Satz überhaupt aus?")
 
-        self.play(Write(theorem_text[0], run_time=.2))
-        self.play(Write(theorem_text[1], run_time=.4))
-        self.play(Write(theorem_text[2], run_time=.4))
+        self.play(Write(theorem_text[0], run_time=.2, rate_func=lambda x: x))
+        self.play(Write(theorem_text[1], run_time=.2, rate_func=lambda x: x))
+        self.play(Write(theorem_text[2], run_time=.4, rate_func=lambda x: x))
 
         self.play(FadeIn(circle))
 
-        self.play(Write(theorem_text[3], run_time=.2))
-        self.play(Write(theorem_text[4], run_time=.6))
-        self.play(Write(theorem_text[5], run_time=1.8))
+        self.play(Write(theorem_text[3], run_time=.2, rate_func=lambda x: x))
+        self.play(Write(theorem_text[4], run_time=.6, rate_func=lambda x: x))
+        self.play(Write(theorem_text[5], run_time=1.8, rate_func=lambda x: x))
 
         self.play(Create(hexagon_circles, run_time=5))
 
-        self.play(Write(theorem_text[6], run_time=1.6))
-        self.play(Write(theorem_text[7], run_time=1.2))
-        self.play(Write(theorem_text[8], run_time=.2))
+        self.play(Write(theorem_text[6], run_time=1.6, rate_func=lambda x: x))
+        self.play(Write(theorem_text[7], run_time=1.2, rate_func=lambda x: x))
+        self.play(Write(theorem_text[8], run_time=.2, rate_func=lambda x: x))
 
         for i in range(6):
             self.play(Create(outer_intersections[i], run_time=.5))
+            self.add_foreground_mobject(outer_intersections[i])
 
-        self.play(Write(theorem_text[9]), run_time=.6)
-        self.play(Write(theorem_text[10]), run_time=4.6)
-        self.play(Write(theorem_text[11]), run_time=.2)
+        self.play(Write(theorem_text[9]), run_time=.6, rate_func=lambda x: x)
+        self.play(Write(theorem_text[10]), run_time=4.6, rate_func=lambda x: x)
+        self.play(Write(theorem_text[11]), run_time=.2, rate_func=lambda x: x)
 
         for i in range(6):
             self.play(Create(inner_intersections[i], run_time=.5))
+            self.add_foreground_mobject(inner_intersections[i])
 
-        self.play(Write(theorem_text[12]), run_time=1.2)
-        self.play(Write(theorem_text[13]), run_time=.8)
-        self.play(Write(theorem_text[14]), run_time=5)
-        self.play(Write(theorem_text[15]), run_time=.6)
+        self.play(Write(theorem_text[12]), run_time=1.2, rate_func=lambda x: x)
+        self.play(Write(theorem_text[13]), run_time=.8, rate_func=lambda x: x)
+        self.play(Write(theorem_text[14]), run_time=5, rate_func=lambda x: x)
+        self.play(Write(theorem_text[15]), run_time=.6, rate_func=lambda x: x)
 
         self.play(Create(hexagon, run_time=5))
         for x in diagonals:
             self.play(Create(x), run_time=1)
 
-        self.play(Write(theorem_text[16]), run_time=.6)
-        self.play(Write(theorem_text[17]), run_time=.2)
-        self.play(Write(theorem_text[18], run_time=.2))
+        self.play(Write(theorem_text[16]), run_time=.6, rate_func=lambda x: x)
+        self.play(Write(theorem_text[17]), run_time=.2, rate_func=lambda x: x)
+        self.play(Write(theorem_text[18], run_time=.2, rate_func=lambda x: x))
         self.play(Write(theorem_text[19]))
 
         self.play(Create(diagonal_intersection))
         self.wait(1)
         self.play(Flash(diagonal_intersection))
-        self.wait(1)
+        self.wait(3)
+
+        self.play(*[ReplacementTransform(hexagon.arcs[i], eucl_hexagon.edges[i]) for i in range(6)],
+                  ReplacementTransform(diagonals.arc1, eucl_diagonals[0]),
+                  ReplacementTransform(diagonals.arc2, eucl_diagonals[1]),
+                  ReplacementTransform(diagonals.arc3, eucl_diagonals[2].reverse_direction()),
+                  ReplacementTransform(diagonal_intersection, eucl_intersection),
+                  # turn uninteresting parts dark
+                  run_time=3)
