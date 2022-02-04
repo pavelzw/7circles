@@ -878,7 +878,7 @@ class HyperbolicModelsKlein(MovingCameraScene):
 
         self.wait(5)
 
-        self.add_subcaption("Das liefert uns unsere Umformulierung des Sieben-Kreise-Satzes.", duration=4)
+        self.add_subcaption("Das liefert uns jetzt die folgende Umformulierung des Sieben-Kreise-Satzes.", duration=4)
 
         everything = VGroup(p_geo0_copy, p_geo1, k_geo1_copy, k_geo0, pcircle, kcircle, f_text, f_inv_text, f_formula,
                             f_inv_formula, arrow_lr, arrow_rl, title2)
@@ -946,10 +946,10 @@ class SevenCirclesHyperbolic(MovingCameraScene):
 
         self.camera.frame.shift(0.8 * DOWN)
         self.play(Write(title.shift(1.5 * UP).scale(.7)))
-        # self.add_subcaption("Wir beschäftigen uns heute mit dem Sieben-Kreise-Satz. Unser Ziel ist es diesen über "
-        # "einen interessanten Weg, der hyperbolische Geometrie mit einschließt zu beweisen.")
-        self.wait(4)
-        # self.add_subcaption("Aber zuerst einmal: Was sagt der Sieben-Kreise-Satz überhaupt aus?")
+
+        self.wait(2)
+
+        self.add_subcaption("Sei C_0 ein Kreis", duration=2)
 
         self.play(Write(theorem_text[0], run_time=.2, rate_func=lambda x: x))
         self.play(Write(theorem_text[1], run_time=.2, rate_func=lambda x: x))
@@ -957,11 +957,15 @@ class SevenCirclesHyperbolic(MovingCameraScene):
 
         self.play(FadeIn(circle))
 
+        self.add_subcaption("und C_1,...,C_6 in C_0 enthaltene Kreise", duration=4)
+
         self.play(Write(theorem_text[3], run_time=.2, rate_func=lambda x: x))
         self.play(Write(theorem_text[4], run_time=.6, rate_func=lambda x: x))
         self.play(Write(theorem_text[5], run_time=1.8, rate_func=lambda x: x))
 
         self.play(Create(hexagon_circles, run_time=5))
+
+        self.add_subcaption("sodass jeder innere Kreis zum äußeren Kreis tangential ist", duration=5)
 
         self.play(Write(theorem_text[6], run_time=1.6, rate_func=lambda x: x))
         self.play(Write(theorem_text[7], run_time=1.2, rate_func=lambda x: x))
@@ -971,6 +975,9 @@ class SevenCirclesHyperbolic(MovingCameraScene):
             self.play(Create(outer_intersections[i], run_time=.5))
             self.add_foreground_mobject(outer_intersections[i])
 
+        self.add_subcaption("und je zwei nebeneinanderliegende innere Kreise ebenfalls zueinander tangential sind.",
+                            duration=8)
+
         self.play(Write(theorem_text[9]), run_time=.6, rate_func=lambda x: x)
         self.play(Write(theorem_text[10]), run_time=4.6, rate_func=lambda x: x)
         self.play(Write(theorem_text[11]), run_time=.2, rate_func=lambda x: x)
@@ -979,14 +986,24 @@ class SevenCirclesHyperbolic(MovingCameraScene):
             self.play(Create(inner_intersections[i], run_time=.5))
             self.add_foreground_mobject(inner_intersections[i])
 
+        self.add_subcaption("Dann treffen sich die drei hyperbolischen Diagonalen ",
+                            duration=2)
+
         self.play(Write(theorem_text[12]), run_time=1.2, rate_func=lambda x: x)
         self.play(Write(theorem_text[13]), run_time=.8, rate_func=lambda x: x)
+
+        self.add_subcaption(
+            "des von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildeten hyperbolischen Hexagons",
+            duration=6)
+
         self.play(Write(theorem_text[14]), run_time=5, rate_func=lambda x: x)
         self.play(Write(theorem_text[15]), run_time=.6, rate_func=lambda x: x)
 
         self.play(Create(hexagon, run_time=5))
         for x in diagonals:
             self.play(Create(x), run_time=1)
+
+        self.add_subcaption("in einem Punkt", duration=3)
 
         self.play(Write(theorem_text[16]), run_time=.6, rate_func=lambda x: x)
         self.play(Write(theorem_text[17]), run_time=.2, rate_func=lambda x: x)
@@ -996,6 +1013,11 @@ class SevenCirclesHyperbolic(MovingCameraScene):
         self.play(Create(diagonal_intersection))
         self.wait(1)
         self.play(Flash(diagonal_intersection))
+
+        self.add_subcaption(
+            "Wenn wir diesen Satz beweisen können, können wir einfach die Modelltransformation von Poincare zu Klein anwenden",
+            duration=6)
+
         self.wait(3)
 
         self.play(*[ReplacementTransform(hexagon.arcs[i], eucl_hexagon.edges[i]) for i in range(6)],
@@ -1005,3 +1027,5 @@ class SevenCirclesHyperbolic(MovingCameraScene):
                   ReplacementTransform(diagonal_intersection, eucl_intersection),
                   # turn uninteresting parts dark
                   run_time=3)
+
+        self.add_subcaption("und haben somit auch den ursprünglichen Satz bewiesen.")
