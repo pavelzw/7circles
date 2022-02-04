@@ -1,16 +1,16 @@
 from math import pi
 
 from manim import *
-from manim import Scene, Square, Circle, Dot, Group, Text, Create, FadeIn, FadeOut, MoveAlongPath, Line, WHITE, BLUE, \
+from manim import Scene, Square, Circle, Dot, Group, Text, Create, FadeIn, FadeOut, MoveAlongPath, Line, BLUE, \
     Transform, MovingCameraScene, Uncreate, \
     VGroup, Tex, MathTex, Write, RED, \
     NumberPlane
 
+from animation_constants import *
 from geometry_util import moving_circle, \
-    moving_line, polar_to_point, hyperbolic_distance_function, tf_poincare_to_klein, \
+    moving_line, polar_to_point, tf_poincare_to_klein, \
     get_both_intersections_line_with_unit_circle
 from hyperbolic_polygon import HyperbolicArcBetweenPoints
-from animation_constants import *
 
 
 class Scene1(MovingCameraScene):
@@ -18,7 +18,7 @@ class Scene1(MovingCameraScene):
         self.camera.frame.width = 8
         self.wait(4)
 
-        def_ball = MathTex(r'B(z_0,r)=\{z:\mathrm{dist}(z,z_0)= r\}', font_size=20).move_to([0, -2, 0])
+        def_ball = MathTex(r'B(P,r)=\{z:\mathrm{dist}(z,P)= r\}', font_size=20).move_to([0, -2, 0])
         def_dist_eukl = MathTex(r'\mathrm{dist_e}(b,c)=|c-b|', font_size=20).move_to([-2, -1.6, 0])
         def_dist_hyp = MathTex(r'\mathrm{dist_h}(b,c)=\ln \frac{(a-c)(b-d)}{(a-b)(c-d)}', font_size=20).move_to(
             [2, -1.6, 0])
@@ -49,6 +49,10 @@ class Scene1(MovingCameraScene):
 
         # euklidische situation
         self.play(FadeIn(grid))
+
+        self.play(FadeIn(black_background), Create(white_rectangle))
+        self.play(Write(def_ball))
+
         self.play(FadeIn(eucl_dot), FadeIn(eucl_dot_tex))
         self.play(Create(eucl_circles[2]))
 
@@ -61,20 +65,19 @@ class Scene1(MovingCameraScene):
             return Line([-2, 0, 0], dot.get_center(), stroke_width=2, color=RED)
 
         def go_around_circle(mob, dt):
-            self.t_offset += (dt * .25)
+            self.t_offset += (dt * .5)
             # print(self.t_offset)
             mob.move_to(eucl_circles[2].point_from_proportion(self.t_offset % 1))
 
         dot.add_updater(go_around_circle)
         origin_to_circle_line = always_redraw(get_line_to_circle)
-        self.play(Create(radius_red))
-        self.play(FadeIn(radius_tex.next_to(radius_red, direction=0.3 * UP)))
-        self.wait(2)
-        self.play(FadeOut(radius_tex))
+        self.play(Create(radius_red), FadeIn(radius_tex.next_to(radius_red, direction=0.3 * UP)))
+        self.wait(1)
         self.remove(radius_red)
         self.add(origin_to_circle_line)
         self.add(dot)
-        self.wait(4.01)
+        self.play(FadeOut(radius_tex), run_time=.5)
+        self.wait(2.01 - .5)  # todo fix wait time
 
         dot.remove_updater(go_around_circle)
         self.wait(2)
@@ -86,9 +89,7 @@ class Scene1(MovingCameraScene):
         self.wait(2)
 
         # hyperbolische situation
-        self.play(FadeIn(black_background), Create(white_rectangle))
-        self.play(Write(def_ball))
-        self.wait(2)
+        self.wait(4)
         self.play(Write(def_dist_hyp))
         self.wait(2)
         center = [2, 0, 0]
@@ -133,9 +134,18 @@ class Scene1(MovingCameraScene):
 
         self.play(*[FadeOut(mob) for mob in self.mobjects])
 
+
+class Scene2(MovingCameraScene):
+    def construct(self):
+        outer_circle = Circle(color=WHITE, radius=1)
+        circle = [Dot(color=WHITE, radius=0.04), Circle(color=BLUE_A, radius=0.25, stroke_width=2),
+                  Circle(color=BLUE, radius=.5, stroke_width=2), Circle(color=BLUE_E, radius=0.75, stroke_width=2)]
+        def_dist_hyp = MathTex(r'\mathrm{dist_h}(b,c)=\ln \frac{(a-c)(b-d)}{(a-b)(c-d)}', font_size=20).move_to(
+            [2, -1.6, 0])
+        radius_tex = MathTex(r'r', font_size=18, color=RED)
         # radius convergence
         self.play(self.camera.frame.animate.set(width=8).move_to([0, -.8, 0]))
-        self.play(FadeIn(outer_circle.move_to(ORIGIN)))
+        self.play(FadeIn(outer_circle))
         self.play(FadeIn(circle[0].move_to(polar_to_point(19 * PI / 12, 0.5))),
                   Create(circle[3].move_to(polar_to_point(19 * PI / 12, 0.125))))
         self.play(Write(def_dist_hyp.move_to([0, -2, 0])))
@@ -172,16 +182,17 @@ class Scene1(MovingCameraScene):
         unit_arc = ArcBetweenPoints(a.get_center(), d.get_center(), color=RED, stroke_width=2)
         self.play(FadeIn(abcd_group[1]), FadeIn(abcd_group[5].next_to(b, direction=.3 * UP + 0.1 * RIGHT)))
         self.play(FadeIn(abcd_group[2]), FadeIn(abcd_group[6].next_to(c, direction=.5 * LEFT)))
+        self.wait(5)
         self.play(FadeIn(abcd_group[0]), FadeIn(abcd_group[4].next_to(a, direction=.5 * RIGHT)))
         self.play(FadeIn(abcd_group[3]), FadeIn(abcd_group[7].next_to(d, direction=.5 * DOWN)))
         self.play(Create(unit_arc), FadeOut(start_radius))
-        self.wait(1)
+        self.wait(3)
         self.play(Indicate(def_dist_hyp, color=ORANGE))
         self.wait(3)
         self.play(FadeOut(abcd_group), FadeOut(unit_arc), FadeIn(start_radius))
-        self.wait(2)
+        self.wait(5)
         self.play(FadeIn(radius_tex.next_to(start_radius, direction=0.15 * UP)))
-        self.wait(2)
+        self.wait(1)
         self.play(FadeOut(radius_tex))
 
         self.remove(start_radius)
@@ -191,7 +202,7 @@ class Scene1(MovingCameraScene):
         dot.remove_updater(go_around_circle_h)
         self.wait(2)
         self.play(FadeOut(origin_to_circle_line), FadeOut(def_dist_hyp))
-        self.wait(2)
+        self.wait(1)
 
         self.play(FadeIn(circle[1].move_to(polar_to_point(19 * PI / 12, .375))),
                   FadeIn(circle[2].move_to(polar_to_point(19 * PI / 12, .25))))
@@ -212,11 +223,11 @@ class Scene1(MovingCameraScene):
         unit_radius = HyperbolicArcBetweenPoints(circle[0].get_center(), circle[3].point_from_proportion(0), color=RED,
                                                  stroke_width=2)
         self.play(Create(unit_radius))
-        self.play(Create(radius_tex.next_to(unit_radius, direction=0.05 * UP + 0.1 * LEFT)))
+        self.play(Write(radius_tex.next_to(unit_radius, direction=0.05 * UP + 0.1 * LEFT)))
         radius_length = MathTex(r'\mathrm{length_h}(r) = \infty', font_size=25)
         self.play(Write(radius_length.move_to([0, -2, 0])))
-        self.wait(2)
-        # todo maybe wait longer before scene1 paulinas_scene is gonna start (much talk, little animation)
+        self.wait(14)
+        self.play(*[FadeOut(mob) for mob in self.mobjects])
 
 
 class EuclideanCircles(Scene):

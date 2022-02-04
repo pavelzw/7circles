@@ -1,13 +1,13 @@
 from math import pi
 
 import numpy as np
-from manim import Scene, Square, Circle, Dot, Group, Text, Create, FadeIn, FadeOut, MoveAlongPath, Line, WHITE, BLUE, \
-    GREEN_B, Transform, MovingCameraScene, Uncreate, \
-    VGroup, DecimalNumber, RIGHT, Tex, LEFT, UP, MathTex, Write, Indicate, TransformFromCopy, RED, \
-    DOWN, GREY_B, ORANGE, ArcBetweenPoints, BLUE_B, YELLOW, GREEN, YELLOW_D, GREEN_D
+from manim import Scene, Circle, Dot, Create, FadeIn, FadeOut, WHITE, BLUE, \
+    GREEN_B, Transform, MovingCameraScene, VGroup, DecimalNumber, RIGHT, Tex, LEFT, UP, MathTex, Write, Indicate, \
+    TransformFromCopy, RED, \
+    DOWN, GREY_B, ORANGE, ArcBetweenPoints, GREEN_D
 
-from geometry_util import polar_to_point, hyperbolic_distance_function, create_min_circle_radius, moving_circle, \
-    moving_line, get_intersection_in_unit_circle_of_two_tangent_circles
+from geometry_util import polar_to_point, hyperbolic_distance_function, create_min_circle_radius, \
+    get_intersection_in_unit_circle_of_two_tangent_circles
 from hexagon_util import create_phis, create_radius_transition
 from hyperbolic_polygon import HyperbolicPolygon, HyperbolicArcBetweenPoints
 
@@ -42,7 +42,6 @@ class Scene1(MovingCameraScene):
                                       Tex(r'Ideales\, Sechseck', font_size=20, color=GREEN_B,
                                           stroke_width=1)).arrange(aligned_edge=LEFT, direction=DOWN)
         position = [[-3, 1.3, 0], [0, 1.3, 0], [3, 1.3, 0], [-3, -1.3, 0], [0, -1.3, 0], [3, -1.3, 0]]
-        self.wait(13)  # todo do some animation here
         for i in range(0, 6):
             if i == 5:
                 self.play(Write(text_non_ideal_ideal.move_to(position[i]), stroke_width=.5))
