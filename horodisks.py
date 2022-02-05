@@ -177,12 +177,16 @@ class Scene2(MovingCameraScene):
 
         dot.add_updater(go_around_circle_h)
         origin_to_circle_line = always_redraw(get_line_to_circle_h)
+
+        self.add_foreground_mobjects(circle[3])  # radius line should be behind blue circle
         self.play(Create(start_radius.reverse_direction()))
         abcd_group = VGroup(a, b, c, d, MathTex(r'a', font_size=18, color=ORANGE),
                             MathTex(r'b', font_size=18, color=ORANGE),
                             MathTex(r'c', font_size=18, color=ORANGE), MathTex(r'd', font_size=18, color=ORANGE))
         unit_arc = ArcBetweenPoints(a.get_center(), d.get_center(), color=RED, stroke_width=2)
         self.add_foreground_mobjects(abcd_group[1])
+
+        self.remove_foreground_mobjects(circle[3])  # radius line is now covered by b dot
         self.play(FadeIn(abcd_group[1]), FadeIn(abcd_group[5].next_to(b, direction=0.05 * UP + 0.1 * LEFT)))
         self.add_foreground_mobjects(abcd_group[2])
         self.play(FadeIn(abcd_group[2]), FadeIn(abcd_group[6].next_to(c, direction=.5 * LEFT)))
@@ -196,6 +200,10 @@ class Scene2(MovingCameraScene):
         self.play(Indicate(def_dist_hyp, color=ORANGE))
         self.wait(3)
         self.remove_foreground_mobjects(abcd_group[0], abcd_group[1], abcd_group[2], abcd_group[3], circle[0])
+
+        # dot should be before radius line
+        self.add(start_radius, circle[0], circle[3])
+
         self.play(FadeOut(abcd_group), FadeOut(unit_arc), FadeIn(start_radius))  # todo foreground stuff
         self.add_foreground_mobjects(circle[0])
         self.wait(5)
@@ -203,6 +211,8 @@ class Scene2(MovingCameraScene):
         self.wait(1)
         self.play(FadeOut(radius_tex))
 
+        # radius line should be behind circle
+        self.add_foreground_mobjects(circle[3])
         self.remove(start_radius)
         self.add(origin_to_circle_line)
         self.add(dot)
@@ -210,6 +220,10 @@ class Scene2(MovingCameraScene):
         dot.remove_updater(go_around_circle_h)
         self.wait(2)
         self.play(FadeOut(origin_to_circle_line), FadeOut(def_dist_hyp))
+
+        # radius line does not need to be in foreground any more
+        self.remove_foreground_mobject(circle[3])
+
         self.wait(1)
 
         self.play(FadeIn(circle[1].move_to(polar_to_point(19 * PI / 12, .375))),
@@ -230,6 +244,10 @@ class Scene2(MovingCameraScene):
 
         unit_radius = HyperbolicArcBetweenPoints(circle[0].get_center(), circle[3].point_from_proportion(0), color=RED,
                                                  stroke_width=2)
+
+        # unit_radius should be behind circle
+        self.add_foreground_mobjects(circle[3], outer_circle)
+
         self.play(Create(unit_radius))
         self.play(Write(radius_tex.move_to([.35, -.3, 0])))
         radius_length = MathTex(r'r = \infty', font_size=25)
