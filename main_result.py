@@ -3,7 +3,7 @@ from typing import Union
 import numpy as np
 from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut, FadeIn, PURPLE, WHITE, YELLOW, GREEN, \
     Uncreate, RED, VGroup, LEFT, DOWN, Dot, TransformFromCopy, Transform, Flash, MathTex, ReplacementTransform, \
-    ApplyWave, Group, GREY, GREEN_E, YELLOW_E, Unwrite, Square, Indicate, UP, TexTemplate, Circumscribe
+    ApplyWave, Group, GREY, GREEN_E, YELLOW_E, Unwrite, Square, Indicate, UP, TexTemplate, Circumscribe, RIGHT
 from manim.utils import rate_functions
 
 from animation_constants import OUTER_CIRCLE_COLOR, HEXAGON_STROKE_WIDTH, HEXAGON_DOT_CIRCLE_RADIUS
@@ -463,41 +463,81 @@ class Scene5(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 6
         isometry_formula = MathTex('I_k(Y_k) = G_k')
-        formula = MathTex(r'\Rightarrow A(Y_k) = A(G_k)')
-        # todo align on equals sign
+        formula = MathTex(r'\Rightarrow ', 'A(Y_k)', ' = ', 'A(G_k)')
         self.add(isometry_formula)
         self.add_subcaption("Da wir eine Isometrie zwischen den beiden "
                             "Dreiecken haben, sind die alternierenden Umfänge der Dreiecke gleich.", duration=6)
         self.wait(1)
         self.play(isometry_formula.animate.next_to(formula, UP))
 
-        self.play(Write(formula))
+        # shift 0.1*RIGHT to align on equals sign
+        self.play(Write(formula.shift(0.1 * RIGHT)))
         self.wait(5)
-        formula1, formula2, formula3 = VGroup(MathTex("A(Y_1) = A(G_1)"),
-                                              MathTex("A(Y_2) = A(G_2)"),
-                                              MathTex("A(Y_3) = A(G_3)")).arrange(DOWN)
+        formula1, formula2, formula3 = VGroup(MathTex('A(Y_1)', ' = ', 'A(G_1)'),
+                                              MathTex('A(Y_2)', ' = ', 'A(G_2)'),
+                                              MathTex('A(Y_3)', ' = ', 'A(G_3)')).arrange(DOWN)
 
         self.add_subcaption("Diese Formeln können wir explizit für alle drei Dreieckspaare aufschreiben", duration=3)
-        self.play(FadeOut(isometry_formula), TransformFromCopy(formula, formula1))
-        self.play(TransformFromCopy(formula, formula3))
-        self.play(ReplacementTransform(formula, formula2))
+        self.play(FadeOut(isometry_formula),
+                  TransformFromCopy(formula[1], formula1[0]),
+                  TransformFromCopy(formula[2], formula1[1]),
+                  TransformFromCopy(formula[3], formula1[2]))
+        self.play(TransformFromCopy(formula[1], formula3[0]),
+                  TransformFromCopy(formula[2], formula3[1]),
+                  TransformFromCopy(formula[3], formula3[2]))
+        self.play(ReplacementTransform(formula[1], formula2[0]),
+                  ReplacementTransform(formula[2], formula2[1]),
+                  ReplacementTransform(formula[3], formula2[2]),
+                  FadeOut(formula[0]))
         self.wait(2)
 
-        formula1_transformed, formula2_transformed, formula3_transformed = formulas_transformed = VGroup(
-            MathTex("A(Y_1) - A(G_1) = 0"),
-            MathTex("A(Y_2) - A(G_2) = 0"),
-            MathTex("A(Y_3) - A(G_3) = 0")).arrange(DOWN)
+        formula1_transformed, formula2_transformed, formula3_transformed = VGroup(
+            MathTex('A(Y_1)', ' - ', 'A(G_1)', ' = ', '0'),
+            MathTex('A(Y_2)', ' - ', 'A(G_2)', ' = ', '0'),
+            MathTex('A(Y_3)', ' - ', 'A(G_3)', ' = ', '0')).arrange(DOWN)
 
         self.add_subcaption("und den Umfang von G_k auf die andere Seite bringen.", duration=3)
-        self.play(ReplacementTransform(formula1, formula1_transformed),
-                  ReplacementTransform(formula2, formula2_transformed),
-                  ReplacementTransform(formula3, formula3_transformed))
+        self.play(ReplacementTransform(formula1[0], formula1_transformed[0]),
+                  ReplacementTransform(formula1[1], formula1_transformed[3]),
+                  ReplacementTransform(formula1[2], formula1_transformed[2]),
+                  Write(formula1_transformed[1]),
+                  Write(formula1_transformed[4]),
+                  ReplacementTransform(formula2[0], formula2_transformed[0]),
+                  ReplacementTransform(formula2[1], formula2_transformed[3]),
+                  ReplacementTransform(formula2[2], formula2_transformed[2]),
+                  Write(formula2_transformed[1]),
+                  Write(formula2_transformed[4]),
+                  ReplacementTransform(formula3[0], formula3_transformed[0]),
+                  ReplacementTransform(formula3[1], formula3_transformed[3]),
+                  ReplacementTransform(formula3[2], formula3_transformed[2]),
+                  Write(formula3_transformed[1]),
+                  Write(formula3_transformed[4]))
         self.wait(3.5)
 
-        formula_combined = MathTex("A(Y_1) + A(Y_2) + A(Y_3) - (A(G_1) + A(G_2) + A(G_3)) = 0", font_size=20)
+        formula_combined = MathTex('A(Y_1)', ' + ', 'A(Y_2)', ' + ', 'A(Y_3)', ' - ',
+                                   '(', 'A(G_1)', ' + ', 'A(G_2)', ' + ', 'A(G_3)', ')', ' = ', '0', font_size=20)
 
         self.add_subcaption("Nun können wir alles zusammenaddieren und erhalten folgende Formel.", duration=4)
-        self.play(ReplacementTransform(formulas_transformed, formula_combined))
+        # self.play(ReplacementTransform(formulas_transformed, formula_combined))
+        self.play(ReplacementTransform(formula1_transformed[0], formula_combined[0]),
+                  ReplacementTransform(formula2_transformed[0], formula_combined[2]),
+                  ReplacementTransform(formula3_transformed[0], formula_combined[4]),
+                  ReplacementTransform(formula1_transformed[2], formula_combined[7]),
+                  ReplacementTransform(formula3_transformed[2], formula_combined[9]),
+                  ReplacementTransform(formula2_transformed[2], formula_combined[11]),
+                  FadeOut(formula1_transformed[1], formula2_transformed[1], formula3_transformed[1]),
+                  ReplacementTransform(
+                      VGroup(formula1_transformed[1], formula2_transformed[1], formula3_transformed[1]),
+                      formula_combined[5]),
+                  ReplacementTransform(
+                      VGroup(formula1_transformed[3], formula2_transformed[3], formula3_transformed[3]),
+                      formula_combined[13]),
+                  ReplacementTransform(
+                      VGroup(formula1_transformed[4], formula2_transformed[4], formula3_transformed[4]),
+                      formula_combined[14]),
+                  Write(formula_combined[1]), Write(formula_combined[3]),
+                  Write(formula_combined[6]), Write(formula_combined[8]),
+                  Write(formula_combined[10]), Write(formula_combined[12]))
         self.wait(3.5)
 
         # transition to Scene6
@@ -509,7 +549,9 @@ class Scene5(MovingCameraScene):
                               '&-(', 'A(G_1)', '+', 'A(G_2)', '+', 'A(G_3)', ')', font_size=17) \
             .move_to([1.25, .5, 0], aligned_edge=LEFT)
         self.play(FadeIn(circle, hexagon, diagonals), ReplacementTransform(formula_combined, new_formula),
+
                   self.camera.frame.animate.move_to([.8, 0, 0]))
+
         self.wait(3)
 
 
