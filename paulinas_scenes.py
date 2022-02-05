@@ -4,7 +4,7 @@ import numpy as np
 from manim import Scene, Circle, Dot, Create, FadeIn, FadeOut, WHITE, BLUE, \
     GREEN_B, Transform, MovingCameraScene, VGroup, DecimalNumber, RIGHT, Tex, LEFT, UP, MathTex, Write, Indicate, \
     TransformFromCopy, RED, \
-    DOWN, GREY_B, ORANGE, ArcBetweenPoints, GREEN_D, ORIGIN
+    DOWN, GREY_B, ORANGE, ArcBetweenPoints, GREEN_D, ORIGIN, FadeTransform
 
 from geometry_util import polar_to_point, hyperbolic_distance_function, create_min_circle_radius, \
     get_intersection_in_unit_circle_of_two_tangent_circles
@@ -157,7 +157,7 @@ class Scene2(MovingCameraScene):
         point2 = hexagon.polygon_points[1]
         arc = hexagon.arcs[0]
 
-        distance_text = MathTex(r'S_1=', font_size=20).move_to([1.2, 0, 0], aligned_edge=LEFT)
+        distance_text = MathTex(r'S_1=', font_size=20).move_to([1.5, 0, 0], aligned_edge=LEFT)
         infinity = MathTex(r'\infty', font_size=20).next_to(distance_text, buff=.05)
         self.play(Write(VGroup(distance_text, infinity), stroke_width=.5))
         self.wait(6)
@@ -424,7 +424,7 @@ class Scene3(MovingCameraScene):
         self.play(FadeOut(konvergenz), formula.animate.shift(DOWN))
         altper_infty = MathTex(r'(P_\infty)', font_size=20).next_to(formula[2], direction=RIGHT,
                                                                     buff=.05)
-        self.play(Transform(formula[3], altper_infty))
+        self.play(FadeTransform(formula[3], altper_infty))
 
         self.wait(6)
         self.play(*[FadeOut(mob) for mob in self.mobjects])

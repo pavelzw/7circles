@@ -54,6 +54,7 @@ class Scene1(MovingCameraScene):
         self.play(Write(def_ball))
 
         self.play(FadeIn(eucl_dot), FadeIn(eucl_dot_tex))
+        self.add_foreground_mobjects(eucl_dot)
         self.play(Create(eucl_circles[2]))
 
         # moving radius
@@ -77,7 +78,7 @@ class Scene1(MovingCameraScene):
         self.add(origin_to_circle_line)
         self.add(dot)
         self.play(FadeOut(radius_tex), run_time=.5)
-        self.wait(1.6)
+        self.wait(1.51)
 
         dot.remove_updater(go_around_circle)
         self.wait(2)
