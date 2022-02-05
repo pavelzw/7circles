@@ -3,7 +3,7 @@ from typing import Union
 import numpy as np
 from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut, FadeIn, PURPLE, WHITE, YELLOW, GREEN, \
     Uncreate, RED, VGroup, LEFT, DOWN, Dot, TransformFromCopy, Transform, Flash, MathTex, ReplacementTransform, \
-    ApplyWave, Group, GREY, GREEN_E, YELLOW_E, RED_E, Unwrite, Square, Indicate, UP, TexTemplate, Circumscribe
+    ApplyWave, Group, GREY, GREEN_E, YELLOW_E, Unwrite, Square, Indicate, UP, TexTemplate, Circumscribe
 from manim.utils import rate_functions
 
 from animation_constants import OUTER_CIRCLE_COLOR, HEXAGON_STROKE_WIDTH, HEXAGON_DOT_CIRCLE_RADIUS
@@ -80,7 +80,19 @@ class Scene1(MovingCameraScene):
 def get_y_g_triangles(hexagon: HyperbolicPolygon,
                       color_y: Union[str, list] = YELLOW,
                       color_g: Union[str, list] = GREEN,
+                      dot_color_y=None,
+                      dot_color_g=None,
                       **kwargs):
+    if dot_color_y is None:
+        if type(color_y) == list:
+            dot_color_y = color_y[-1]
+        else:
+            dot_color_y = color_y
+    if dot_color_g is None:
+        if type(color_g) == list:
+            dot_color_g = color_g[-1]
+        else:
+            dot_color_g = color_g
     diagonals = HexagonMainDiagonals(hexagon)
     c1, r1 = diagonals.arc1.circle_center, diagonals.arc1.radius
     c2, r2 = diagonals.arc2.circle_center, diagonals.arc2.radius
@@ -91,19 +103,19 @@ def get_y_g_triangles(hexagon: HyperbolicPolygon,
 
     # y triangles
     y1 = HyperbolicPolygon([hexagon.polygon_points[5], hexagon.polygon_points[0], intersection2],
-                           color=color_y, dot_color=color_y, **kwargs)
+                           color=color_y, dot_color=dot_color_y, **kwargs)
     y2 = HyperbolicPolygon([hexagon.polygon_points[1], hexagon.polygon_points[2], intersection1],
-                           color=color_y, dot_color=color_y, **kwargs)
+                           color=color_y, dot_color=dot_color_y, **kwargs)
     y3 = HyperbolicPolygon([hexagon.polygon_points[3], hexagon.polygon_points[4], intersection3],
-                           color=color_y, dot_color=color_y, **kwargs)
+                           color=color_y, dot_color=dot_color_y, **kwargs)
 
     # g triangles
     g1 = HyperbolicPolygon([hexagon.polygon_points[2], hexagon.polygon_points[3], intersection2],
-                           color=color_g, dot_color=color_g, **kwargs)
+                           color=color_g, dot_color=dot_color_g, **kwargs)
     g2 = HyperbolicPolygon([hexagon.polygon_points[4], hexagon.polygon_points[5], intersection1],
-                           color=color_g, dot_color=color_g, **kwargs)
+                           color=color_g, dot_color=dot_color_g, **kwargs)
     g3 = HyperbolicPolygon([hexagon.polygon_points[0], hexagon.polygon_points[1], intersection3],
-                           color=color_g, dot_color=color_g, **kwargs)
+                           color=color_g, dot_color=dot_color_g, **kwargs)
 
     return y1, y2, y3, g1, g2, g3
 
@@ -515,12 +527,17 @@ class Scene6(MovingCameraScene):
         diagonals = HexagonMainDiagonals(hexagon, stroke_width=HEXAGON_STROKE_WIDTH)
         self.add(hexagon, diagonals)
 
-        # todo add y, g labels
+        y1_label = MathTex('Y_1', font_size=15).move_to([.5, 0, 0])
+        y2_label = MathTex('Y_2', font_size=15).move_to([-.2, .55, 0])
+        y3_label = MathTex('Y_3', font_size=15).move_to([-.35, -.25, 0])
+        g1_label = MathTex('G_1', font_size=15).move_to([-.3, .15, 0])
+        g2_label = MathTex('G_2', font_size=15).move_to([.1, -.2, 0])
+        g3_label = MathTex('G_3', font_size=15).move_to([.2, .25, 0])
         y1, y2, y3, g1, g2, g3 = get_y_g_triangles(hexagon, [RED, BLUE, BLUE], [BLUE, RED, RED],
                                                    stroke_width=HEXAGON_STROKE_WIDTH)
-        intersecting_triangle = IntersectionTriangle(diagonals, color=RED, add_dots=False,
+        intersecting_triangle = IntersectionTriangle(diagonals, color=RED, dot_color=RED,
                                                      stroke_width=HEXAGON_STROKE_WIDTH)
-        intersecting_triangle2 = IntersectionTriangle(diagonals, color=PURPLE, add_dots=False,
+        intersecting_triangle2 = IntersectionTriangle(diagonals, color=PURPLE, dot_color=PURPLE,
                                                       stroke_width=HEXAGON_STROKE_WIDTH)
 
         formula1 = MathTex('0 &=', 'A(Y_1)', '+', 'A(Y_2)', '+', 'A(Y_3)', r'\\',
@@ -533,46 +550,59 @@ class Scene6(MovingCameraScene):
                             duration=4)
         self.wait(2)
         # A(Y_1)
-        self.play(formula1[1].animate.set_color(BLUE), ApplyWave(formula1[1], amplitude=.05))
+        self.play(formula1[1].animate.set_color(BLUE), ApplyWave(formula1[1], amplitude=.05),
+                  Write(y1_label))
         self.play(Create(y1), run_time=3)
         # A(Y_2)
-        self.play(formula1[3].animate.set_color(BLUE), ApplyWave(formula1[3], amplitude=.05))
+        self.play(formula1[3].animate.set_color(BLUE), ApplyWave(formula1[3], amplitude=.05),
+                  Unwrite(y1_label), Write(y2_label))
         self.play(Create(y2), run_time=3)
         # A(Y_3)
-        self.play(formula1[5].animate.set_color(BLUE), ApplyWave(formula1[5], amplitude=.05))
+        self.play(formula1[5].animate.set_color(BLUE), ApplyWave(formula1[5], amplitude=.05),
+                  Unwrite(y2_label), Write(y3_label))
         self.play(Create(y3), run_time=3)
 
         # todo make animations smoother using rate_functions (ease_in, ease_out)
         # A(G_1)
         self.add_subcaption("Wenn wir den Umfang der G_i abziehen, kürzt sich ein Teil mit dem "
                             "Umfang der Y_i weg.", duration=4)
-        self.play(formula1[8].animate.set_color(RED), ApplyWave(formula1[8], amplitude=.05))
+        self.play(formula1[8].animate.set_color(RED), ApplyWave(formula1[8], amplitude=.05),
+                  Unwrite(y3_label), Write(g1_label))
         self.play(Create(g1.arcs[0]))
         self.play(Uncreate(y3.arcs[2]))
+        self.add(intersecting_triangle.dots[2])
         self.play(Create(intersecting_triangle.arcs[1].reverse_direction()))
+        self.add(intersecting_triangle.dots[1])
         self.play(Create(intersecting_triangle.arcs[0].reverse_direction()), rate_func=rate_functions.ease_out_cubic)
+        self.add(intersecting_triangle.dots[0])
         self.play(Uncreate(y2.arcs[1]))
 
         # A(G_2)
-        self.play(formula1[10].animate.set_color(RED), ApplyWave(formula1[10], amplitude=.05))
+        self.play(formula1[10].animate.set_color(RED), ApplyWave(formula1[10], amplitude=.05),
+                  Unwrite(g1_label), Write(g2_label))
         self.play(Create(g2.arcs[0]))
         self.play(Uncreate(y1.arcs[2]))
+        self.add(intersecting_triangle2.dots[1])
         self.play(Create(intersecting_triangle2.arcs[0].reverse_direction()))
+        self.add(intersecting_triangle2.dots[0])
         self.play(Create(intersecting_triangle.arcs[2].reverse_direction()))
         self.play(Uncreate(y3.arcs[1]))
 
         # A(G_3)
-        self.play(formula1[12].animate.set_color(RED), ApplyWave(formula1[12], amplitude=.05))
+        self.play(formula1[12].animate.set_color(RED), ApplyWave(formula1[12], amplitude=.05),
+                  Unwrite(g2_label), Write(g3_label))
         self.play(Create(g3.arcs[0]))
         self.play(Uncreate(y2.arcs[2]))
         self.play(Create(intersecting_triangle2.arcs[2].reverse_direction()))
+        self.add(intersecting_triangle2.dots[2])
         self.play(Create(intersecting_triangle2.arcs[1].reverse_direction()))
         self.play(Uncreate(y1.arcs[1]))
         self.remove(*[intersecting_triangle.arcs[i] for i in range(3)])
 
         self.add_subcaption("Wir sehen, dass wir zweimal den Umfang des inneren Dreiecks "
                             "sowie den alternierenden Umfang des Hexagons aufsummiert haben.", duration=7)
-        self.wait(5)
+        self.play(Unwrite(g3_label))
+        self.wait(4)
 
         formula2 = MathTex(r'\mathrm{altPer}(P) - 2 \cdot \mathrm{Per}(T_P) = 0', font_size=17) \
             .next_to(formula1, DOWN)
@@ -589,7 +619,9 @@ class Scene6(MovingCameraScene):
         # transition to Scene7
         self.play(self.camera.frame.animate.move_to([0, 0, 0]),
                   FadeOut(formula1, formula2, formula3, hexagon, intersecting_triangle2,
-                          diagonals, *[triangle.arcs[0] for triangle in [g1, g2, g3, y1, y2, y3]]))
+                          diagonals, *[triangle.arcs[0] for triangle in [g1, g2, g3, y1, y2, y3]],
+                          y1, y2, y3,
+                          *intersecting_triangle.dots, *intersecting_triangle2.dots))
         self.wait(3)
 
 
@@ -598,6 +630,7 @@ class Scene7(MovingCameraScene):
         self.camera.frame.width = 6
         circle = Circle(color=OUTER_CIRCLE_COLOR)
         self.add(circle)
+        self.add_foreground_mobject(circle)
 
         phis = HexagonAngles(np.array([.3, 1.6, 2.2, 3, 4.3]))
 
@@ -685,6 +718,7 @@ class Scene7(MovingCameraScene):
         formula3 = MathTex(r'= \pm 2 \cdot \mathrm{Per}(T_P)', font_size=12).next_to(formula2, buff=.05)
         self.play(Write(formula3))
         self.wait(3)
+        self.add_foreground_mobjects(*inner_circles, *inner_intersections, circle)
         self.play(Create(diagonals), run_time=3)
 
         self.add_subcaption("Also treffen sich die Hauptdiagonalen des Hexagons in einem Punkt.", duration=3)
@@ -711,7 +745,7 @@ class Scene7(MovingCameraScene):
         euclidean_diagonals = get_diagonals(hexagon, stroke_width=2)
         euclidean_intersection_dot = Dot(get_intersection_from_angles(phis[0], phis[3], phis[1], phis[4]), color=YELLOW,
                                          radius=.03)
-        self.add_foreground_mobjects(hexagon, diagonals, intersection_dot)
+        self.add_foreground_mobjects(hexagon, diagonals, *inner_circles, *inner_intersections, intersection_dot, circle)
 
         self.play(self.camera.frame.animate.set(width=6).move_to([0, 0, 0]))
         self.play(*[ReplacementTransform(hexagon.arcs[i], euclidean_hexagon.edges[i]) for i in range(6)],
@@ -723,7 +757,6 @@ class Scene7(MovingCameraScene):
                   *[inner_circles[i].animate.set_color(GREEN_E) for i in range(len(inner_circles))],
                   *[inner_intersections[i].animate.set_color(YELLOW_E)
                     for i in range(len(inner_intersections))],
-                  circle.animate.set_color(RED_E),
                   run_time=3)
         self.wait(2)
         self.add_subcaption("Die Aussage gilt auch hier, weil die Schnittpunkte der "
@@ -735,7 +768,6 @@ class Scene7(MovingCameraScene):
         self.wait(6)
         proof_square = Square(side_length=.15, stroke_width=2).move_to([2, -1, 0], DOWN)
         self.play(Create(proof_square), run_time=2)
-
         self.wait(5)
 
     def _perform_arc_transform(self, plus, zero, zero_0, i, intersection_points, polygon_points):
