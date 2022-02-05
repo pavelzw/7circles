@@ -4,7 +4,7 @@ import numpy as np
 from manim import Scene, Circle, Dot, Create, FadeIn, FadeOut, WHITE, BLUE, \
     GREEN_B, Transform, MovingCameraScene, VGroup, DecimalNumber, RIGHT, Tex, LEFT, UP, MathTex, Write, Indicate, \
     TransformFromCopy, RED, \
-    DOWN, GREY_B, ORANGE, ArcBetweenPoints, GREEN_D
+    DOWN, GREY_B, ORANGE, ArcBetweenPoints, GREEN_D, ORIGIN
 
 from geometry_util import polar_to_point, hyperbolic_distance_function, create_min_circle_radius, \
     get_intersection_in_unit_circle_of_two_tangent_circles
@@ -55,6 +55,7 @@ class Scene1(MovingCameraScene):
                     hexagon = HyperbolicPolygon.from_polar(phis, add_dots=False, stroke_width=2, color=GREEN_B)
                     group = VGroup(hexagon, Circle(color=WHITE)).move_to(position[i])
                     self.play(FadeIn(group[1]))
+                    self.add_foreground_mobjects(group[1])
                     self.play(Create(group[0]), run_time=2.5, rate_func=lambda a: a)
                 else:
                     self.play(FadeIn(Circle(color=WHITE).move_to(position[i])))
@@ -119,8 +120,8 @@ class Scene1(MovingCameraScene):
         self.play(Write(sum2[0], stroke_width=.5))
         self.play(TransformFromCopy(VGroup(hexagon_bi_colored, *s_k_colored), sum2[1]))
         self.wait(5)
-        self.play(*[FadeOut(mob) for mob in self.mobjects])
-        self.play(FadeIn(Circle(color=WHITE)))
+        self.play(*[FadeOut(mob) for mob in self.mobjects], FadeIn(Circle(color=WHITE)))
+        self.play(self.camera.frame.animate.move_to([0, 0, 0]))
         self.wait(1)
 
 
@@ -156,7 +157,7 @@ class Scene2(MovingCameraScene):
         point2 = hexagon.polygon_points[1]
         arc = hexagon.arcs[0]
 
-        distance_text = MathTex(r'\mathrm{length}(S_1)=', font_size=20).move_to([1.2, 0, 0], aligned_edge=LEFT)
+        distance_text = MathTex(r'S_1=', font_size=20).move_to([1.2, 0, 0], aligned_edge=LEFT)
         infinity = MathTex(r'\infty', font_size=20).next_to(distance_text, buff=.05)
         self.play(Write(VGroup(distance_text, infinity), stroke_width=.5))
         self.wait(6)
@@ -200,13 +201,13 @@ class Scene2(MovingCameraScene):
                           Transform(s_0, Dot(interp_point1, radius=.02, color=GREEN_D)),
                           Transform(s_1, Dot(interp_point2, radius=.02, color=GREEN_D)),
                           distance_number.animate.set_value(distance), run_time=1 / 60,
-                          rate_func=lambda a: a)
+                          rate_func=lambda a: a)  # todo why so weird all of the sudden????
         self.remove(s_0, s_1)
         self.wait(10)
 
         # transition to Scene3
-        self.play(*[FadeOut(mob) for mob in self.mobjects])
-        self.play(FadeIn(Circle(color=WHITE)))
+        self.play(*[FadeOut(mob) for mob in self.mobjects], FadeIn(Circle(color=WHITE)))
+        self.play(self.camera.frame.animate.move_to([0, 0, 0]))
         self.wait(1)
 
 
@@ -215,7 +216,7 @@ class Scene3(MovingCameraScene):
         self.camera.frame.width = 6
         circle = Circle(color=WHITE)
         self.add(circle)
-        p1 = MathTex(r'P_1', font_size=20).move_to([0.2, 0.6, 0])
+        p1 = MathTex(r'P_1', font_size=20).move_to(ORIGIN)
         konvergenz = MathTex(r'P_n \xrightarrow{n \rightarrow \infty}P_\infty', font_size=25).move_to([2.5, 0, 0])
         s_1 = MathTex(r'\tilde{S_1}', color=ORANGE, font_size=20).move_to([[.25, .6, 0]])
         s_2 = MathTex(r'\tilde{S_2}', color=ORANGE, font_size=20).move_to([-.65, .5, 0])
@@ -233,7 +234,10 @@ class Scene3(MovingCameraScene):
         # phis = np.array([0, 1, 2, 3, 4, 5])
         transition = create_radius_transition(radius=radius, step_size=step_size)
         hexagon = HyperbolicPolygon.from_polar(phis, transition[0], dot_radius=0.01, stroke_width=2)
-        self.play(Create(hexagon), run_time=5)  # todo create without Dots in for loop
+        for k in range(0, 6):
+            self.add(hexagon.dots[k])
+            self.play(Create(hexagon.arcs[k]), run_time=0.85, rate_func=lambda a: a)
+
         self.play(Write(p1, stroke_width=.5))  # todo keep it (move somewhere else though)
         self.play(FadeOut(p1))
         self.play(self.camera.frame.animate.move_to([1.5, 0, 0]))
@@ -252,7 +256,7 @@ class Scene3(MovingCameraScene):
         # with disks
         self.play(FadeOut(hexagon, konvergenz))
         hex_n_ideal = HyperbolicPolygon.from_polar(phis, radius, dot_radius=0.01, stroke_width=2)
-        self.play(FadeIn(hex_n_ideal))
+        self.play(FadeIn(hex_n_ideal), Write(p1, stroke_width=.5))
         disks = []
         for k in range(0, 6):  # creating disks
             point1 = hex_n_ideal.polygon_points[k]
@@ -286,7 +290,7 @@ class Scene3(MovingCameraScene):
                 self.play(FadeOut(label))
         formula = MathTex(r'&\tilde{S_1} - \tilde{S_2} + \tilde{S_3} - \tilde{S_4} + \tilde{S_5} - \tilde{S_6} \\',
                           r'= \, &S_1 - S_2 + S_3 - S_4 + S_5 - S_6 \\',
-                          r'= \, &\mathrm{AltPer}(', 'P_1', ')',
+                          r'= \, &\mathrm{AltPer}', '(P_1)',
                           font_size=20).move_to([2.6, 1, 0])
         self.play(TransformFromCopy(s_k_text, formula[0]))
         self.wait(2)
@@ -355,7 +359,7 @@ class Scene3(MovingCameraScene):
                 self.add(helping_dots)
                 self.wait(2)
                 self.play(TransformFromCopy(formula[0], formula[1]),
-                          TransformFromCopy(formula[0], VGroup(formula[2], formula[3], formula[4])))
+                          TransformFromCopy(formula[0], VGroup(formula[2], formula[3])))
                 self.wait(3)
                 self.remove(helping_dots)
             for i in range(0, 6):
@@ -379,7 +383,7 @@ class Scene3(MovingCameraScene):
             new_arcs_group = VGroup()
 
         self.wait(3)
-        self.play(FadeOut(s_k_text))
+        self.play(FadeOut(s_k_text), FadeOut(p1))
         self.play(Write(konvergenz, stroke_width=.5))
         # transforming into ideal hexagon
         disks_group = VGroup(disks[0], disks[1], disks[2], disks[3], disks[4], disks[5])
@@ -418,158 +422,10 @@ class Scene3(MovingCameraScene):
         self.wait(2)
         # todo fine tune position, also transform parentheses
         self.play(FadeOut(konvergenz), formula.animate.shift(DOWN))
-        altper_infty = MathTex(r'P_\infty', font_size=20).move_to(formula[3].get_center())
+        altper_infty = MathTex(r'(P_\infty)', font_size=20).next_to(formula[2], direction=RIGHT,
+                                                                    buff=.05)
         self.play(Transform(formula[3], altper_infty))
 
         self.wait(6)
         self.play(*[FadeOut(mob) for mob in self.mobjects])
         self.wait(1)
-
-
-class NonIdealHexagonAnimation(Scene):
-    def construct(self):
-        circle = Circle()
-        self.add(circle)
-        radius = np.random.uniform(0.5, 0.7, 6)
-        phis = create_phis(min_dist=0.6)
-
-        hexagon = HyperbolicPolygon.from_polar(phis, radius)
-        self.play(Create(hexagon), run_time=5)
-        self.wait(2)
-
-        # try of hyperbolic distance, works alright. convergent to infinity?
-        point1 = polar_to_point(0, 0.9)
-        point2 = polar_to_point(pi / 4, 0.9)
-        self.add(Dot([point1]), Dot([point2]))
-        distance = hyperbolic_distance_function(point1, point2)
-        print(distance)
-
-
-# MovingCameraScene anstatt Scene
-class HexagonWithSixDisks(Scene):
-    def construct(self):
-        circle = Circle(color=WHITE)
-        self.add(circle)
-        radius = np.random.uniform(0.5, 0.7, 6)
-        phis = create_phis(min_dist=0.8)
-
-        hexagon = HyperbolicPolygon.from_polar(phis, radius, stroke_width=4)
-        self.add(hexagon)
-        # case for first circle
-        last_point = hexagon.polygon_points[0]
-        point = hexagon.polygon_points[1]
-        end_point = hexagon.polygon_points[5]
-
-        circle_radius = create_min_circle_radius(end_point, last_point, point)
-        circle = Circle(arc_center=last_point, radius=circle_radius, color=GREEN_B, fill_opacity=0.5)
-        self.add(circle)
-
-        for k in range(2, 6):  # from 2 to 5
-            next_point = polar_to_point(phis[k], radius[k])
-
-            circle_radius = create_min_circle_radius(last_point, point, next_point)
-            circle = Circle(arc_center=point, radius=circle_radius, color=GREEN_B, fill_opacity=0.5)
-            self.add(circle)
-            last_point = point
-            point = next_point
-
-        # circle for last point
-        circle = Circle(arc_center=point, radius=circle_radius, color=GREEN_B, fill_opacity=0.5)
-        self.add(circle)
-
-        self.wait(5)
-
-
-class TransformingHexagonWithDisks(MovingCameraScene):
-    def construct(self):
-        circle = Circle()
-        self.add(circle)
-        radius = np.random.uniform(0.5, 0.7, 6)
-        phis = create_phis(min_dist=0.6)
-        circle_radius = np.zeros(shape=6)
-
-        step_size = 50  # normally 100, but takes long
-        # phis = np.array([0, 1, 2, 3, 4, 5])
-        transition = create_radius_transition(radius=radius, step_size=step_size)
-        hexagon = HyperbolicPolygon.from_polar(phis, transition[0])
-        self.add(hexagon)
-        # creating 6 disks
-        last_point = hexagon.polygon_points[0]
-        first_point = last_point
-
-        point = hexagon.polygon_points[1]
-        end_point = hexagon.polygon_points[5]
-        circle_radius[0] = create_min_circle_radius(end_point, last_point, point)
-        circle = Circle(arc_center=last_point, radius=circle_radius[0], color=GREEN_B, fill_opacity=0.5)
-        disks_group = VGroup()  # treating disks as a group
-        disks_group.add(circle)
-        for k in range(2, 6):  # from 2 to 5
-            next_point = polar_to_point(phis[k], radius[k])
-            circle_radius[k - 1] = create_min_circle_radius(last_point, point, next_point)
-            circle = Circle(arc_center=point, radius=circle_radius[k - 1], color=GREEN_B, fill_opacity=0.5)
-            last_point = point
-            point = next_point
-            disks_group.add(circle)
-        circle_radius[5] = create_min_circle_radius(last_point, point, first_point)
-        circle = Circle(arc_center=point, radius=circle_radius[5], color=GREEN_B,
-                        fill_opacity=0.5)  # circle for last point
-        disks_group.add(circle)
-        self.play(Create(disks_group), run_time=3)
-
-        new_disk_group = VGroup()
-        # transition of disks and hexagon
-        disk_transition = create_radius_transition(radius=radius, step_size=step_size,
-                                                   end_point=1 - circle_radius)
-        for t in range(1, step_size):
-            hexagon_new = HyperbolicPolygon.from_polar(phis, transition[t])
-            for i in range(0, 6):
-                new_disk_group.add(
-                    Circle(radius=circle_radius[i], arc_center=polar_to_point(phis[i], disk_transition[t][i]),
-                           color=GREEN_B, fill_opacity=0.5))
-            self.play(Transform(hexagon, hexagon_new), Transform(disks_group, new_disk_group), run_time=0.05,
-                      rate_func=lambda a: a)
-            new_disk_group = VGroup()  # nochmal leeren
-        self.wait(duration=3)
-
-
-class TransformingNonIdealIntoIdeal(Scene):
-    def construct(self):
-        circle = Circle()
-        self.add(circle)
-        radius = np.random.uniform(0.5, 0.7, 6)
-        phis = create_phis(min_dist=0.6)
-
-        step_size = 50  # normally 100, but takes long
-        # phis = np.array([0, 1, 2, 3, 4, 5])
-        transition = create_radius_transition(radius=radius, step_size=step_size)
-        hexagon = HyperbolicPolygon.from_polar(phis, transition[0])
-        self.add(hexagon)
-
-        point1_text = Tex('$P_1$', font_size=30)
-        point2_text = Tex('$P_2$', font_size=30)
-        distance_text, distance_number = label = VGroup(
-            Tex(r'$\mathrm{dist}(P_1, P_2)=$', font_size=35),
-            DecimalNumber(
-                np.exp(hyperbolic_distance_function(hexagon.polygon_points[0], hexagon.polygon_points[1])),
-                num_decimal_places=2, show_ellipsis=True, group_with_commas=False, font_size=35))
-        label.move_to([2, 0, 0], aligned_edge=LEFT)
-        self.add(label)
-        for t in range(1, step_size - 1):
-            hexagon_new = HyperbolicPolygon.from_polar(phis, transition[t])
-            point1_text.next_to((hexagon_new.polygon_points[1]), LEFT, UP)
-            point2_text.next_to((hexagon_new.polygon_points[0]), RIGHT, UP)
-            self.add(point1_text, point2_text)
-            distance = np.exp(
-                hyperbolic_distance_function(hexagon_new.polygon_points[0], hexagon_new.polygon_points[1]))
-            distance_number.font_size = 35
-            label.arrange()
-            label.move_to([2, 0, 0], aligned_edge=LEFT)
-            self.play(Transform(hexagon, hexagon_new),
-                      distance_number.animate.set_value(distance), run_time=0.05,
-                      rate_func=lambda a: a)
-
-        hexagon_new = HyperbolicPolygon.from_polar(phis, transition[-1])
-        self.play(Transform(hexagon, hexagon_new),
-                  Transform(distance_number, Tex(r'$\infty$').next_to(distance_text)), run_time=0.05,
-                  rate_func=lambda a: a)
-        self.wait(duration=3)
