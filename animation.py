@@ -2,8 +2,8 @@ import numpy as np
 from manim import Circle, Dot, Create, FadeIn, Line, \
     Transform, MovingCameraScene, Flash, YELLOW, Text, UP, Write, \
     DOWN, Tex, BLUE, GREEN, WHITE, PURPLE, GREY, PINK, Uncreate, AnimationGroup, Unwrite, ImageMobject, LEFT, RIGHT, \
-    MarkupText, Polygon, PI, DecimalNumber, ValueTracker, ArcBetweenPoints, Arrow, VGroup, FadeOut, Indicate, \
-    ReplacementTransform, BLACK
+    MarkupText, Polygon, PI, DecimalNumber, ValueTracker, Arrow, VGroup, FadeOut, Indicate, \
+    ReplacementTransform, BLACK, VMobject
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, \
@@ -62,14 +62,6 @@ class SevenCircles(MovingCameraScene):
         diagonals = get_diagonals(hexagon, color=DIAGONAL_COLOR)
         diagonal_intersection = Dot(get_intersection_from_angles(phis[0], phis[3], phis[1], phis[4]),
                                     color=DIAGONAL_INTERSECTION_COLOR)
-
-        everything = VGroup(title, circle, theorem_text, hexagon, hexagon_circles, diagonal_intersection)
-        for x in inner_intersections:
-            everything.add(x)
-        for x in outer_intersections:
-            everything.add(x)
-        for x in diagonals:
-            everything.add(x)
 
         self.add_subcaption("Wir beschäftigen uns heute mit dem Sieben-Kreise-Satz", duration=3)
         self.play(Write(title))
@@ -156,6 +148,10 @@ class SevenCircles(MovingCameraScene):
             "um das Problem mit diesem neugewonnenen Wissen umzuformulieren und dann weiter zu bearbeiten.", duration=4)
         self.wait(3)
 
+        everything = VGroup()
+        for mob in self.mobjects:
+            everything.add(mob)
+
         endDot = Dot(color=BLACK)
         self.add(endDot)
         self.play(Transform(everything, endDot), run_time=2)
@@ -195,52 +191,54 @@ class ParallelAxiom(MovingCameraScene):
 
         uncreate = AnimationGroup(*[Uncreate(i, run_time=1) for i in elements])
 
-        question = Text("Wie stellt man die hyperbolischen Ebene im Euklidischen dar?").scale(0.7).move_to(center)
+        question = Text("Wie stellt man die hyperbolische Ebene im Euklidischen dar?").scale(0.7).move_to(center)
 
         self.camera.frame.move_to(center)
-        self.add_subcaption("Axiomatisch unterscheidet sich der hyperbolische Raum vom Euklidischen", duration=3)
-        self.wait(3)
-        self.add_subcaption("durch das nicht gelten des Parallelenaxiom", duration=2)
+        self.add_subcaption("Axiomatisch unterscheidet sich der hyperbolische Raum vom Euklidischen", duration=4)
+        self.wait(4)
+        self.add_subcaption("durch das nicht gelten des Parallelenaxiom", duration=3)
         self.wait(1)
-        self.play(Create(title))
+        self.play(Create(title), run_time=2)
         self.add_subcaption("Das Parallelenaxiom sagt aus, dass zu jeder Gerade g", duration=3)
         self.play(Create(g))
         self.play(Create(g_text))
-        self.wait(2)
+        self.wait(1)
         self.add_subcaption("und jedem Punkt P, der nicht auf g liegt", duration=3)
         self.play(Create(p))
         self.play(Create(p_text))
         self.add_foreground_mobject(p)
-        self.wait(2)
-        self.add_subcaption("genau eine Gerade h existiert, die durch P verläuft und zu g parallel ist.", duration=3)
+        self.wait(1)
+        self.add_subcaption("genau eine Gerade h existiert, die durch P verläuft und zu g parallel ist.", duration=4)
         self.play(Create(h))
         self.play(Create(h_text))
         self.wait(2)
         self.add_subcaption(
-            "Parallel heißt hier einfach, dass sich die beiden Geraden nicht schneiden.", duration=3)
+            "Parallel heißt hier einfach, dass sich die beiden Geraden nicht schneiden.", duration=4)
         self.wait(5)
         self.add_subcaption("In hyperbolischer Geometrie ist diese Eigenschaft nicht gegeben.", duration=3)
         self.wait(3)
         self.add_subcaption(
             "Dort gibt es für jedes solche g und P mehrere, sogar unendlich viele Geraden durch P, die zu g parallel sind also g nicht schneiden.",
-            duration=6)
+            duration=7)
 
         self.play(Create(similar_lines[0]))
         self.play(Create(similar_lines[1]))
         self.play(Create(similar_lines[2]))
         self.play(Create(similar_lines[3]))
 
+        self.wait(3)
+
         self.add_subcaption(
             "Unsere Darstellung hier ist aber irreführend, denn natürlich schneiden alle außer der ursprünglichen Gerade $h$ $g$ wenn wir den Geraden nur lange genug folgen.",
+            duration=8)
+        self.wait(8)
+        self.add_subcaption(
+            "Allgemein haben wir das Problem, dass wir einen Raum in dem hyperbolische Geometrie herrscht in diesem euklidischen zweidimensionalen Video darstellen wollen.",
+            duration=8)
+        self.wait(8)
+        self.add_subcaption(
+            "Die Frage die wir uns jetzt zuerst einmal beantworten müssen ist: Wie stellt man die hyperbolische Ebene im Euklidischen dar?",
             duration=7)
-        self.wait(4)
-        self.add_subcaption(
-            "Allgemein haben wir das Problem, dass wir einen Raum in dem hyperbolische Geometrie herrscht in einem euklidischen zweidimensionalen Video darstellen wollen.",
-            duration=4)
-        self.wait(4)
-        self.add_subcaption(
-            "Die Frage die wir uns jetzt also stellen müssen ist: Wie stellt man die hyperbolischen Ebene im Euklidischen dar?",
-            duration=5)
         self.play(uncreate)
         self.wait(1)
         self.play(Write(question))
@@ -331,9 +329,6 @@ class HyperbolicModelsPoincare(MovingCameraScene):
                                           font_size=20).next_to(p_distance_text, buff=.05)
         p_distance_infty = Tex(r"$\infty$", font_size=20).next_to(p_distance_text, buff=.05)
         p_distance_tracker = ValueTracker(0.0)
-
-        p_arc = ArcBetweenPoints(polar_to_point(p_moving_dot_phi), polar_to_point(p_moving_dot_phi - PI),
-                                 arc_center=center)
 
         self.add_subcaption("Es gibt verschiedene Modelle für die hyperbolische Ebene.", duration=3)
 
@@ -534,7 +529,7 @@ class HyperbolicModelsKlein(MovingCameraScene):
         poincare_model = ImageMobject("tessellation_poincare.png").scale(0.7).move_to(poincare_origin)
         poincare_text = Text("Poincaré-Modell").scale(0.6).move_to(3.5 * LEFT + 2.2 * UP)
 
-        title2 = Text("Transformationen zwischen hyperbolischen Modellen").scale(.8).shift(3.5 * UP)
+        title2 = Text("Transformationen zwischen hyperbolischen Modellen").scale(.75).shift(3.5 * UP)
 
         scale_back = 2.5
 
@@ -589,6 +584,24 @@ class HyperbolicModelsKlein(MovingCameraScene):
 
         f_formula = Tex(r"$f(x,y) = \frac{1}{1+\sqrt{1-x^2-y^2}}(x,y)$", font_size=40).move_to(.5 * UP)
         f_inv_formula = Tex(r"$f^{-1}(x,y) = \frac{1}{1+x^2+y^2}(2x,2y)$", font_size=40).move_to(2.5 * DOWN)
+
+        p_geo0 = p_geodesics[0].copy()
+        p_geo0 = p_geo0.shift(-poincare_origin).scale(0.7).move_to(p_geo0.get_center() * 0.7).shift(
+            poincare_origin + 1.5 * LEFT)
+        p_geo0_copy = p_geo0.copy()
+
+        p_geo1 = p_geodesics[2].copy()
+        p_geo1 = p_geo1.shift(-poincare_origin).scale(0.7).move_to(p_geo1.get_center() * 0.7).shift(
+            poincare_origin + 1.5 * LEFT)
+
+        k_geo0 = k_geodesics[0].copy()
+        k_geo0 = k_geo0.shift(-klein_origin).scale(0.7).move_to(k_geo0.get_center() * 0.7).shift(
+            klein_origin + 1.5 * RIGHT)
+
+        k_geo1 = k_geodesics[2].copy()
+        k_geo1 = k_geo1.shift(-klein_origin).scale(0.7).move_to(k_geo1.get_center() * 0.7).shift(
+            klein_origin + 1.5 * RIGHT)
+        k_geo1_copy = k_geo1.copy()
 
         self.add(title, poincare_text, poincare_model, klein_text, klein_model)
 
@@ -728,23 +741,7 @@ class HyperbolicModelsKlein(MovingCameraScene):
 
         self.play(Write(f_inv_formula))
 
-        p_geo0 = p_geodesics[0]
-        p_geo0 = p_geo0.shift(-poincare_origin).scale(0.7).move_to(p_geo0.get_center() * 0.7).shift(
-            poincare_origin + 1.5 * LEFT)
-        p_geo0_copy = p_geo0.copy()
-
-        p_geo1 = p_geodesics[2]
-        p_geo1 = p_geo1.shift(-poincare_origin).scale(0.7).move_to(p_geo1.get_center() * 0.7).shift(
-            poincare_origin + 1.5 * LEFT)
-
-        k_geo0 = k_geodesics[0]
-        k_geo0 = k_geo0.shift(-klein_origin).scale(0.7).move_to(k_geo0.get_center() * 0.7).shift(
-            klein_origin + 1.5 * RIGHT)
-
-        k_geo1 = k_geodesics[2]
-        k_geo1 = k_geo1.shift(-klein_origin).scale(0.7).move_to(k_geo1.get_center() * 0.7).shift(
-            klein_origin + 1.5 * RIGHT)
-        k_geo1_copy = k_geo1.copy()
+        self.wait(5)
 
         self.add_subcaption(
             "Mit f und f^-1 können wir jetzt also einfach Objekte aus dem einen Modell ins andere übertragen. Insbesondere Geodätische.",
@@ -774,8 +771,10 @@ class HyperbolicModelsKlein(MovingCameraScene):
 
         self.add_subcaption("Das liefert uns jetzt die folgende Umformulierung des Sieben-Kreise-Satzes.", duration=4)
 
-        everything = VGroup(p_geo0_copy, p_geo1, k_geo1_copy, k_geo0, pcircle, kcircle, f_text, f_inv_text, f_formula,
-                            f_inv_formula, arrow_lr, arrow_rl, title2)
+        everything = VGroup()
+        for mob in self.mobjects:
+            if isinstance(mob, VMobject):
+                everything.add(mob)
 
         self.wait(3)
 
