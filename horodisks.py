@@ -18,16 +18,16 @@ class Scene1(MovingCameraScene):
         self.camera.frame.width = 8
         self.wait(4)
 
-        def_ball = MathTex(r'B(P,r)=\{z:\mathrm{dist}(z,P)= r\}', font_size=20).move_to([0, -2, 0])
-        def_dist_eukl = MathTex(r'\mathrm{dist_e}(b,c)=|c-b|', font_size=20).move_to([-2, -1.6, 0])
-        def_dist_hyp = MathTex(r'\mathrm{dist_h}(b,c)=\ln \frac{(a-c)(b-d)}{(a-b)(c-d)}', font_size=20).move_to(
-            [2, -1.6, 0])
+        def_ball = MathTex(r'B(P,r)=\{z:\mathrm{dist}(z,P)= r\}', font_size=20).move_to([0, -1.9, 0])
+        def_dist_eukl = MathTex(r'\mathrm{dist_e}(b,c)=|c-b|', font_size=20).move_to([-2, -1.45, 0])
+        def_dist_hyp = MathTex(r'\mathrm{dist_h}(b,c)=\log \frac{(a-c)(b-d)}{(a-b)(c-d)}', font_size=20).move_to(
+            [2, -1.45, 0])
         radius_tex = MathTex(r'r', font_size=18, color=RED)
         title_hyp = Tex(r'Hyperbolischer Raum', font_size=25, stroke_width=.5).move_to([2, 1.7, 0])
         subtitle_hyp = Tex(r'Poincar\'{e}-Modell', font_size=18, stroke_width=.5).move_to([2, 1.5, 0])
         title_eucl = Tex(r'Euklidischer Raum', font_size=25, stroke_width=.5).move_to([-2, 1.7, 0])
-        black_background = Rectangle(width=3, height=.5, color=BLACK, fill_opacity=1).move_to([0, -2, 0])
-        white_rectangle = Rectangle(width=3, height=.5, color=WHITE, stroke_width=2).move_to([0, -2, 0])
+        black_background = Rectangle(width=3, height=.5, color=BLACK, fill_opacity=1).move_to([0, -1.9, 0])
+        white_rectangle = Rectangle(width=3, height=.5, color=WHITE, stroke_width=2).move_to([0, -1.9, 0])
         self.play(Write(title_hyp))
         self.play(Write(subtitle_hyp))
         separating_line = Line(start=[0, 8, 0], end=[0, -3, 0], stroke_width=2)
@@ -77,7 +77,7 @@ class Scene1(MovingCameraScene):
         self.add(origin_to_circle_line)
         self.add(dot)
         self.play(FadeOut(radius_tex), run_time=.5)
-        self.wait(2.01 - .5)  # todo fix wait time
+        self.wait(1.6)
 
         dot.remove_updater(go_around_circle)
         self.wait(2)
@@ -140,14 +140,16 @@ class Scene2(MovingCameraScene):
         outer_circle = Circle(color=WHITE, radius=1)
         circle = [Dot(color=WHITE, radius=0.04), Circle(color=BLUE_A, radius=0.25, stroke_width=2),
                   Circle(color=BLUE, radius=.5, stroke_width=2), Circle(color=BLUE_E, radius=0.75, stroke_width=2)]
-        def_dist_hyp = MathTex(r'\mathrm{dist_h}(b,c)=\ln \frac{(a-c)(b-d)}{(a-b)(c-d)}', font_size=20).move_to(
+        def_dist_hyp = MathTex(r'\mathrm{dist_h}(b,c)=\log \frac{(a-c)(b-d)}{(a-b)(c-d)}', font_size=20).move_to(
             [2, -1.6, 0])
         radius_tex = MathTex(r'r', font_size=18, color=RED)
         # radius convergence
         self.play(self.camera.frame.animate.set(width=8).move_to([0, -.8, 0]))
         self.play(FadeIn(outer_circle))
+        self.add_foreground_mobjects(outer_circle)
         self.play(FadeIn(circle[0].move_to(polar_to_point(19 * PI / 12, 0.5))),
                   Create(circle[3].move_to(polar_to_point(19 * PI / 12, 0.125))))
+        self.add_foreground_mobjects(circle[0])
         self.play(Write(def_dist_hyp.move_to([0, -2, 0])))
         self.wait(2)
 
@@ -180,16 +182,22 @@ class Scene2(MovingCameraScene):
                             MathTex(r'b', font_size=18, color=ORANGE),
                             MathTex(r'c', font_size=18, color=ORANGE), MathTex(r'd', font_size=18, color=ORANGE))
         unit_arc = ArcBetweenPoints(a.get_center(), d.get_center(), color=RED, stroke_width=2)
-        self.play(FadeIn(abcd_group[1]), FadeIn(abcd_group[5].next_to(b, direction=.3 * UP + 0.1 * RIGHT)))
+        self.add_foreground_mobjects(abcd_group[1])
+        self.play(FadeIn(abcd_group[1]), FadeIn(abcd_group[5].next_to(b, direction=0.05 * UP + 0.1 * LEFT)))
+        self.add_foreground_mobjects(abcd_group[2])
         self.play(FadeIn(abcd_group[2]), FadeIn(abcd_group[6].next_to(c, direction=.5 * LEFT)))
         self.wait(5)
+        self.add_foreground_mobjects(abcd_group[0])
         self.play(FadeIn(abcd_group[0]), FadeIn(abcd_group[4].next_to(a, direction=.5 * RIGHT)))
+        self.add_foreground_mobjects(abcd_group[3])
         self.play(FadeIn(abcd_group[3]), FadeIn(abcd_group[7].next_to(d, direction=.5 * DOWN)))
         self.play(Create(unit_arc), FadeOut(start_radius))
         self.wait(3)
         self.play(Indicate(def_dist_hyp, color=ORANGE))
         self.wait(3)
-        self.play(FadeOut(abcd_group), FadeOut(unit_arc), FadeIn(start_radius))
+        self.remove_foreground_mobjects(abcd_group[0], abcd_group[1], abcd_group[2], abcd_group[3], circle[0])
+        self.play(FadeOut(abcd_group), FadeOut(unit_arc), FadeIn(start_radius))  # todo foreground stuff
+        self.add_foreground_mobjects(circle[0])
         self.wait(5)
         self.play(FadeIn(radius_tex.next_to(start_radius, direction=0.15 * UP)))
         self.wait(1)
@@ -223,89 +231,8 @@ class Scene2(MovingCameraScene):
         unit_radius = HyperbolicArcBetweenPoints(circle[0].get_center(), circle[3].point_from_proportion(0), color=RED,
                                                  stroke_width=2)
         self.play(Create(unit_radius))
-        self.play(Write(radius_tex.next_to(unit_radius, direction=0.05 * UP + 0.1 * LEFT)))
-        radius_length = MathTex(r'\mathrm{length_h}(r) = \infty', font_size=25)
+        self.play(Write(radius_tex.move_to([.35, -.3, 0])))
+        radius_length = MathTex(r'r = \infty', font_size=25)
         self.play(Write(radius_length.move_to([0, -2, 0])))
         self.wait(14)
         self.play(*[FadeOut(mob) for mob in self.mobjects])
-
-
-class EuclideanCircles(Scene):
-    def construct(self):
-        # euclidean situation in center
-        eucl_center = np.array([0, 0, 0])
-        new_center = np.array([4, 0, 0])
-        point1 = eucl_center - np.array([1, 0, 0])
-        point2 = point1 + np.array([1, 1, 0])
-        point3 = eucl_center + np.array([0.5, -0.5, 0])
-        points = np.array([eucl_center, point1, point2, point3])
-
-        square = Square(side_length=4).move_to(eucl_center)
-        circle = Circle(radius=1).move_to(eucl_center)
-        dot = Dot().move_to(eucl_center)
-        text = Text('Euclidean Center', font_size=15).next_to(dot)
-        group = Group(circle, dot)
-        self.play(Create(square))
-        self.play(Create(dot))
-        self.play(Create(circle))
-        self.play(FadeIn(text))
-        self.play(FadeOut(text))
-        for i in range(3):
-            self.play(MoveAlongPath(group, Line(start=points[i], end=points[i + 1])))
-
-        # explaining radii
-        radius_text = Text('radius 3', font_size=18)
-        group2 = Group(group, square)
-        circle_radii = Circle(radius=3)
-        self.play(Transform(group2, circle_radii))
-        self.play(Create(dot))
-        radius1 = Line(start=eucl_center, end=eucl_center + np.array([3, 0, 0]))
-        radius2 = Line(start=eucl_center, end=eucl_center + np.array([-1, -np.sqrt(8), 0]))
-        self.play(Create(radius1))
-        self.play(Create(radius2), FadeIn(radius_text.next_to(radius2)))
-        self.play(Uncreate(radius2), Uncreate(radius_text), Uncreate(radius1))
-    # radius with arc
-    # moving everything to the right so we can continue with the horodisk
-
-
-class Horodisk(Scene):
-    def construct(self):
-        # hyperbolic situation
-        # points of position
-        center = [0, 0, 0]
-        start_points = np.array([center, center, center, center])
-        length = [1, 1, -3]  # 1 is 1 unit to the left, -3 is 3 units to the right, way of circles moving
-
-        angle1 = pi / 4
-        angle2 = 4 * pi / 3
-        angles = [0, angle1, angle2]
-
-        outer_circle = Circle(color=WHITE, radius=2).move_to(center)
-        circle = [Dot(color=BLUE), Circle(color=WHITE, radius=1.5),
-                  Circle(color=WHITE, radius=1), Circle(color=WHITE, radius=0.5)]
-        circles = Group(circle[0], circle[1], circle[2], circle[3]).move_to(center)
-
-        # creating circles and dot
-        self.play(FadeIn(outer_circle))
-        self.play(FadeIn(circle[0]))
-        self.wait(duration=2)
-        self.play(Create(circle[1]), Create(circle[2]), Create(circle[3]))
-
-        # circles moving along a line 3 times
-        for i in range(3):
-            end_points = np.array([start_points[0] - [1 * length[i], 0, 0],
-                                   start_points[1] - [0.25 * length[i], 0, 0],
-                                   start_points[2] - [0.5 * length[i], 0, 0],
-                                   start_points[3] - [0.75 * length[i], 0, 0]])
-            lines = moving_line(start_points, end_points)
-            self.play(MoveAlongPath(circle[0], lines[0]), MoveAlongPath(circle[1], lines[1]),
-                      MoveAlongPath(circle[2], lines[2]), MoveAlongPath(circle[3], lines[3]))
-            self.wait(duration=1)
-            start_points = end_points
-
-        # circles moving along part circle twice
-        for i in range(2):
-            arcs = moving_circle(angles[i], angles[i + 1], center)
-            self.play(MoveAlongPath(circle[0], arcs[0]), MoveAlongPath(circle[1], arcs[1]),
-                      MoveAlongPath(circle[2], arcs[2]), MoveAlongPath(circle[3], arcs[3]))
-            self.wait(duration=1)
