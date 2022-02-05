@@ -9,8 +9,8 @@ from manim.utils import rate_functions
 from animation_constants import OUTER_CIRCLE_COLOR, HEXAGON_STROKE_WIDTH, HEXAGON_DOT_CIRCLE_RADIUS
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, get_intersection_in_unit_circle_of_two_tangent_circles, \
-    get_intersections_of_n_tangent_circles, get_intersection_points_of_n_tangent_circles, get_intersection_from_angles, \
-    mobius_transform_poincare_disk
+    get_intersections_of_n_tangent_circles, get_intersection_points_of_n_tangent_circles, \
+    get_intersection_from_angles, mobius_transform_poincare_disk
 from hexagon import HexagonMainDiagonals, IntersectionTriangle, HexagonAngles, HexagonCircles
 from hyperbolic_polygon import HyperbolicPolygon, HyperbolicArcBetweenPoints
 
@@ -41,7 +41,8 @@ class Scene1(MovingCameraScene):
                   subcaption="Wenn wir bei diesem Hexagon die "
                              "gegenüberliegenden Seiten verbinden, sehen wir,")
 
-        triangle = IntersectionTriangle(diagonals, color=GREEN, add_dots=False, stroke_width=HEXAGON_STROKE_WIDTH)
+        triangle = IntersectionTriangle(diagonals, color=GREEN, add_dots=True, dot_radius=.01, dot_color=GREEN,
+                                        stroke_width=HEXAGON_STROKE_WIDTH)
         triangle_label = MathTex('T_P', color=GREEN, font_size=15).move_to([-.2, .25, 0])
         self.play(Create(triangle), Write(triangle_label),
                   run_time=2,

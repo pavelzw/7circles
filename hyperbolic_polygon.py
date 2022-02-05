@@ -1,9 +1,9 @@
 from abc import ABC
-from math import pi
 from typing import Union
 
 import numpy as np
-from manim import Dot, VGroup, WHITE, ArcBetweenPoints
+from manim import Dot, VGroup, WHITE, ArcBetweenPoints, Create, override_animation, AnimationGroup
+from math import pi
 
 from geometry_util import polar_to_point, \
     point_to_polar, tf_poincare_to_klein, get_both_intersections_line_with_unit_circle, get_circle_middle
@@ -64,13 +64,25 @@ class HyperbolicArcBetweenPoints(ArcBetweenPoints, ABC):
 
 
 class HyperbolicPolygon(VGroup, ABC):
+    @override_animation(Create)
+    def _create(self, **kwargs):
+        animations = []
+        if len(self.dots) == 0:
+            for arc in self.arcs:
+                animations.append(Create(arc))
+        else:
+            for arc, dot in zip(self.arcs, self.dots):
+                animations.append(Create(dot, run_time=0.00001))  # bug: run_time=0 doesn't work...
+                animations.append(Create(arc))
+        return AnimationGroup(*animations, lag_ratio=1, **kwargs)
+
     @classmethod
     def from_polar(cls, phis, radii=None, **kwargs):
         if radii is None:
             radii = [1] * len(phis)
         return cls([polar_to_point(arc, radius=radius) for arc, radius in zip(phis, radii)], **kwargs)
 
-    def __init__(self, points: 'list[np.ndarray]', color: Union['list[str]', str] = None, add_dots=True, dot_radius=.04,
+    def __init__(self, points: 'list[np.ndarray]', color: Union['list[str]', str] = None, add_dots=True, dot_radius=.01,
                  dot_color=WHITE,
                  **kwargs):
         super(HyperbolicPolygon, self).__init__()
