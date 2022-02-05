@@ -5,6 +5,7 @@ import numpy as np
 from manim import Dot, VGroup, WHITE, ArcBetweenPoints, Create, override_animation, AnimationGroup
 from math import pi
 
+from animation_constants import HEXAGON_DOT_CIRCLE_RADIUS
 from geometry_util import polar_to_point, \
     point_to_polar, tf_poincare_to_klein, get_both_intersections_line_with_unit_circle, get_circle_middle
 
@@ -82,7 +83,8 @@ class HyperbolicPolygon(VGroup, ABC):
             radii = [1] * len(phis)
         return cls([polar_to_point(arc, radius=radius) for arc, radius in zip(phis, radii)], **kwargs)
 
-    def __init__(self, points: 'list[np.ndarray]', color: Union['list[str]', str] = None, add_dots=True, dot_radius=.01,
+    def __init__(self, points: 'list[np.ndarray]', color: Union['list[str]', str] = None, add_dots=True,
+                 dot_radius=HEXAGON_DOT_CIRCLE_RADIUS,
                  dot_color=WHITE,
                  **kwargs):
         super(HyperbolicPolygon, self).__init__()
