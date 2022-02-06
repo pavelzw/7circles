@@ -157,17 +157,22 @@ class Scene2(MovingCameraScene):
         point2 = hexagon.polygon_points[1]
         arc = hexagon.arcs[0]
 
-        distance_text = MathTex(r'S_1=', font_size=20).move_to([1.5, 0, 0], aligned_edge=LEFT)
+        distance_text = MathTex(r'\mathrm{dist_h}(a,b) =', font_size=20).move_to([1.2, 0, 0],
+                                                                                 aligned_edge=LEFT)  # partially new
         infinity = MathTex(r'\infty', font_size=20).next_to(distance_text, buff=.05)
-        self.play(Write(VGroup(distance_text, infinity), stroke_width=.5))
+        s_0 = Dot(hexagon.polygon_points[0], radius=.02, color=GREEN_D)
+        s_1 = Dot(hexagon.polygon_points[1], radius=.02, color=GREEN_D)
+        a = MathTex(r'a', font_size=15, color=GREEN_D).next_to(s_0, direction=0.16 * DOWN + 0.01 * LEFT)  # new
+        b = MathTex(r'b', font_size=15, color=GREEN_D).next_to(s_1, direction=0.16 * DOWN + 0.05 * LEFT)  # new
+        self.play(Write(VGroup(distance_text, infinity), stroke_width=.5), FadeIn(a, b, s_0, s_1))  # partially new
+        self.add_foreground_mobjects(a, b)
         self.wait(6)
         distance_number = DecimalNumber(6343.242564,
                                         num_decimal_places=2, show_ellipsis=True, group_with_commas=False,
                                         font_size=20).next_to(distance_text, buff=.05)
-        s_0 = Dot(hexagon.polygon_points[0], radius=.01, color=GREEN_D)
-        s_1 = Dot(hexagon.polygon_points[1], radius=0.01, color=GREEN_D)
+
         self.remove(infinity)
-        self.add(distance_number, s_0, s_1)
+        # self.add(distance_number, s_0, s_1)
         label = VGroup(distance_text, distance_number)
         step_size = 450
         for t in range(1, step_size):
@@ -183,7 +188,9 @@ class Scene2(MovingCameraScene):
                                                                                    arc.circle_center, arc.radius)
             new_arc = ArcBetweenPoints(interp_point2, interp_point1, color=GREEN_D,
                                        radius=arc.radius, stroke_width=2).reverse_direction()
-
+            self.remove(a, b)  # new
+            self.add(a.next_to(interp_point1, direction=0.2 * DOWN + 0.05 * LEFT),
+                     b.next_to(interp_point2, direction=0.2 * DOWN + 0.1 * LEFT))  # new
             distance = np.exp(
                 hyperbolic_distance_function(interp_point2, interp_point1))
             distance_number.font_size = 20
@@ -201,9 +208,10 @@ class Scene2(MovingCameraScene):
                           Transform(s_0, Dot(interp_point1, radius=.02, color=GREEN_D)),
                           Transform(s_1, Dot(interp_point2, radius=.02, color=GREEN_D)),
                           distance_number.animate.set_value(distance), run_time=1 / 60,
-                          rate_func=lambda a: a)  # todo why so weird all of the sudden????
+                          rate_func=lambda a: a)
         self.remove(s_0, s_1)
-        self.wait(10)
+        self.play(FadeOut(a, b))
+        self.wait(9)
 
         # transition to Scene3
         self.play(*[FadeOut(mob) for mob in self.mobjects], FadeIn(Circle(color=WHITE)))
