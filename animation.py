@@ -29,16 +29,24 @@ class SevenCircles(MovingCameraScene):
 
         title = Text("Der Sieben Kreise Satz").scale(0.8)
 
-        theorem_text = Tex(r"Sei $C_0\ $ein Kreis ", r"und $C_1, \ldots, C_6$ in $C_0$ enthaltene Kreise, ",
-                           "sodass jeder innere Kreis zu $C_0$ tangential ist ",
-                           "und je zwei nebeneinanderliegende innere Kreise ebenfalls zueinander tangential sind. ",
-                           "Dann treffen sich die drei Diagonalen des von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildeten Hexagons ",
-                           "in einem Punkt.", "",
-                           substrings_to_isolate=[r"$C_0\ $", r"$C_1, \ldots, C_6$", "zu $C_0$ tangential",
-                                                  "nebeneinanderliegende innere Kreise ebenfalls zueinander tangential",
-                                                  "Diagonalen", "Hexagons", "Punkt"],
-                           stroke_width=.05).set_color_by_tex(r"$C_0\ $",
-                                                              OUTER_CIRCLE_COLOR).set_color_by_tex(
+        theorem_text_white = Tex(r"Sei $C_0\ $ein Kreis ", r"und $C_1, \ldots, C_6$ in $C_0$ enthaltene Kreise, ",
+                                 "sodass jeder innere Kreis zu $C_0$ tangential ist ",
+                                 "und je zwei nebeneinanderliegende innere Kreise ebenfalls zueinander tangential sind. ",
+                                 "Dann treffen sich die drei Diagonalen des von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildeten Hexagons ",
+                                 "in einem Punkt.", "",
+                                 stroke_width=.05).scale(
+            0.5).move_to([0, -2, 0])
+
+        theorem_text_colored = Tex(r"Sei $C_0\ $ein Kreis ", r"und $C_1, \ldots, C_6$ in $C_0$ enthaltene Kreise, ",
+                                   "sodass jeder innere Kreis zu $C_0$ tangential ist ",
+                                   "und je zwei nebeneinanderliegende innere Kreise ebenfalls zueinander tangential sind. ",
+                                   "Dann treffen sich die drei Diagonalen des von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildeten Hexagons ",
+                                   "in einem Punkt.", "",
+                                   substrings_to_isolate=[r"$C_0\ $", r"$C_1, \ldots, C_6$", "zu $C_0$ tangential",
+                                                          "nebeneinanderliegende innere Kreise ebenfalls zueinander tangential",
+                                                          "Diagonalen", "Hexagons", "Punkt"],
+                                   stroke_width=.05).set_color_by_tex(r"$C_0\ $",
+                                                                      OUTER_CIRCLE_COLOR).set_color_by_tex(
             r"$C_1, \ldots, C_6$",
             INNER_CIRCLE_COLOR).set_color_by_tex(
             "zu $C_0$ tangential",
@@ -74,61 +82,48 @@ class SevenCircles(MovingCameraScene):
 
         self.add_subcaption("Sei C_0 ein Kreis", duration=2)
 
-        self.play(Write(theorem_text[0], run_time=.2))
-        self.play(Write(theorem_text[1], run_time=.4))
-        self.play(Write(theorem_text[2], run_time=.4))
+        self.play(Write(theorem_text_white[0], run_time=1))
 
-        self.play(FadeIn(circle))
+        self.play(FadeIn(circle), FadeIn(theorem_text_colored[1]))
 
         self.add_subcaption("und C_1,...,C_6 in C_0 enthaltene Kreise", duration=4)
 
-        self.play(Write(theorem_text[3], run_time=.2))
-        self.play(Write(theorem_text[4], run_time=.6))
-        self.play(Write(theorem_text[5], run_time=1.8))
+        self.play(Write(theorem_text_white[1], run_time=3))
 
-        self.play(Create(hexagon_circles, run_time=5))
+        self.play(Create(hexagon_circles, run_time=5), FadeIn(theorem_text_colored[4], run_time=1))
 
         self.add_subcaption("sodass jeder innere Kreis zum äußeren Kreis tangential ist", duration=5)
 
-        self.play(Write(theorem_text[6], run_time=1.6))
-        self.play(Write(theorem_text[7], run_time=1.2))
-        self.play(Write(theorem_text[8], run_time=.2))
-
+        self.play(Write(theorem_text_white[2], run_time=3))
+        self.play(FadeIn(theorem_text_colored[7]))
         for i in range(6):
             self.play(Create(outer_intersections[i], run_time=.5))
 
         self.add_subcaption("und je zwei nebeneinanderliegende innere Kreise ebenfalls zueinander tangential sind.",
                             duration=8)
 
-        self.play(Write(theorem_text[9]), run_time=.6)
-        self.play(Write(theorem_text[10]), run_time=4.6)
-        self.play(Write(theorem_text[11]), run_time=.2)
+        self.play(Write(theorem_text_white[3]), run_time=6)
+        self.play(FadeIn(theorem_text_colored[10]))
 
         for i in range(6):
             self.play(Create(inner_intersections[i], run_time=.5))
 
-        self.add_subcaption("Dann treffen sich die drei Diagonalen ",
-                            duration=2)
+        self.add_subcaption(
+            "Dann treffen sich die drei Diagonalen des von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildeten Hexagons",
+            duration=8)
 
-        self.play(Write(theorem_text[12]), run_time=1.2)
-        self.play(Write(theorem_text[13]), run_time=.8)
+        self.play(Write(theorem_text_white[4]), run_time=8)
 
-        self.add_subcaption("des von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildeten Hexagons",
-                            duration=6)
-
-        self.play(Write(theorem_text[14]), run_time=5)
-        self.play(Write(theorem_text[15]), run_time=.6)
-
-        self.play(Create(hexagon, run_time=5))
+        self.play(Create(hexagon, run_time=5), FadeIn(theorem_text_colored[15], run_time=1))
+        self.play(FadeIn(theorem_text_colored[13]))
         for x in diagonals:
             self.play(Create(x), run_time=1)
 
         self.add_subcaption("in einem Punkt", duration=3)
 
-        self.play(Write(theorem_text[16]), run_time=.6)
-        self.play(Write(theorem_text[17]), run_time=.2)
-        self.play(Write(theorem_text[18], run_time=.2))
-        self.play(Write(theorem_text[19]))
+        self.play(Write(theorem_text_white[5]), run_time=3)
+
+        self.play(FadeIn(theorem_text_colored[18], run_time=1))
 
         self.play(Create(diagonal_intersection))
         self.wait(1)
@@ -150,7 +145,8 @@ class SevenCircles(MovingCameraScene):
 
         everything = VGroup()
         for mob in self.mobjects:
-            everything.add(mob)
+            if isinstance(mob, VMobject):
+                everything.add(mob)
 
         endDot = Dot(color=BLACK)
         self.add(endDot)
@@ -796,16 +792,17 @@ class SevenCirclesHyperbolic(MovingCameraScene):
 
         title = Text("Der hyperbolische Sieben-Kreise-Satz").scale(0.8)
 
-        theorem_text = Tex(r"Sei $C_0\ $ein Kreis ", r"und $C_1, \ldots, C_6$ in $C_0$ enthaltene Kreise, ",
-                           "sodass jeder innere Kreis zu $C_0$ tangential ist ",
-                           "und je zwei nebeneinanderliegende innere Kreise ebenfalls zueinander tangential sind. ",
-                           "Dann treffen sich die drei hyperbolischen Diagonalen des von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildeten hyperbolischen Hexagons ",
-                           "in einem Punkt.", "",
-                           substrings_to_isolate=[r"$C_0\ $", r"$C_1, \ldots, C_6$", "zu $C_0$ tangential",
-                                                  "nebeneinanderliegende innere Kreise ebenfalls zueinander tangential",
-                                                  "hyperbolischen Diagonalen", "hyperbolischen Hexagons", "Punkt"],
-                           stroke_width=.05).set_color_by_tex(r"$C_0\ $",
-                                                              OUTER_CIRCLE_COLOR).set_color_by_tex(
+        theorem_text_colored = Tex(r"Sei $C_0\ $ein Kreis ", r"und $C_1, \ldots, C_6$ in $C_0$ enthaltene Kreise, ",
+                                   "sodass jeder innere Kreis zu $C_0$ tangential ist ",
+                                   "und je zwei nebeneinanderliegende innere Kreise ebenfalls zueinander tangential sind. ",
+                                   "Dann treffen sich die drei hyperbolischen Diagonalen des von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildeten hyperbolischen Hexagons ",
+                                   "in einem Punkt.", "",
+                                   substrings_to_isolate=[r"$C_0\ $", r"$C_1, \ldots, C_6$", "zu $C_0$ tangential",
+                                                          "nebeneinanderliegende innere Kreise ebenfalls zueinander tangential",
+                                                          "hyperbolischen Diagonalen", "hyperbolischen Hexagons",
+                                                          "Punkt"],
+                                   stroke_width=.05).set_color_by_tex(r"$C_0\ $",
+                                                                      OUTER_CIRCLE_COLOR).set_color_by_tex(
             r"$C_1, \ldots, C_6$",
             INNER_CIRCLE_COLOR).set_color_by_tex(
             "zu $C_0$ tangential",
@@ -814,6 +811,14 @@ class SevenCirclesHyperbolic(MovingCameraScene):
             INNER_INTERSECTION_COLOR).set_color_by_tex(
             "hyperbolischen Diagonalen", DIAGONAL_COLOR).set_color_by_tex(
             "hyperbolischen Hexagons", HEXAGON_COLOR).set_color_by_tex("Punkt", DIAGONAL_INTERSECTION_COLOR).scale(
+            0.5).move_to([0, -2, 0])
+
+        theorem_text_white = Tex(r"Sei $C_0\ $ein Kreis ", r"und $C_1, \ldots, C_6$ in $C_0$ enthaltene Kreise, ",
+                                 "sodass jeder innere Kreis zu $C_0$ tangential ist ",
+                                 "und je zwei nebeneinanderliegende innere Kreise ebenfalls zueinander tangential sind. ",
+                                 "Dann treffen sich die drei hyperbolischen Diagonalen des von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildeten hyperbolischen Hexagons ",
+                                 "in einem Punkt.", "",
+                                 stroke_width=.05).scale(
             0.5).move_to([0, -2, 0])
 
         circle = Circle(color=OUTER_CIRCLE_COLOR)
@@ -844,64 +849,49 @@ class SevenCirclesHyperbolic(MovingCameraScene):
 
         self.add_subcaption("Sei C_0 ein Kreis", duration=2)
 
-        self.play(Write(theorem_text[0], run_time=.2, rate_func=lambda x: x))
-        self.play(Write(theorem_text[1], run_time=.2, rate_func=lambda x: x))
-        self.play(Write(theorem_text[2], run_time=.4, rate_func=lambda x: x))
+        self.play(Write(theorem_text_white[0], run_time=2))
 
-        self.play(FadeIn(circle))
+        self.play(FadeIn(circle), FadeIn(theorem_text_colored[1]))
 
         self.add_subcaption("und C_1,...,C_6 in C_0 enthaltene Kreise", duration=4)
 
-        self.play(Write(theorem_text[3], run_time=.2, rate_func=lambda x: x))
-        self.play(Write(theorem_text[4], run_time=.6, rate_func=lambda x: x))
-        self.play(Write(theorem_text[5], run_time=1.8, rate_func=lambda x: x))
+        self.play(Write(theorem_text_white[1], run_time=3))
 
-        self.play(Create(hexagon_circles, run_time=5))
+        self.play(Create(hexagon_circles, run_time=5), FadeIn(theorem_text_colored[4], run_time=1))
 
         self.add_subcaption("sodass jeder innere Kreis zum äußeren Kreis tangential ist", duration=5)
 
-        self.play(Write(theorem_text[6], run_time=1.6, rate_func=lambda x: x))
-        self.play(Write(theorem_text[7], run_time=1.2, rate_func=lambda x: x))
-        self.play(Write(theorem_text[8], run_time=.2, rate_func=lambda x: x))
-
+        self.play(Write(theorem_text_white[2], run_time=3))
+        self.play(FadeIn(theorem_text_colored[7]))
         for i in range(6):
             self.play(Create(outer_intersections[i], run_time=.5))
-            self.add_foreground_mobject(outer_intersections[i])
 
         self.add_subcaption("und je zwei nebeneinanderliegende innere Kreise ebenfalls zueinander tangential sind.",
                             duration=8)
 
-        self.play(Write(theorem_text[9]), run_time=.6, rate_func=lambda x: x)
-        self.play(Write(theorem_text[10]), run_time=4.6, rate_func=lambda x: x)
-        self.play(Write(theorem_text[11]), run_time=.2, rate_func=lambda x: x)
+        self.play(Write(theorem_text_white[3]), run_time=6)
+        self.play(FadeIn(theorem_text_colored[10]))
 
         for i in range(6):
             self.play(Create(inner_intersections[i], run_time=.5))
             self.add_foreground_mobject(inner_intersections[i])
 
-        self.add_subcaption("Dann treffen sich die drei hyperbolischen Diagonalen ",
-                            duration=2)
-
-        self.play(Write(theorem_text[12]), run_time=1.2, rate_func=lambda x: x)
-        self.play(Write(theorem_text[13]), run_time=.8, rate_func=lambda x: x)
-
         self.add_subcaption(
-            "des von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildeten hyperbolischen Hexagons",
-            duration=6)
+            "Dann treffen sich die drei Diagonalen des von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildeten Hexagons",
+            duration=8)
 
-        self.play(Write(theorem_text[14]), run_time=5, rate_func=lambda x: x)
-        self.play(Write(theorem_text[15]), run_time=.6, rate_func=lambda x: x)
+        self.play(Write(theorem_text_white[4]), run_time=8)
 
-        self.play(Create(hexagon, run_time=5))
+        self.play(Create(hexagon, run_time=5), FadeIn(theorem_text_colored[15], run_time=1))
+        self.play(FadeIn(theorem_text_colored[13]))
         for x in diagonals:
             self.play(Create(x), run_time=1)
 
         self.add_subcaption("in einem Punkt", duration=3)
 
-        self.play(Write(theorem_text[16]), run_time=.6, rate_func=lambda x: x)
-        self.play(Write(theorem_text[17]), run_time=.2, rate_func=lambda x: x)
-        self.play(Write(theorem_text[18], run_time=.2, rate_func=lambda x: x))
-        self.play(Write(theorem_text[19]))
+        self.play(Write(theorem_text_white[5]), run_time=3)
+
+        self.play(FadeIn(theorem_text_colored[18], run_time=1))
 
         self.play(Create(diagonal_intersection))
         self.wait(1)
