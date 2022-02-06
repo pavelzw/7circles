@@ -54,6 +54,7 @@ class Scene1(MovingCameraScene):
         self.play(Write(def_ball))
 
         self.play(FadeIn(eucl_dot), FadeIn(eucl_dot_tex))
+        self.add_foreground_mobjects(eucl_dot_tex)
         self.add_foreground_mobjects(eucl_dot)
         self.play(Create(eucl_circles[2]))
 
@@ -78,7 +79,7 @@ class Scene1(MovingCameraScene):
         self.add(origin_to_circle_line)
         self.add(dot)
         self.play(FadeOut(radius_tex), run_time=.5)
-        self.wait(1.51)
+        self.wait(1.516)  # maybe 1.517
 
         dot.remove_updater(go_around_circle)
         self.wait(2)
@@ -205,7 +206,7 @@ class Scene2(MovingCameraScene):
         # dot should be before radius line
         self.add(start_radius, circle[0], circle[3])
 
-        self.play(FadeOut(abcd_group), FadeOut(unit_arc), FadeIn(start_radius))  # todo foreground stuff
+        self.play(FadeOut(abcd_group), FadeOut(unit_arc), FadeIn(start_radius))
         self.add_foreground_mobjects(circle[0])
         self.wait(5)
         self.play(FadeIn(radius_tex.next_to(start_radius, direction=0.15 * UP)))
@@ -239,7 +240,7 @@ class Scene2(MovingCameraScene):
                                polar_to_point(19 * PI / 12, .5),
                                polar_to_point(19 * PI / 12, .25)])
         lines = moving_line(start_points, end_points)
-        self.play(MoveAlongPath(circle[0], lines[0]), MoveAlongPath(circle[3], lines[3]),  # hyperbolic
+        self.play(MoveAlongPath(circle[0], lines[0]), MoveAlongPath(circle[3], lines[3]),
                   MoveAlongPath(circle[2], lines[2]), MoveAlongPath(circle[1], lines[1]), run_time=2)
         self.wait(3)
 
@@ -253,5 +254,19 @@ class Scene2(MovingCameraScene):
         self.play(Write(radius_tex.move_to([.35, -.3, 0])))
         radius_length = MathTex(r'r = \infty', font_size=25)
         self.play(Write(radius_length.move_to([0, -2, 0])))
-        self.wait(14)
+
+        # moving hyperbolic radius
+        dot = Dot(radius=0.0)
+        dot.move_to(circle[3].point_from_proportion(0))
+        self.t_offset = 0
+        dot.add_updater(go_around_circle_h)
+        origin_to_circle_line = always_redraw(get_line_to_circle_h)
+        self.add(origin_to_circle_line)
+        self.add(dot)
+        self.remove(unit_radius)
+        self.play(FadeOut(radius_tex))
+        self.wait(3.01)
+        dot.remove_updater(go_around_circle_h)
+
+        self.wait(10)
         self.play(*[FadeOut(mob) for mob in self.mobjects])
