@@ -32,7 +32,7 @@ class SevenCircles(MovingCameraScene):
         theorem_text_white = Tex(r"Sei $C_0\ $ein Kreis ", r"und $C_1, \ldots, C_6$ in $C_0$ enthaltene Kreise, ",
                                  "sodass jeder innere Kreis zu $C_0$ tangential ist ",
                                  "und je zwei nebeneinanderliegende innere Kreise ebenfalls zueinander tangential sind. ",
-                                 "Dann treffen sich die drei Diagonalen des von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildeten Hexagons ",
+                                 "Dann treffen sich die drei Diagonalen des Hexagons, das von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildet wird, ",
                                  "in einem Punkt.", "",
                                  stroke_width=.05).scale(
             0.5).move_to([0, -2, 0])
@@ -40,7 +40,7 @@ class SevenCircles(MovingCameraScene):
         theorem_text_colored = Tex(r"Sei $C_0\ $ein Kreis ", r"und $C_1, \ldots, C_6$ in $C_0$ enthaltene Kreise, ",
                                    "sodass jeder innere Kreis zu $C_0$ tangential ist ",
                                    "und je zwei nebeneinanderliegende innere Kreise ebenfalls zueinander tangential sind. ",
-                                   "Dann treffen sich die drei Diagonalen des von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildeten Hexagons ",
+                                   "Dann treffen sich die drei Diagonalen des Hexagons, das von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildet wird, ",
                                    "in einem Punkt.", "",
                                    substrings_to_isolate=[r"$C_0\ $", r"$C_1, \ldots, C_6$", "zu $C_0$ tangential",
                                                           "nebeneinanderliegende innere Kreise ebenfalls zueinander tangential",
@@ -109,7 +109,7 @@ class SevenCircles(MovingCameraScene):
             self.play(Create(inner_intersections[i], run_time=.5))
 
         self.add_subcaption(
-            "Dann treffen sich die drei Diagonalen des von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildeten Hexagons",
+            "Dann treffen sich die drei Diagonalen des Hexagons, das von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildet wird,",
             duration=8)
 
         self.play(Write(theorem_text_white[4]), run_time=8)
@@ -130,17 +130,17 @@ class SevenCircles(MovingCameraScene):
         self.play(Flash(diagonal_intersection))
         self.wait(1)
 
-        self.add_subcaption("Unser Ziel ist es also jetzt diesen Satz zu beweisen.", duration=4)
+        self.add_subcaption("Unser Ziel ist es jetzt diesen Satz zu beweisen.", duration=4)
         self.wait(4)
 
         self.add_subcaption(
             "Das wird uns mithilfe einer Einbettung des Problems in einen hyperbolischen Rahmen gelingen.", duration=5)
         self.wait(5)
 
-        self.add_subcaption("Zuerst werden wir dafür ein klein wenig in hyperbolische Geometrie einführen,", duration=4)
+        self.add_subcaption("Zuerst geben wir dafür eine kleine Einführung in die hyperbolische Geometrie,", duration=4)
         self.wait(4)
         self.add_subcaption(
-            "um das Problem mit diesem neugewonnenen Wissen umzuformulieren und dann weiter zu bearbeiten.", duration=4)
+            "um das Problem mit unserem neugewonnenen Wissen umzuformulieren und weiter zu bearbeiten.", duration=4)
         self.wait(3)
 
         everything = VGroup()
@@ -151,6 +151,7 @@ class SevenCircles(MovingCameraScene):
         endDot = Dot(color=BLACK)
         self.add(endDot)
         self.play(Transform(everything, endDot), run_time=2)
+        self.wait(2)
 
 
 class ParallelAxiom(MovingCameraScene):
@@ -159,7 +160,7 @@ class ParallelAxiom(MovingCameraScene):
         left = -7
         right = 7
 
-        title = Text("Parallelenaxiom").scale(0.7).shift(6 * UP)
+        title = Text("Parallelenaxiom").scale(0.7).shift(5.4 * UP)
 
         g_fun = lambda x: -0.7 * x
         g_points = [[left, g_fun(left), 0], [right, g_fun(right), 0]]
@@ -192,18 +193,18 @@ class ParallelAxiom(MovingCameraScene):
         self.camera.frame.move_to(center)
         self.add_subcaption("Axiomatisch unterscheidet sich der hyperbolische Raum vom Euklidischen", duration=4)
         self.wait(4)
-        self.add_subcaption("durch das nicht gelten des Parallelenaxiom", duration=3)
-        self.wait(1)
+        self.add_subcaption("dadurch, dass das Parallelenaxiom nicht gilt.", duration=4)
+        self.wait(2)
         self.play(Write(title), run_time=2)
-        self.add_subcaption("Das Parallelenaxiom sagt aus, dass zu jeder Gerade g", duration=3)
+        self.add_subcaption("Das Parallelenaxiom sagt aus, dass zu jeder Geraden g", duration=3)
         self.play(Create(g))
         self.play(Write(g_text))
-        self.wait(1)
+        self.wait(2)
         self.add_subcaption("und jedem Punkt P, der nicht auf g liegt", duration=3)
         self.play(Create(p))
         self.play(Write(p_text))
         self.add_foreground_mobject(p)
-        self.wait(1)
+        self.wait(2)
         self.add_subcaption("genau eine Gerade h existiert, die durch P verläuft und zu g parallel ist.", duration=4)
         self.play(Create(h))
         self.play(Write(h_text))
@@ -212,28 +213,28 @@ class ParallelAxiom(MovingCameraScene):
             "Parallel heißt hier einfach, dass sich die beiden Geraden nicht schneiden.", duration=4)
         self.wait(5)
         self.add_subcaption("In hyperbolischer Geometrie ist diese Eigenschaft nicht gegeben.", duration=3)
-        self.wait(3)
+        self.wait(4)
         self.add_subcaption(
-            "Dort gibt es für jedes solche g und P mehrere, sogar unendlich viele Geraden durch P, die zu g parallel sind also g nicht schneiden.",
-            duration=7)
+            "Dort gibt es für jede solche g und P mehrere - sogar unendlich viele - Geraden durch P, die zu g parallel sind also g nicht schneiden.",
+            duration=10)
 
         self.play(Create(similar_lines[0]))
         self.play(Create(similar_lines[1]))
         self.play(Create(similar_lines[2]))
         self.play(Create(similar_lines[3]))
 
-        self.wait(3)
+        self.wait(6)
 
         self.add_subcaption(
-            "Unsere Darstellung hier ist aber irreführend, denn natürlich schneiden alle außer der ursprünglichen Gerade $h$ $g$ wenn wir den Geraden nur lange genug folgen.",
-            duration=8)
-        self.wait(8)
+            "Unsere Darstellung hier ist aber irreführend, denn natürlich wird g von allen außer der ursprünglichen Geraden h geschnitten, wenn wir ihnen nur lange genug folgen.",
+            duration=10)
+        self.wait(10)
         self.add_subcaption(
-            "Allgemein haben wir das Problem, dass wir einen Raum in dem hyperbolische Geometrie herrscht in diesem euklidischen zweidimensionalen Video darstellen wollen.",
-            duration=8)
-        self.wait(8)
+            "Allgemein haben wir das Problem, dass wir einen hyperbolischen Raum in der euklidischen Ebene - diesem Video - darstellen wollen.",
+            duration=9)
+        self.wait(9)
         self.add_subcaption(
-            "Die Frage die wir uns jetzt zuerst einmal beantworten müssen ist: Wie stellt man die hyperbolische Ebene im Euklidischen dar?",
+            "Die Frage die wir jetzt angehen ist also: Wie stellt man die hyperbolische Ebene im Euklidischen dar?",
             duration=7)
         self.play(uncreate)
         self.wait(1)
@@ -320,11 +321,11 @@ class HyperbolicModelsPoincare(MovingCameraScene):
 
         p_current_point = np.array(center)
 
-        p_distance_text = Tex("dist$(0,P) = $ ", font_size=30).next_to(pcircle, buff=.2)
+        p_distance_text = Tex(r"$\mathrm{dist}(0,P) = $ ", font_size=30).next_to(pcircle, buff=.2)
         p_distance_number = DecimalNumber(0.0,
                                           num_decimal_places=2, show_ellipsis=True, group_with_commas=False,
-                                          font_size=35).next_to(p_distance_text, buff=.05)
-        p_distance_infty = Tex(r"$\infty$", font_size=20).next_to(p_distance_text, buff=.05)
+                                          font_size=45).next_to(p_distance_text, buff=.05)
+        p_distance_infty = Tex(r"$\infty$", font_size=30).next_to(p_distance_text, buff=.05)
         p_distance_tracker = ValueTracker(0.0)
 
         self.add_subcaption("Es gibt verschiedene Modelle für die hyperbolische Ebene.", duration=3)
@@ -349,13 +350,13 @@ class HyperbolicModelsPoincare(MovingCameraScene):
         self.play(Write(klein_text), FadeIn(klein_model), run_time=3)
         self.wait(3)
 
-        self.add_subcaption("Zuerst schauen wir uns das Poincare-Modell etwas genauer an.", duration=3)
+        self.add_subcaption("Zuerst schauen wir uns das Poincare-Modell etwas genauer an.", duration=4)
 
         self.add(pcircle)
         self.play(self.camera.frame.animate.scale(0.8).move_to(np.add(poincare_origin, [0, 0.4, 0])),
-                  FadeOut(klein_model), FadeOut(klein_text), FadeOut(poincare_model))
+                  FadeOut(klein_model), FadeOut(klein_text), FadeOut(poincare_model), run_time=1.5)
 
-        self.wait(1)
+        self.wait(2.5)
 
         self.add_subcaption(
             "Die Darstellung der hyperbolischen Ebene im Poincare-Modell beschränkt sich auf die Einheitsscheibe",
@@ -367,33 +368,38 @@ class HyperbolicModelsPoincare(MovingCameraScene):
 
         self.wait(2)
 
-        self.add_subcaption("Die Geodätischen - also quasi die geraden Linien - der hyperbolischen Ebene sind ",
-                            duration=4)
+        self.add_subcaption(
+            "Die Geodätischen des Poincare-Modells sind - im Gegensatz zu Geraden im Euklidischen - ",
+            duration=5)
 
         self.play(Create(p_geodesics[0]))
         self.play(Create(p_geodesics[1]))
         self.play(Create(p_geodesics[2]))
         self.play(Create(p_geodesics[3]))
 
-        self.add_subcaption("in diesem Modell Kreissegmente, die den Einheitskreis im rechten Winkel schneiden",
+        self.wait(1)
+
+        self.add_subcaption("Kreissegmente, die den Einheitskreis im rechten Winkel schneiden",
                             duration=4)
 
         self.wait(4)
 
-        self.add_subcaption("Damit sieht man auch gut, dass das Parallelenaxiom hier gilt:", duration=3)
+        self.add_subcaption("Damit wird klar, dass das Parallelenaxiom hier nicht gilt:", duration=4)
 
         self.play(Uncreate(p_geodesics[1], run_time=3), Uncreate(p_geodesics[2], run_time=3),
                   Uncreate(p_geodesics[3], run_time=3), Create(p_point, run_time=1),
                   Write(p_point_text, run_time=1))
 
+        self.wait(2)
+
         self.add_subcaption("Für einen Punkt P und eine Geodätische findet man", duration=3)
 
         self.add_foreground_mobject(p_point)
         self.add_foreground_mobject(p_point_text)
-        self.wait(1)
+        self.wait(3)
 
         self.add_subcaption(
-            "beliebig viele andere Geodätischen die P aber nicht die ursprünglische Geodätische schneiden.", duration=6)
+            "beliebig viele andere Geodätische, die P, aber nicht die ursprüngliche Geodätische schneiden.", duration=6)
 
         self.play(Create(p_point_moved_geodesics[0]))
         self.play(Create(p_point_moved_geodesics[1]))
@@ -404,8 +410,8 @@ class HyperbolicModelsPoincare(MovingCameraScene):
         self.play(Create(p_point_moved_geodesics[6]))
 
         self.add_subcaption(
-            "Auch wenn das Poincare-Modell es so aussehen lässt, ist die hyperbolische Ebene aber keineswegs beschränkt.",
-            duration=5)
+            "Auch wenn es auf den ersten Blick so scheint, ist die hyperbolische Ebene keineswegs beschränkt.",
+            duration=6)
 
         self.wait(2)
 
@@ -419,25 +425,23 @@ class HyperbolicModelsPoincare(MovingCameraScene):
                   Uncreate(p_point_moved_geodesics[6]),
                   Uncreate(p_point), Unwrite(p_point_text))
 
-        self.wait(2)
+        self.wait(3)
 
         self.add_subcaption(
-            "Lassen wir einen Punkt in der hyperbolischen Ebene mit konstanter Geschwindigkeit in eine Richtung laufen,",
-            duration=5)
+            "Lassen wir einen Punkt in der hyperbolischen Ebene mit konstanter Geschwindigkeit in eine Richtung laufen, so sehen wir, dass dieser den Rand des Poincare-Modell nie erreicht.",
+            duration=12)
 
         self.play(Create(p_moving_dot), Create(p_origin), Write(p_distance_text), Write(p_origin_text),
                   Write(p_moving_text))
         self.play(Write(p_distance_number))
 
-        self.wait(3)
-
-        self.add_subcaption("so sehen wir, dass dieser den Rand des Poincare-Modell nie erreicht.", duration=5)
+        self.wait(4)
 
         p_distance_number.add_updater(lambda d: d.set_value(p_distance_tracker.get_value()))
 
         steps = 30
-        frames = 300
-        duration = 5
+        frames = 420
+        duration = 7
         frame_rate = duration / frames
         batch_size = frames / steps
         offset = 0
@@ -465,10 +469,10 @@ class HyperbolicModelsPoincare(MovingCameraScene):
             self.remove(p_moving_dot)
             p_moving_dot = moving_dot
 
-        moving_dot = Dot(polar_to_point(p_moving_dot_phi) * scale_back + np.array(poincare_origin))
-
         self.add_subcaption("Der Einheitskreis liegt im Unendlichen und gehört nicht zum Poincare-Modell",
                             duration=5)
+
+        moving_dot = Dot(polar_to_point(p_moving_dot_phi) * scale_back + np.array(poincare_origin))
 
         self.play(Transform(p_moving_dot, moving_dot), FadeOut(p_distance_number), FadeIn(p_distance_infty),
                   FadeOut(p_moving_text),
@@ -478,16 +482,16 @@ class HyperbolicModelsPoincare(MovingCameraScene):
 
         self.play(FadeOut(p_moving_dot), FadeOut(p_distance_infty), FadeOut(p_distance_text))
 
-        self.add_subcaption("Eine noch bessere Darstellung dieser Verzerrung liefert das folgende Bild", duration=3)
+        self.add_subcaption("Zum weiteren Verständnis ist folgende Darstellung der Verzerrung hilfreich", duration=5)
 
-        self.wait(2)
+        self.wait(3)
 
         self.play(FadeIn(poincare_model), FadeOut(pcircle), run_time=2)
 
         self.add_subcaption(
-            "Das ist eine Parkettierung der hyperbolischen Ebene. All diese Dreiecke haben die gleiche Form und Fläche.",
-            duration=6)
-
+            "Dies ist eine Parkettierung der hyperbolischen Ebene. All diese Dreiecke haben die gleiche Form und Fläche im Hyperbolischen.",
+            duration=8)
+        # todo inside triangle
         self.play(Create(ptri1), run_time=2)
         self.play(Write(ptri1_text))
 
@@ -505,10 +509,12 @@ class HyperbolicModelsPoincare(MovingCameraScene):
 
         self.wait(4)
 
-        self.play(Uncreate(ptri1), Uncreate(ptri2), Uncreate(ptri1_text), Uncreate(ptri2_text),
-                  Uncreate(ptri_size_text), run_time=2)
+        self.play(Uncreate(ptri1), Uncreate(ptri2), Unwrite(ptri1_text), Unwrite(ptri2_text),
+                  Unwrite(ptri_size_text), run_time=2)
 
         self.play(self.camera.frame.animate.scale(1.25).move_to(center), FadeIn(klein_model), FadeIn(klein_text))
+
+        self.wait(2)
 
 
 class HyperbolicModelsKlein(MovingCameraScene):
