@@ -77,7 +77,7 @@ class SevenCircles(MovingCameraScene):
         self.wait(2)
         self.add_subcaption("Der Sieben-Kreise-Satz sagt Folgendes aus:", duration=2)
 
-        self.play(title.animate.shift(1.5 * UP).scale(0.7), self.camera.frame.animate.shift(0.8 * DOWN))
+        self.play(title.animate.shift(1.4 * UP).scale(0.7), self.camera.frame.animate.shift(0.8 * DOWN))
         self.wait(1)
 
         self.add_subcaption("Sei C_0 ein Kreis", duration=2)
@@ -159,7 +159,7 @@ class ParallelAxiom(MovingCameraScene):
         left = -7
         right = 7
 
-        title = Text("Parallelenaxiom").scale(0.7).shift(5 * UP)
+        title = Text("Parallelenaxiom").scale(0.7).shift(6 * UP)
 
         g_fun = lambda x: -0.7 * x
         g_points = [[left, g_fun(left), 0], [right, g_fun(right), 0]]
@@ -187,26 +187,26 @@ class ParallelAxiom(MovingCameraScene):
 
         uncreate = AnimationGroup(*[Uncreate(i, run_time=1) for i in elements])
 
-        question = Text("Wie stellt man die hyperbolische Ebene im Euklidischen dar?").scale(0.7).move_to(center)
+        question = Text("Wie stellt man die hyperbolische Ebene im Euklidischen dar?").scale(0.65).move_to(center)
 
         self.camera.frame.move_to(center)
         self.add_subcaption("Axiomatisch unterscheidet sich der hyperbolische Raum vom Euklidischen", duration=4)
         self.wait(4)
         self.add_subcaption("durch das nicht gelten des Parallelenaxiom", duration=3)
         self.wait(1)
-        self.play(Create(title), run_time=2)
+        self.play(Write(title), run_time=2)
         self.add_subcaption("Das Parallelenaxiom sagt aus, dass zu jeder Gerade g", duration=3)
         self.play(Create(g))
-        self.play(Create(g_text))
+        self.play(Write(g_text))
         self.wait(1)
         self.add_subcaption("und jedem Punkt P, der nicht auf g liegt", duration=3)
         self.play(Create(p))
-        self.play(Create(p_text))
+        self.play(Write(p_text))
         self.add_foreground_mobject(p)
         self.wait(1)
         self.add_subcaption("genau eine Gerade h existiert, die durch P verläuft und zu g parallel ist.", duration=4)
         self.play(Create(h))
-        self.play(Create(h_text))
+        self.play(Write(h_text))
         self.wait(2)
         self.add_subcaption(
             "Parallel heißt hier einfach, dass sich die beiden Geraden nicht schneiden.", duration=4)
@@ -285,7 +285,7 @@ class HyperbolicModelsPoincare(MovingCameraScene):
 
         ptri2_text = Tex(r"$\Delta_2$").next_to(ptri2).scale(.6).shift(0.3 * LEFT)
 
-        ptri_size_text = Tex(r"$A(\Delta_1) = A(\Delta_2)$", font_size=40).next_to(pcircle, buff=.5)
+        ptri_size_text = Tex(r"$A(\Delta_1) = A(\Delta_2)$", font_size=35).next_to(pcircle, buff=.4)
 
         phis = [[0.4, 2], [1.3, 6], [3.5, 5], [4, 1.5]]
 
@@ -297,7 +297,7 @@ class HyperbolicModelsPoincare(MovingCameraScene):
         p_point = Dot(point_coords)
         p_point.move_to(p_point.get_center() * scale_back).shift(poincare_origin)
 
-        p_point_text = Text("P").scale(0.8).next_to(p_point)
+        p_point_text = Tex("$P$").scale(0.8).next_to(p_point, direction=UP + 0.2 * RIGHT)
 
         point_geodesic_point_phis = [0, 2.3, 2.9, 3.15, 3.4, 3.8, 4.1, 4.5, 5]
         p_point_geodesic_points = [polar_to_point(x) for x in point_geodesic_point_phis]
@@ -311,18 +311,19 @@ class HyperbolicModelsPoincare(MovingCameraScene):
                                    p_point_geodesics]
 
         p_moving_dot = Dot(poincare_origin)
+        p_moving_text = Tex("$P$", font_size=25).next_to(p_moving_dot, 0.5 * RIGHT + 0.6 * UP, buff=0)
         p_moving_dot_phi = 5 * PI / 3
         norm_factor = 6 / pow(PI, 2)
 
         p_origin = Dot(poincare_origin)
-        p_origin_text = Tex("0", font_size=20).next_to(p_origin, LEFT)
+        p_origin_text = Tex("0", font_size=25).next_to(p_origin, LEFT, buff=.1)
 
         p_current_point = np.array(center)
 
-        p_distance_text = Tex("dist$(0,P)$: ", font_size=20).next_to(pcircle, buff=.2)
+        p_distance_text = Tex("dist$(0,P) = $ ", font_size=30).next_to(pcircle, buff=.2)
         p_distance_number = DecimalNumber(0.0,
                                           num_decimal_places=2, show_ellipsis=True, group_with_commas=False,
-                                          font_size=20).next_to(p_distance_text, buff=.05)
+                                          font_size=35).next_to(p_distance_text, buff=.05)
         p_distance_infty = Tex(r"$\infty$", font_size=20).next_to(p_distance_text, buff=.05)
         p_distance_tracker = ValueTracker(0.0)
 
@@ -351,7 +352,7 @@ class HyperbolicModelsPoincare(MovingCameraScene):
         self.add_subcaption("Zuerst schauen wir uns das Poincare-Modell etwas genauer an.", duration=3)
 
         self.add(pcircle)
-        self.play(self.camera.frame.animate.scale(0.8).move_to(np.add(poincare_origin, [1, 0.4, 0])),
+        self.play(self.camera.frame.animate.scale(0.8).move_to(np.add(poincare_origin, [0, 0.4, 0])),
                   FadeOut(klein_model), FadeOut(klein_text), FadeOut(poincare_model))
 
         self.wait(1)
@@ -362,7 +363,7 @@ class HyperbolicModelsPoincare(MovingCameraScene):
 
         self.wait(3)
 
-        self.play(Indicate(pcircle, color=MY_BLUE))
+        self.play(Indicate(pcircle, color=MY_BLUE, scale_factor=1.1))
 
         self.wait(2)
 
@@ -381,8 +382,9 @@ class HyperbolicModelsPoincare(MovingCameraScene):
 
         self.add_subcaption("Damit sieht man auch gut, dass das Parallelenaxiom hier gilt:", duration=3)
 
-        self.play(Uncreate(p_geodesics[1]), Uncreate(p_geodesics[2]), Uncreate(p_geodesics[3]), Create(p_point),
-                  Write(p_point_text), run_time=3)
+        self.play(Uncreate(p_geodesics[1], run_time=3), Uncreate(p_geodesics[2], run_time=3),
+                  Uncreate(p_geodesics[3], run_time=3), Create(p_point, run_time=1),
+                  Write(p_point_text, run_time=1))
 
         self.add_subcaption("Für einen Punkt P und eine Geodätische findet man", duration=3)
 
@@ -420,10 +422,11 @@ class HyperbolicModelsPoincare(MovingCameraScene):
         self.wait(2)
 
         self.add_subcaption(
-            "Lassen wir einen Punkt in der hyperbolischen Ebene mit konstanter Geschwindigkeit gegen den Rand laufen,",
+            "Lassen wir einen Punkt in der hyperbolischen Ebene mit konstanter Geschwindigkeit in eine Richtung laufen,",
             duration=5)
 
-        self.play(Create(p_moving_dot), Create(p_origin), Write(p_distance_text), Write(p_origin_text))
+        self.play(Create(p_moving_dot), Create(p_origin), Write(p_distance_text), Write(p_origin_text),
+                  Write(p_moving_text))
         self.play(Write(p_distance_number))
 
         self.wait(3)
@@ -456,7 +459,7 @@ class HyperbolicModelsPoincare(MovingCameraScene):
 
             p_distance_tracker.set_value(np.exp(
                 hyperbolic_distance_function(center, p_current_point)))
-
+            p_moving_text.next_to(p_moving_dot, 0.5 * RIGHT + 0.6 * UP, buff=0)
             self.play(Transform(p_moving_dot, moving_dot), run_time=frame_rate,
                       rate_func=lambda a: a)
             self.remove(p_moving_dot)
@@ -468,6 +471,7 @@ class HyperbolicModelsPoincare(MovingCameraScene):
                             duration=5)
 
         self.play(Transform(p_moving_dot, moving_dot), FadeOut(p_distance_number), FadeIn(p_distance_infty),
+                  FadeOut(p_moving_text),
                   run_time=.25)
 
         self.wait(4)
@@ -532,7 +536,7 @@ class HyperbolicModelsKlein(MovingCameraScene):
         phis = [[0.4, 2], [1.3, 6], [3.5, 5], [4, 1.5]]
 
         k1 = np.array([[0, 0, 0], [2, 0, 0], [1.24, 1.58, 0]])
-        k2 = np.array([[-0.46, 1.95, 0], [-1.81, 0.89, 0], [-1.49, 1.86, 0]])
+        k2 = np.array([[-0.46, 1.95, 0], [-1.79, 0.89, 0], [-1.49, 1.86, 0]])
 
         raw_ktri1 = Polygon(*k1, color=YELLOW, stroke_width=1.5).shift(klein_origin)
         kpoints1 = [Dot(np.add(p, klein_origin), color=YELLOW, radius=.06) for p in k1]
@@ -555,7 +559,7 @@ class HyperbolicModelsKlein(MovingCameraScene):
         k_point = Dot(point_coords)
         k_point.move_to(k_point.get_center() * scale_back).shift(klein_origin)
 
-        k_point_text = Text("P").scale(0.8).next_to(k_point)
+        k_point_text = Tex("$P$").scale(0.8).next_to(k_point, direction=UP + 0.2 * RIGHT)
 
         k_point_geodesics_intersections = [
             get_both_intersections_line_with_unit_circle(point_coords, polar_to_point(phi))
@@ -608,7 +612,7 @@ class HyperbolicModelsKlein(MovingCameraScene):
         self.wait(4)
 
         self.add(kcircle)
-        self.play(self.camera.frame.animate.scale(0.8).move_to(np.add(klein_origin, [-1, 0.4, 0])),
+        self.play(self.camera.frame.animate.scale(0.8).move_to(np.add(klein_origin, [0, 0.4, 0])),
                   FadeOut(poincare_model), FadeOut(poincare_text), FadeOut(klein_model))
 
         self.wait(2)
@@ -843,7 +847,7 @@ class SevenCirclesHyperbolic(MovingCameraScene):
                                 color=DIAGONAL_INTERSECTION_COLOR)
 
         self.camera.frame.shift(0.8 * DOWN)
-        self.play(Write(title.shift(1.5 * UP).scale(.7)))
+        self.play(Write(title.shift(1.4 * UP).scale(.7)))
 
         self.wait(2)
 
@@ -857,14 +861,20 @@ class SevenCirclesHyperbolic(MovingCameraScene):
 
         self.play(Write(theorem_text_white[1], run_time=3))
 
-        self.play(Create(hexagon_circles, run_time=5), FadeIn(theorem_text_colored[4], run_time=1))
+        self.play(Create(hexagon_circles, run_time=4), FadeIn(theorem_text_colored[4], run_time=1))
 
         self.add_subcaption("sodass jeder innere Kreis zum äußeren Kreis tangential ist", duration=5)
 
         self.play(Write(theorem_text_white[2], run_time=3))
         self.play(FadeIn(theorem_text_colored[7]))
-        for i in range(6):
-            self.play(Create(outer_intersections[i], run_time=.5))
+
+        self.play(Create(outer_intersections[0]),
+                  Create(outer_intersections[1]),
+                  Create(outer_intersections[2]),
+                  Create(outer_intersections[3]),
+                  Create(outer_intersections[4]),
+                  Create(outer_intersections[5]),
+                  run_time=1)
 
         self.add_subcaption("und je zwei nebeneinanderliegende innere Kreise ebenfalls zueinander tangential sind.",
                             duration=8)
@@ -872,8 +882,15 @@ class SevenCirclesHyperbolic(MovingCameraScene):
         self.play(Write(theorem_text_white[3]), run_time=6)
         self.play(FadeIn(theorem_text_colored[10]))
 
+        self.play(Create(inner_intersections[0]),
+                  Create(inner_intersections[1]),
+                  Create(inner_intersections[2]),
+                  Create(inner_intersections[3]),
+                  Create(inner_intersections[4]),
+                  Create(inner_intersections[5]),
+                  run_time=.1)
+
         for i in range(6):
-            self.play(Create(inner_intersections[i], run_time=.5))
             self.add_foreground_mobject(inner_intersections[i])
 
         self.add_subcaption(
@@ -912,3 +929,12 @@ class SevenCirclesHyperbolic(MovingCameraScene):
                   run_time=3)
 
         self.add_subcaption("und haben somit auch den ursprünglichen Satz bewiesen.")
+
+        everything = VGroup()
+        for mob in self.mobjects:
+            if isinstance(mob, VMobject):
+                everything.add(mob)
+
+        endDot = Dot(color=BLACK)
+        self.add(endDot)
+        self.play(Transform(everything, endDot), run_time=2)
