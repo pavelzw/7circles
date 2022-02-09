@@ -209,9 +209,12 @@ class Scene2(MovingCameraScene):
 
         # dot should be before radius line
         self.add(start_radius, circle[0], circle[3])
-
+        # circle shouldn't be on top of dots
+        self.remove_foreground_mobjects(outer_circle)
+        # abcd group should be on top of circle[3]
+        self.add(unit_arc)
         self.play(FadeOut(abcd_group), FadeOut(unit_arc), FadeIn(start_radius))
-        self.add_foreground_mobjects(circle[0])
+        self.add_foreground_mobjects(circle[0], outer_circle)
         self.wait(5)
         self.play(FadeIn(radius_tex.next_to(start_radius, direction=0.15 * UP)))
         self.wait(1)
