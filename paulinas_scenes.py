@@ -163,7 +163,7 @@ class Scene2(MovingCameraScene):
         s_0 = Dot(hexagon.polygon_points[0], radius=.02, color=GREEN_D)
         s_1 = Dot(hexagon.polygon_points[1], radius=.02, color=GREEN_D)
         a = MathTex(r'a', font_size=15, color=GREEN_D).next_to(s_0, direction=0.16 * DOWN + 0.01 * LEFT)  # new
-        b = MathTex(r'b', font_size=15, color=GREEN_D).next_to(s_1, direction=0.16 * DOWN + 0.05 * LEFT)  # new
+        b = MathTex(r'b', font_size=15, color=GREEN_D).next_to(s_1, direction=0.18 * DOWN + 0.01 * LEFT)  # new
         self.play(Write(VGroup(distance_text, infinity), stroke_width=.5), FadeIn(a, b, s_0, s_1))  # partially new
         self.add_foreground_mobjects(a, b)
         self.wait(6)
