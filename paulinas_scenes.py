@@ -34,7 +34,6 @@ class Scene1(MovingCameraScene):
         # timings = [.1, .1, .1, .1, .1, 10]
         timings.reverse()
         formula_size = 15
-
         self.camera.frame.width = 9
 
         # showing four random non ideal hexagons and an ideal hexagon
@@ -42,17 +41,22 @@ class Scene1(MovingCameraScene):
                                       Tex(r'Ideales\, Sechseck', font_size=20, color=GREEN_B,
                                           stroke_width=1)).arrange(aligned_edge=LEFT, direction=DOWN)
         position = [[-3, 1.3, 0], [0, 1.3, 0], [3, 1.3, 0], [-3, -1.3, 0], [0, -1.3, 0], [3, -1.3, 0]]
+        fixed_phis = [[.2, 1.5, 1.8, 4, 4.8, 6], [.5, 1.5, 2.4, 3.2, 4, 5], [1, 1.8, 2.5, 3.3, 3.8, 5.5],
+                      [.5, 2, 2.4, 2.9, 4, 4.6, 5], [1.5, 2.4, 3.2, 4, 5, 5.5]]
+        fixed_radius = [[.7, .73, .8, .7, .6, .7], [.6, .8, .9, .66, .5, .6], [.5, .6, .7, .8, .6, .6],
+                        [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]
         for i in range(0, 6):
             if i == 5:
                 self.play(Write(text_non_ideal_ideal.move_to(position[i]), stroke_width=.5))
             else:
-                radius = np.random.uniform(0.5, 0.7, 6)
-                phis = create_phis(min_dist=0.6)
-                hexagon = HyperbolicPolygon.from_polar(phis, radius, dot_radius=.01, dot_color=BLUE, stroke_width=2,
+                # radius = np.random.uniform(0.5, 0.7, 6)
+                # phis = create_phis(min_dist=0.6)
+                hexagon = HyperbolicPolygon.from_polar(fixed_phis[i], fixed_radius[i], dot_radius=.01, dot_color=BLUE,
+                                                       stroke_width=2,
                                                        color=BLUE)
                 group = VGroup(hexagon, Circle(color=WHITE)).move_to(position[i])
                 if i == 3 or i == 4:
-                    hexagon = HyperbolicPolygon.from_polar(phis, add_dots=False, stroke_width=2, color=GREEN_B)
+                    hexagon = HyperbolicPolygon.from_polar(fixed_phis[i], add_dots=False, stroke_width=2, color=GREEN_B)
                     group = VGroup(hexagon, Circle(color=WHITE)).move_to(position[i])
                     self.play(FadeIn(group[1]))
                     self.add_foreground_mobjects(group[1])
