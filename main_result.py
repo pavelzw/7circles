@@ -705,6 +705,8 @@ class Scene7(MovingCameraScene):
         self.play(Create(inner_intersections[-1]), run_time=.5)
 
         self.add_foreground_mobjects(*inner_intersections)
+        # hexagon is above inner_circles
+        self.add(hexagon)
 
         self.play(self.camera.frame.animate.set(width=4).move_to([.8, 0, 0]))
 
@@ -766,7 +768,7 @@ class Scene7(MovingCameraScene):
         formula3 = MathTex(r'= \pm 2 \cdot \mathrm{Per}(T_P)', font_size=12).next_to(formula2, buff=.05)
         self.play(Write(formula3))
         self.wait(3)
-        self.add_foreground_mobjects(*inner_circles, *inner_intersections, circle)
+        self.add_foreground_mobjects(*inner_intersections, circle)
         self.play(Create(diagonals), run_time=3)
 
         self.add_subcaption("Also treffen sich die Hauptdiagonalen des Hexagons in einem Punkt.", duration=3)
@@ -793,7 +795,7 @@ class Scene7(MovingCameraScene):
         euclidean_diagonals = get_diagonals(hexagon, stroke_width=2)
         euclidean_intersection_dot = Dot(get_intersection_from_angles(phis[0], phis[3], phis[1], phis[4]), color=YELLOW,
                                          radius=.03)
-        self.add_foreground_mobjects(hexagon, diagonals, *inner_circles, *inner_intersections, intersection_dot, circle)
+        self.add_foreground_mobjects(hexagon, diagonals, *inner_intersections, intersection_dot, circle)
 
         self.play(self.camera.frame.animate.set(width=6).move_to([0, 0, 0]))
         self.play(*[ReplacementTransform(hexagon.arcs[i], euclidean_hexagon.edges[i]) for i in range(6)],
