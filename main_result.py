@@ -784,7 +784,7 @@ class Scene7(MovingCameraScene):
         for i in range(6):
             hexagon.arcs[i].set_color(GREY)
         # turn hexagon arcs white again
-        self.play(Create(intersection_dot), *[hexagon.arcs[i].animate.set_color(WHITE) for i in range(6)])
+        self.play(Create(intersection_dot))
         self.play(Flash(intersection_dot, line_stroke_width=HEXAGON_STROKE_WIDTH), FadeOut(formula2, formula3))
         self.wait(1)
 
