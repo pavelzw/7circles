@@ -1,9 +1,9 @@
 import numpy as np
 from manim import Circle, Dot, Create, FadeIn, Line, \
     Transform, MovingCameraScene, Flash, YELLOW, Text, UP, Write, \
-    DOWN, Tex, BLUE, GREEN, WHITE, PURPLE, GREY, PINK, Uncreate, AnimationGroup, Unwrite, ImageMobject, LEFT, RIGHT, \
+    DOWN, Tex, WHITE, PURPLE, GREY, PINK, Uncreate, AnimationGroup, Unwrite, ImageMobject, LEFT, RIGHT, \
     MarkupText, Polygon, PI, DecimalNumber, ValueTracker, Arrow, VGroup, FadeOut, Indicate, \
-    ReplacementTransform, BLACK, VMobject
+    ReplacementTransform, BLACK, VMobject, GREEN_B, ORANGE, DARK_GREY
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, \
@@ -20,11 +20,11 @@ class SevenCircles(MovingCameraScene):
         self.camera.frame.width = 9
 
         OUTER_CIRCLE_COLOR = WHITE
-        INNER_CIRCLE_COLOR = BLUE
-        INNER_INTERSECTION_COLOR = GREEN
-        OUTER_INTERSECTION_COLOR = GREY
-        HEXAGON_COLOR = PINK
-        DIAGONAL_COLOR = PURPLE
+        INNER_CIRCLE_COLOR = GREEN_B
+        INNER_INTERSECTION_COLOR = PURPLE
+        OUTER_INTERSECTION_COLOR = DARK_GREY
+        HEXAGON_COLOR = GREY
+        DIAGONAL_COLOR = ORANGE
         DIAGONAL_INTERSECTION_COLOR = YELLOW
 
         title = Text("Der Sieben Kreise Satz").scale(0.8)
@@ -69,7 +69,7 @@ class SevenCircles(MovingCameraScene):
                                                                             color=OUTER_INTERSECTION_COLOR)
         diagonals = get_diagonals(hexagon, color=DIAGONAL_COLOR)
         diagonal_intersection = Dot(get_intersection_from_angles(phis[0], phis[3], phis[1], phis[4]),
-                                    color=DIAGONAL_INTERSECTION_COLOR)
+                                    color=DIAGONAL_INTERSECTION_COLOR, radius=.05)
 
         self.add_subcaption("Wir beschäftigen uns heute mit dem Sieben-Kreise-Satz", duration=3)
         self.play(Write(title))
@@ -797,11 +797,11 @@ class SevenCirclesHyperbolic(MovingCameraScene):
         self.camera.frame.width = 9
 
         OUTER_CIRCLE_COLOR = WHITE
-        INNER_CIRCLE_COLOR = BLUE
-        INNER_INTERSECTION_COLOR = GREEN
-        OUTER_INTERSECTION_COLOR = GREY
-        HEXAGON_COLOR = PINK
-        DIAGONAL_COLOR = PURPLE
+        INNER_CIRCLE_COLOR = GREEN_B
+        INNER_INTERSECTION_COLOR = PURPLE
+        OUTER_INTERSECTION_COLOR = DARK_GREY
+        HEXAGON_COLOR = GREY
+        DIAGONAL_COLOR = ORANGE
         DIAGONAL_INTERSECTION_COLOR = YELLOW
 
         title = Text("Der hyperbolische Sieben-Kreise-Satz").scale(0.8)
@@ -849,7 +849,7 @@ class SevenCirclesHyperbolic(MovingCameraScene):
         diagonals = HexagonMainDiagonals(hexagon, color=DIAGONAL_COLOR)
         diagonal_intersection = Dot(
             tf_klein_to_poincare(get_intersection_from_angles(phis[0], phis[3], phis[1], phis[4])),
-            color=DIAGONAL_INTERSECTION_COLOR)
+            color=DIAGONAL_INTERSECTION_COLOR, radius=.05)
 
         eucl_hexagon = EuclideanHexagon(phis, color=HEXAGON_COLOR)
         eucl_diagonals = get_diagonals(hexagon, color=DIAGONAL_COLOR)
