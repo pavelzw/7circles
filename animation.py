@@ -574,11 +574,12 @@ class HyperbolicModelsKlein(MovingCameraScene):
         k_point_geodesics = [l.scale(scale_back).move_to(l.get_center() * scale_back).shift(klein_origin) for l in
                              k_point_geodesics_raw]
 
+        # todo inside triangles
         ktri1_text = Tex(r"$\Delta_1$").next_to(raw_ktri1, LEFT).scale(.6).shift(0.7 * RIGHT)
 
         ktri2_text = Tex(r"$\Delta_2$").next_to(raw_ktri2, LEFT).scale(.6).shift(0.4 * RIGHT)
 
-        ktri_size_text = Tex(r"$A(\Delta_1) = A(\Delta_2)$", font_size=40).next_to(kcircle, LEFT, buff=.5)
+        ktri_size_text = Tex(r"$A(\Delta_1) = A(\Delta_2)$", font_size=37).next_to(kcircle, LEFT, buff=.35)
 
         arrow_lr = Arrow(start=2.5 * LEFT, end=2.5 * RIGHT, stroke_width=4, max_tip_length_to_length_ratio=.5)
         arrow_rl = Arrow(start=2.5 * RIGHT, end=2.5 * LEFT, stroke_width=4, max_tip_length_to_length_ratio=.5)
@@ -638,7 +639,8 @@ class HyperbolicModelsKlein(MovingCameraScene):
                   Write(k_point_text))
 
         self.add_subcaption(
-            "Da diese aber wie im Poincare-Modell durch den Einheitskreis beschränkt werden gilt auch hier das Parallelenaxiom.",
+            "Da diese aber wie im Poincare-Modell durch den Einheitskreis beschränkt werden, "
+            "gilt das Parallelenaxiom auch hier nicht.",
             duration=7)
 
         self.add_foreground_mobject(k_point)
@@ -670,7 +672,8 @@ class HyperbolicModelsKlein(MovingCameraScene):
 
         self.play(FadeIn(klein_model), FadeOut(kcircle))
 
-        self.add_subcaption("Hier sehen wir die gleiche Parkettierung der hyperbolischen Ebene im Klein-Modell",
+        self.add_subcaption("Hier sehen wir die gleiche Parkettierung "
+                            "der hyperbolischen Ebene im Klein-Modell.",
                             duration=6)
 
         self.play(Create(kpoints1[0]),
@@ -689,7 +692,7 @@ class HyperbolicModelsKlein(MovingCameraScene):
 
         self.wait(1)
 
-        self.add_subcaption("Zum Rand hin werden Distanzen also auch hier immer größer", duration=4)
+        self.add_subcaption("Zum Rand hin werden Distanzen auch hier immer größer", duration=4)
 
         self.play(Write(ktri_size_text), run_time=2)
 
@@ -703,15 +706,16 @@ class HyperbolicModelsKlein(MovingCameraScene):
                   Uncreate(kpoints2[0]),
                   Uncreate(kpoints2[1]),
                   Uncreate(kpoints2[2]),
-                  Uncreate(ktri1_text), Uncreate(ktri2_text),
-                  Uncreate(ktri_size_text), run_time=2)
+                  Unwrite(ktri1_text), Unwrite(ktri2_text),
+                  Unwrite(ktri_size_text), run_time=2)
 
         self.wait(2)
 
         self.play(self.camera.frame.animate.scale(1.25).move_to(center), FadeIn(poincare_model), FadeIn(poincare_text))
 
         self.add_subcaption(
-            "Da beide Modelle den gleichen Raum darstellen, ist es naheliegend, dass es Abbildungen gibt, die Punkte der Modelle miteinander identifizieren",
+            "Da beide Modelle den gleichen Raum darstellen, ist es naheliegend, dass es Abbildungen gibt, "
+            "die die Punkte der Modelle miteinander identifizieren.",
             duration=8)
 
         self.wait(1)
@@ -731,13 +735,13 @@ class HyperbolicModelsKlein(MovingCameraScene):
 
         self.add_subcaption("Tatsächlich gibt es diese, wir nennen sie f und f^-1. ", duration=4)
 
-        self.play(Create(arrow_group))
+        self.play(Write(arrow_group))
 
         self.wait(3)
 
         self.play(Write(f_text), Write(f_inv_text))
 
-        self.add_subcaption("Die Formeln für diese Abbildungen sind tatsächlich ziemlich einfach.", duration=4)
+        self.add_subcaption("Wie wir hier sehen, sind die Formeln für diese Abbildungen ziemlich einfach.", duration=4)
 
         self.wait(2)
 
@@ -750,7 +754,8 @@ class HyperbolicModelsKlein(MovingCameraScene):
         self.wait(5)
 
         self.add_subcaption(
-            "Mit f und f^-1 können wir jetzt also einfach Objekte aus dem einen Modell ins andere übertragen. Insbesondere Geodätische.",
+            "Mit f und f^-1 können wir jetzt Objekte aus "
+            "dem einen Modell ins andere übertragen. Insbesondere Geodätische.",
             duration=7)
 
         self.play(Create(p_geo0), FadeOut(poincare_model))
@@ -770,22 +775,21 @@ class HyperbolicModelsKlein(MovingCameraScene):
         self.play(Transform(k_geo1, p_geo1), Indicate(f_inv_text))
 
         self.add_subcaption(
-            "Da die Abbildungen punktweise agieren bleiben insbesondere auch Schnittpunkte zwischen Geodätischen erhalten.",
-            duration=5)
+            "Da die Abbildungen punktweise agieren, "
+            "bleiben Schnittpunkte zwischen Geodätischen erhalten.",
+            duration=6)
 
-        self.wait(5)
+        self.wait(6)
 
         self.add_subcaption("Das liefert uns jetzt die folgende Umformulierung des Sieben-Kreise-Satzes.", duration=4)
 
-        everything = VGroup()
-        for mob in self.mobjects:
-            if isinstance(mob, VMobject):
-                everything.add(mob)
+        everything = VGroup(*filter(lambda x: isinstance(x, VMobject), self.mobjects))
 
         self.wait(3)
 
         endDot = Dot(color=BLACK)
         self.play(Transform(everything, endDot))
+        self.wait(3)
 
 
 class SevenCirclesHyperbolic(MovingCameraScene):
@@ -805,7 +809,7 @@ class SevenCirclesHyperbolic(MovingCameraScene):
         theorem_text_colored = Tex(r"Sei $C_0\ $ein Kreis ", r"und $C_1, \ldots, C_6$ in $C_0$ enthaltene Kreise, ",
                                    "sodass jeder innere Kreis zu $C_0$ tangential ist ",
                                    "und je zwei nebeneinanderliegende innere Kreise ebenfalls zueinander tangential sind. ",
-                                   "Dann treffen sich die drei hyperbolischen Diagonalen des von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildeten hyperbolischen Hexagons ",
+                                   "Dann treffen sich die drei hyperbolischen Diagonalen des hyperbolischen Hexagons, das von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildet wird, ",
                                    "in einem Punkt.", "",
                                    substrings_to_isolate=[r"$C_0\ $", r"$C_1, \ldots, C_6$", "zu $C_0$ tangential",
                                                           "nebeneinanderliegende innere Kreise ebenfalls zueinander tangential",
@@ -826,7 +830,7 @@ class SevenCirclesHyperbolic(MovingCameraScene):
         theorem_text_white = Tex(r"Sei $C_0\ $ein Kreis ", r"und $C_1, \ldots, C_6$ in $C_0$ enthaltene Kreise, ",
                                  "sodass jeder innere Kreis zu $C_0$ tangential ist ",
                                  "und je zwei nebeneinanderliegende innere Kreise ebenfalls zueinander tangential sind. ",
-                                 "Dann treffen sich die drei hyperbolischen Diagonalen des von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildeten hyperbolischen Hexagons ",
+                                 "Dann treffen sich die drei hyperbolischen Diagonalen des hyperbolischen Hexagons, das von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildet wird, ",
                                  "in einem Punkt.", "",
                                  stroke_width=.05).scale(
             0.5).move_to([0, -2, 0])
@@ -883,7 +887,7 @@ class SevenCirclesHyperbolic(MovingCameraScene):
                   run_time=1)
 
         self.add_subcaption("und je zwei nebeneinanderliegende innere Kreise ebenfalls zueinander tangential sind.",
-                            duration=8)
+                            duration=7)
 
         self.play(Write(theorem_text_white[3]), run_time=6)
         self.play(FadeIn(theorem_text_colored[10]))
@@ -894,14 +898,14 @@ class SevenCirclesHyperbolic(MovingCameraScene):
                   Create(inner_intersections[3]),
                   Create(inner_intersections[4]),
                   Create(inner_intersections[5]),
-                  run_time=.1)
+                  run_time=1)
 
         for i in range(6):
             self.add_foreground_mobject(inner_intersections[i])
 
         self.add_subcaption(
-            "Dann treffen sich die drei Diagonalen des von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildeten Hexagons",
-            duration=8)
+            "Dann treffen sich die drei hyperbolischen Diagonalen des hyperbolischen Hexagons, das von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildet wird,",
+            duration=10)
 
         self.play(Write(theorem_text_white[4]), run_time=8)
 
@@ -921,7 +925,7 @@ class SevenCirclesHyperbolic(MovingCameraScene):
         self.play(Flash(diagonal_intersection))
 
         self.add_subcaption(
-            "Wenn wir diesen Satz beweisen können, können wir einfach die Modelltransformation von Poincare zu Klein anwenden",
+            "Wenn wir diesen Satz bewiesen haben, wenden wir einfach die Transformation vom Poincare- zum Klein-Modell an",
             duration=6)
 
         self.wait(3)
@@ -934,7 +938,9 @@ class SevenCirclesHyperbolic(MovingCameraScene):
                   # turn uninteresting parts dark
                   run_time=3)
 
-        self.add_subcaption("und haben somit auch den ursprünglichen Satz bewiesen.")
+        self.add_subcaption("und haben somit auch den ursprünglichen Satz bewiesen.", duration=4)
+
+        self.wait(4)
 
         everything = VGroup()
         for mob in self.mobjects:
@@ -944,3 +950,4 @@ class SevenCirclesHyperbolic(MovingCameraScene):
         endDot = Dot(color=BLACK)
         self.add(endDot)
         self.play(Transform(everything, endDot), run_time=2)
+        self.wait(2)
