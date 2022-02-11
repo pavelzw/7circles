@@ -3,10 +3,11 @@ from typing import Union
 import numpy as np
 from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut, FadeIn, PURPLE, WHITE, YELLOW, GREEN, \
     Uncreate, RED, VGroup, LEFT, DOWN, Dot, TransformFromCopy, Transform, Flash, MathTex, ReplacementTransform, \
-    ApplyWave, Group, GREY, GREEN_E, YELLOW_E, Unwrite, Square, Indicate, UP, TexTemplate, Circumscribe, RIGHT
+    ApplyWave, Group, GREY, GREEN_E, YELLOW_E, Unwrite, Square, Indicate, UP, TexTemplate, RIGHT
 from manim.utils import rate_functions
 
-from animation_constants import OUTER_CIRCLE_COLOR, HEXAGON_STROKE_WIDTH, HEXAGON_DOT_CIRCLE_RADIUS
+from animation_constants import OUTER_CIRCLE_COLOR, HEXAGON_STROKE_WIDTH, HEXAGON_DOT_CIRCLE_RADIUS, \
+    OUTER_CIRCLE_STROKE_WIDTH
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, get_intersection_in_unit_circle_of_two_tangent_circles, \
     get_intersections_of_n_tangent_circles, get_intersection_points_of_n_tangent_circles, \
@@ -19,7 +20,7 @@ class Scene1(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 6
 
-        circle = Circle(color=OUTER_CIRCLE_COLOR)
+        circle = Circle(color=OUTER_CIRCLE_COLOR, stroke_width=OUTER_CIRCLE_STROKE_WIDTH)
         self.add_foreground_mobjects(circle)
         self.play(Create(circle))
 
@@ -124,7 +125,7 @@ class Scene2(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 6
 
-        circle = Circle(color=OUTER_CIRCLE_COLOR)
+        circle = Circle(color=OUTER_CIRCLE_COLOR, stroke_width=OUTER_CIRCLE_STROKE_WIDTH)
         self.add(circle)
         self.add_foreground_mobjects(circle)
 
@@ -203,7 +204,7 @@ class Scene3(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 4
 
-        circle = Circle(color=OUTER_CIRCLE_COLOR)
+        circle = Circle(color=OUTER_CIRCLE_COLOR, stroke_width=OUTER_CIRCLE_STROKE_WIDTH)
         self.add_foreground_mobject(circle)
         self.add(circle)
 
@@ -337,7 +338,7 @@ class Scene3(MovingCameraScene):
 
         # transition to Scene4
         self.play(FadeOut(formula, triangle, circle1, circle2, dot,
-                          l1_prime, l1_prime_label, l2_prime, l2_prime_label, l3_prime, l3_prime_label),
+                          l1_prime, l1_prime_label, l2_prime, l2_prime_label, l3_prime, l3_prime_label, triangle_label),
                   self.camera.frame.animate.set(width=4).move_to([0, 0, 0]))
         self.remove(circle1, circle2)  # else they would still appear because in foreground
         self.wait(2)
@@ -347,7 +348,7 @@ class Scene4(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 4
 
-        circle = Circle(color=OUTER_CIRCLE_COLOR)
+        circle = Circle(color=OUTER_CIRCLE_COLOR, stroke_width=OUTER_CIRCLE_STROKE_WIDTH)
         self.add_foreground_mobject(circle)
         self.add(circle)
 
@@ -435,26 +436,31 @@ class Scene4(MovingCameraScene):
         self.wait(2)
         y1_label = MathTex('Y_1', font_size=15).move_to([.35, -.2, 0])
         g1_label = MathTex('G_1', font_size=15).move_to([-.4, .2, 0])
-        isometry_formula = MathTex('I_1(Y_1) = G_1', font_size=20).move_to([1.35, 0, 0], LEFT)
+        isometry_formula1 = MathTex('I_1(Y_1) = G_1', font_size=20).move_to([1.35, 0, 0], LEFT)
+        isometry_formula2 = MathTex('I_2(Y_1) = G_2', font_size=20).move_to([1.35, 0, 0], LEFT)
+        isometry_formula3 = MathTex('I_3(Y_1) = G_2', font_size=20).next_to(isometry_formula2, DOWN, buff=.1)
         self.play(Write(y1_label), Write(g1_label))
         self.play(self.camera.frame.animate.set(width=6),
-                  ReplacementTransform(triangle1, triangle2), Write(isometry_formula))
+                  ReplacementTransform(triangle1, triangle2), Write(isometry_formula1))
         self.wait(4)
 
         self.add_subcaption("Das ganze geht natürlich nicht nur für das erste Dreieckspaar, sondern für alle.",
                             duration=3)
         self.wait(2)
+        self.play(isometry_formula1.animate.next_to(isometry_formula2, UP, buff=.1))
+        self.play(TransformFromCopy(isometry_formula1, isometry_formula2))
+        self.play(TransformFromCopy(isometry_formula2, isometry_formula3))
         isometry_formula_transformed = MathTex('I_k(Y_k) = G_k', font_size=20).move_to([1.35, 0, 0], LEFT)
-        self.play(Transform(isometry_formula, isometry_formula_transformed),
-                  Circumscribe(isometry_formula, stroke_width=1, fade_out=True))
-
-        self.wait(5)
+        self.play(ReplacementTransform(isometry_formula1, isometry_formula_transformed),
+                  ReplacementTransform(isometry_formula2, isometry_formula_transformed),
+                  ReplacementTransform(isometry_formula3, isometry_formula_transformed))
+        self.wait(2)
 
         # transition to Scene5
-        self.play(self.camera.frame.animate.move_to(isometry_formula.get_center()),
+        self.play(self.camera.frame.animate.move_to(isometry_formula_transformed.get_center()),
                   FadeOut(circle, g1_label, y1_label, transformed_hexagon, transformed_diagonals,
                           dot_p, triangle2),
-                  isometry_formula.animate.set(font_size=48))
+                  isometry_formula_transformed.animate.set(font_size=48))
         self.remove(circle, dot_p)  # remove foreground mobjects
         self.wait(2)
 
@@ -560,7 +566,7 @@ class Scene6(MovingCameraScene):
         self.camera.frame.width = 6
         self.camera.frame.move_to([.8, 0, 0])
 
-        circle = Circle(color=OUTER_CIRCLE_COLOR)
+        circle = Circle(color=OUTER_CIRCLE_COLOR, stroke_width=OUTER_CIRCLE_STROKE_WIDTH)
         self.add_foreground_mobject(circle)
         self.add(circle)
 
@@ -670,7 +676,7 @@ class Scene6(MovingCameraScene):
 class Scene7(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 6
-        circle = Circle(color=OUTER_CIRCLE_COLOR)
+        circle = Circle(color=OUTER_CIRCLE_COLOR, stroke_width=OUTER_CIRCLE_STROKE_WIDTH)
         self.add(circle)
         self.add_foreground_mobject(circle)
 
