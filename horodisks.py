@@ -102,7 +102,7 @@ class Scene1(MovingCameraScene):
         start_points = np.array([center, center, center, center])
         length = [1 / 2, 1 / 2, -3 / 2]  # 1 is 1 unit to the left, -3 is 3 units to the right, way of circles moving
         angles = [0, pi / 4, 4 * pi / 3]
-        outer_circle = Circle(color=WHITE, radius=1).move_to(center)
+        outer_circle = Circle(color=WHITE, radius=1, stroke_width=HEXAGON_STROKE_WIDTH).move_to(center)
         self.add_foreground_mobjects(outer_circle)
         circle = [Dot(color=WHITE, radius=0.04), Circle(color=BLUE_A, radius=0.25, stroke_width=2),
                   Circle(color=BLUE, radius=.5, stroke_width=2), Circle(color=BLUE_E, radius=0.75, stroke_width=2)]
@@ -143,7 +143,7 @@ class Scene1(MovingCameraScene):
 
 class Scene2(MovingCameraScene):
     def construct(self):
-        outer_circle = Circle(color=WHITE, radius=1)
+        outer_circle = Circle(color=WHITE, radius=1, stroke_width=HEXAGON_STROKE_WIDTH)
         circle = [Dot(color=WHITE, radius=0.04), Circle(color=BLUE_A, radius=0.25, stroke_width=2),
                   Circle(color=BLUE, radius=.5, stroke_width=2), Circle(color=BLUE_E, radius=0.75, stroke_width=2)]
         def_dist_hyp = MathTex(r'\mathrm{dist_h}(b,c)=\log \frac{(a-c)(b-d)}{(a-b)(c-d)}', font_size=20).move_to(
