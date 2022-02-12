@@ -1,7 +1,7 @@
 import numpy as np
 from manim import Circle, Dot, Create, FadeIn, Line, \
     Transform, MovingCameraScene, Flash, YELLOW, Text, UP, Write, \
-    DOWN, Tex, WHITE, PURPLE, GREY, PINK, Uncreate, AnimationGroup, Unwrite, ImageMobject, LEFT, RIGHT, \
+    DOWN, Tex, WHITE, PURPLE, GREY, Uncreate, AnimationGroup, Unwrite, ImageMobject, LEFT, RIGHT, \
     MarkupText, Polygon, PI, DecimalNumber, ValueTracker, Arrow, VGroup, FadeOut, Indicate, \
     ReplacementTransform, BLACK, VMobject, GREEN_B, ORANGE, DARK_GREY
 
@@ -57,17 +57,17 @@ class SevenCircles(MovingCameraScene):
             "Hexagons", HEXAGON_COLOR).set_color_by_tex("Punkt", DIAGONAL_INTERSECTION_COLOR).scale(
             0.5).move_to([0, -2, 0])
 
-        circle = Circle(color=OUTER_CIRCLE_COLOR)
+        circle = Circle(color=OUTER_CIRCLE_COLOR, stroke_width=2)
         phis = create_phis(min_dist=.9, max_dist=1.2)
         first_circle_radius = .4
 
-        hexagon = EuclideanHexagon(phis, color=PINK)
-        hexagon_circles = HexagonCircles(hexagon, first_circle_radius)
+        hexagon = EuclideanHexagon(phis, color=HEXAGON_COLOR, stroke_width=2)
+        hexagon_circles = HexagonCircles(hexagon, first_circle_radius, stroke_width=2, color=INNER_CIRCLE_COLOR)
         inner_intersections = get_intersections_of_n_tangent_circles(hexagon_circles.circles,
                                                                      color=INNER_INTERSECTION_COLOR)
         outer_intersections = get_intersections_of_circles_with_unit_circle(hexagon_circles.circles,
                                                                             color=OUTER_INTERSECTION_COLOR)
-        diagonals = get_diagonals(hexagon, color=DIAGONAL_COLOR)
+        diagonals = get_diagonals(hexagon, color=DIAGONAL_COLOR, stroke_width=2)
         diagonal_intersection = Dot(get_intersection_from_angles(phis[0], phis[3], phis[1], phis[4]),
                                     color=DIAGONAL_INTERSECTION_COLOR, radius=.05)
 
@@ -85,12 +85,14 @@ class SevenCircles(MovingCameraScene):
         self.play(Write(theorem_text_white[0], run_time=1))
 
         self.play(FadeIn(circle), FadeIn(theorem_text_colored[1]))
+        self.add_foreground_mobject(circle)
 
         self.add_subcaption("und C_1,...,C_6 in C_0 enthaltene Kreise", duration=4)
 
         self.play(Write(theorem_text_white[1], run_time=3))
 
         self.play(Create(hexagon_circles, run_time=5), FadeIn(theorem_text_colored[4], run_time=1))
+        self.remove_foreground_mobjects(circle)
 
         self.add_subcaption("sodass jeder innere Kreis zum äußeren Kreis tangential ist", duration=5)
 
@@ -98,6 +100,8 @@ class SevenCircles(MovingCameraScene):
         self.play(FadeIn(theorem_text_colored[7]))
         for i in range(6):
             self.play(Create(outer_intersections[i], run_time=.5))
+
+        self.add_foreground_mobjects(*outer_intersections)
 
         self.add_subcaption("und je zwei nebeneinanderliegende innere Kreise ebenfalls zueinander tangential sind.",
                             duration=8)
@@ -580,7 +584,6 @@ class HyperbolicModelsKlein(MovingCameraScene):
         k_point_geodesics = [l.scale(scale_back).move_to(l.get_center() * scale_back).shift(klein_origin) for l in
                              k_point_geodesics_raw]
 
-        # todo inside triangles
         ktri1_text = Tex(r"$\Delta_1$").next_to(raw_ktri1, LEFT).scale(.6).shift(1.6 * RIGHT + 0.2 * DOWN)
 
         ktri2_text = Tex(r"$\Delta_2$").next_to(raw_ktri2, LEFT).scale(.6).shift(1.05 * RIGHT + .2 * UP)
@@ -841,26 +844,26 @@ class SevenCirclesHyperbolic(MovingCameraScene):
                                  stroke_width=.05).scale(
             0.5).move_to([0, -2, 0])
 
-        circle = Circle(color=OUTER_CIRCLE_COLOR)
+        circle = Circle(color=OUTER_CIRCLE_COLOR, stroke_width=2)
         phis = create_phis(min_dist=.9, max_dist=1.2)
         first_circle_radius = .4
 
         hexagon = HyperbolicPolygon([polar_to_point(phi) for phi in phis], color=HEXAGON_COLOR,
-                                    dot_color=OUTER_INTERSECTION_COLOR)
-        hexagon_circles = HexagonCircles(hexagon, first_circle_radius)
+                                    dot_color=OUTER_INTERSECTION_COLOR, stroke_width=2)
+        hexagon_circles = HexagonCircles(hexagon, first_circle_radius, stroke_width=2, color=INNER_CIRCLE_COLOR)
         inner_intersections = get_intersections_of_n_tangent_circles(hexagon_circles.circles,
                                                                      color=INNER_INTERSECTION_COLOR)
         outer_intersections = get_intersections_of_circles_with_unit_circle(hexagon_circles.circles,
                                                                             color=OUTER_INTERSECTION_COLOR)
-        diagonals = HexagonMainDiagonals(hexagon, color=DIAGONAL_COLOR)
+        diagonals = HexagonMainDiagonals(hexagon, color=DIAGONAL_COLOR, stroke_width=2)
         diagonal_intersection = Dot(
             tf_klein_to_poincare(get_intersection_from_angles(phis[0], phis[3], phis[1], phis[4])),
             color=DIAGONAL_INTERSECTION_COLOR, radius=.05)
 
-        eucl_hexagon = EuclideanHexagon(phis, color=HEXAGON_COLOR)
-        eucl_diagonals = get_diagonals(hexagon, color=DIAGONAL_COLOR)
+        eucl_hexagon = EuclideanHexagon(phis, color=HEXAGON_COLOR, stroke_width=2)
+        eucl_diagonals = get_diagonals(hexagon, color=DIAGONAL_COLOR, stroke_width=2)
         eucl_intersection = Dot(get_intersection_from_angles(phis[0], phis[3], phis[1], phis[4]),
-                                color=DIAGONAL_INTERSECTION_COLOR)
+                                color=DIAGONAL_INTERSECTION_COLOR, radius=.05)
 
         self.camera.frame.shift(0.8 * DOWN)
         self.play(Write(title.shift(1.4 * UP).scale(.7)))
@@ -872,12 +875,14 @@ class SevenCirclesHyperbolic(MovingCameraScene):
         self.play(Write(theorem_text_white[0], run_time=2))
 
         self.play(FadeIn(circle), FadeIn(theorem_text_colored[1]))
+        self.add_foreground_mobject(circle)
 
         self.add_subcaption("und C_1,...,C_6 in C_0 enthaltene Kreise", duration=4)
 
         self.play(Write(theorem_text_white[1], run_time=3))
 
         self.play(Create(hexagon_circles, run_time=4), FadeIn(theorem_text_colored[4], run_time=1))
+        self.remove_foreground_mobjects(circle)
 
         self.add_subcaption("sodass jeder innere Kreis zum äußeren Kreis tangential ist", duration=5)
 
@@ -891,6 +896,8 @@ class SevenCirclesHyperbolic(MovingCameraScene):
                   Create(outer_intersections[4]),
                   Create(outer_intersections[5]),
                   run_time=1)
+
+        self.add_foreground_mobjects(*outer_intersections)
 
         self.add_subcaption("und je zwei nebeneinanderliegende innere Kreise ebenfalls zueinander tangential sind.",
                             duration=7)
