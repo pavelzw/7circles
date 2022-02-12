@@ -3,10 +3,11 @@ from typing import Union
 import numpy as np
 from manim import Create, Circle, MovingCameraScene, BLUE, Tex, Write, FadeOut, FadeIn, PURPLE, WHITE, YELLOW, GREEN, \
     Uncreate, RED, VGroup, LEFT, DOWN, Dot, TransformFromCopy, Transform, Flash, MathTex, ReplacementTransform, \
-    ApplyWave, Group, GREY, GREEN_E, YELLOW_E, Unwrite, Square, Indicate, UP, TexTemplate, Circumscribe, RIGHT
+    ApplyWave, Group, GREY, Unwrite, Square, Indicate, UP, TexTemplate, RIGHT, GREEN_B, ORANGE, GREEN_E, PURPLE_E
 from manim.utils import rate_functions
 
-from animation_constants import OUTER_CIRCLE_COLOR, HEXAGON_STROKE_WIDTH, HEXAGON_DOT_CIRCLE_RADIUS
+from animation_constants import OUTER_CIRCLE_COLOR, HEXAGON_STROKE_WIDTH, HEXAGON_DOT_CIRCLE_RADIUS, \
+    OUTER_CIRCLE_STROKE_WIDTH
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, get_intersection_in_unit_circle_of_two_tangent_circles, \
     get_intersections_of_n_tangent_circles, get_intersection_points_of_n_tangent_circles, \
@@ -19,7 +20,7 @@ class Scene1(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 6
 
-        circle = Circle(color=OUTER_CIRCLE_COLOR)
+        circle = Circle(color=OUTER_CIRCLE_COLOR, stroke_width=OUTER_CIRCLE_STROKE_WIDTH)
         self.add_foreground_mobjects(circle)
         self.play(Create(circle))
 
@@ -124,7 +125,7 @@ class Scene2(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 6
 
-        circle = Circle(color=OUTER_CIRCLE_COLOR)
+        circle = Circle(color=OUTER_CIRCLE_COLOR, stroke_width=OUTER_CIRCLE_STROKE_WIDTH)
         self.add(circle)
         self.add_foreground_mobjects(circle)
 
@@ -203,7 +204,7 @@ class Scene3(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 4
 
-        circle = Circle(color=OUTER_CIRCLE_COLOR)
+        circle = Circle(color=OUTER_CIRCLE_COLOR, stroke_width=OUTER_CIRCLE_STROKE_WIDTH)
         self.add_foreground_mobject(circle)
         self.add(circle)
 
@@ -228,9 +229,9 @@ class Scene3(MovingCameraScene):
         circle1_center = (1 - circle1_radius) * p1
         circle2_radius = .15
         circle2_center = (1 - circle2_radius) * p2
-        circle1 = Circle(radius=circle1_radius, color=GREEN, fill_opacity=.5, stroke_width=HEXAGON_STROKE_WIDTH) \
+        circle1 = Circle(radius=circle1_radius, color=GREEN_B, fill_opacity=.5, stroke_width=HEXAGON_STROKE_WIDTH) \
             .move_to(circle1_center)
-        circle2 = Circle(radius=circle2_radius, color=GREEN, fill_opacity=.5, stroke_width=HEXAGON_STROKE_WIDTH) \
+        circle2 = Circle(radius=circle2_radius, color=GREEN_B, fill_opacity=.5, stroke_width=HEXAGON_STROKE_WIDTH) \
             .move_to(circle2_center)
         self.add_foreground_mobjects(circle1, circle2)
         self.add_subcaption("Wenn wir disjunkte Horodisks von den beiden idealen Knoten des Dreiecks entfernen, ",
@@ -244,7 +245,7 @@ class Scene3(MovingCameraScene):
                                                                               arc.circle_center, arc.radius)
         l1_prime = HyperbolicArcBetweenPoints(intersection, triangle.polygon_points[2], color=BLUE,
                                               stroke_width=HEXAGON_STROKE_WIDTH)
-        l1_prime_label = Tex("$L_1'$", color=BLUE, font_size=20).move_to([-.3, .1, 0])
+        l1_prime_label = MathTex("L_1'", color=BLUE, font_size=20).move_to([-.3, .1, 0])
         self.play(Create(l1_prime), Write(l1_prime_label), subcaption="erhalten wir die Längen L_1',")
         dot.set_color(BLUE)
 
@@ -254,7 +255,7 @@ class Scene3(MovingCameraScene):
                                                                               arc.circle_center, arc.radius)
         l2_prime = HyperbolicArcBetweenPoints(intersection, triangle.polygon_points[2], color=BLUE,
                                               stroke_width=HEXAGON_STROKE_WIDTH).reverse_direction()
-        l2_prime_label = Tex("$L_2'$", color=BLUE, font_size=20).move_to([.4, -.25, 0])
+        l2_prime_label = MathTex("L_2'", color=BLUE, font_size=20).move_to([.4, -.25, 0])
         self.play(Create(l2_prime), Write(l2_prime_label), subcaption="L_2'")
 
         # L3' is on the connection between the ideal points
@@ -265,7 +266,7 @@ class Scene3(MovingCameraScene):
                                                                                arc.circle_center, arc.radius)
         l3_prime = HyperbolicArcBetweenPoints(intersection1, intersection2, color=RED,
                                               stroke_width=HEXAGON_STROKE_WIDTH)
-        l3_prime_label = Tex("$L_3'$", color=RED, font_size=20).move_to([.2, .55, 0])
+        l3_prime_label = MathTex("L_3'", color=RED, font_size=20).move_to([.2, .55, 0])
         self.add_subcaption("und L_3'.", duration=2)
         self.play(Create(l3_prime), Write(l3_prime_label))
         self.wait(2)
@@ -311,7 +312,7 @@ class Scene3(MovingCameraScene):
         for t in range(num_steps):
             radius = circle1_radii_transition[t]
             center = triangle.polygon_points[0] * (1 - radius)
-            new_circle = Circle(radius, color=GREEN, fill_opacity=.5, stroke_width=HEXAGON_STROKE_WIDTH) \
+            new_circle = Circle(radius, color=GREEN_B, fill_opacity=.5, stroke_width=HEXAGON_STROKE_WIDTH) \
                 .move_to(center)
 
             # L3'
@@ -337,7 +338,7 @@ class Scene3(MovingCameraScene):
 
         # transition to Scene4
         self.play(FadeOut(formula, triangle, circle1, circle2, dot,
-                          l1_prime, l1_prime_label, l2_prime, l2_prime_label, l3_prime, l3_prime_label),
+                          l1_prime, l1_prime_label, l2_prime, l2_prime_label, l3_prime, l3_prime_label, triangle_label),
                   self.camera.frame.animate.set(width=4).move_to([0, 0, 0]))
         self.remove(circle1, circle2)  # else they would still appear because in foreground
         self.wait(2)
@@ -347,7 +348,7 @@ class Scene4(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 4
 
-        circle = Circle(color=OUTER_CIRCLE_COLOR)
+        circle = Circle(color=OUTER_CIRCLE_COLOR, stroke_width=OUTER_CIRCLE_STROKE_WIDTH)
         self.add_foreground_mobject(circle)
         self.add(circle)
 
@@ -435,26 +436,31 @@ class Scene4(MovingCameraScene):
         self.wait(2)
         y1_label = MathTex('Y_1', font_size=15).move_to([.35, -.2, 0])
         g1_label = MathTex('G_1', font_size=15).move_to([-.4, .2, 0])
-        isometry_formula = MathTex('I_1(Y_1) = G_1', font_size=20).move_to([1.35, 0, 0], LEFT)
+        isometry_formula1 = MathTex('I_1(Y_1) = G_1', font_size=20).move_to([1.35, 0, 0], LEFT)
+        isometry_formula2 = MathTex('I_2(Y_1) = G_2', font_size=20).move_to([1.35, 0, 0], LEFT)
+        isometry_formula3 = MathTex('I_3(Y_1) = G_2', font_size=20).next_to(isometry_formula2, DOWN, buff=.1)
         self.play(Write(y1_label), Write(g1_label))
         self.play(self.camera.frame.animate.set(width=6),
-                  ReplacementTransform(triangle1, triangle2), Write(isometry_formula))
+                  ReplacementTransform(triangle1, triangle2), Write(isometry_formula1))
         self.wait(4)
 
         self.add_subcaption("Das ganze geht natürlich nicht nur für das erste Dreieckspaar, sondern für alle.",
                             duration=3)
         self.wait(2)
+        self.play(isometry_formula1.animate.next_to(isometry_formula2, UP, buff=.1))
+        self.play(TransformFromCopy(isometry_formula1, isometry_formula2))
+        self.play(TransformFromCopy(isometry_formula2, isometry_formula3))
         isometry_formula_transformed = MathTex('I_k(Y_k) = G_k', font_size=20).move_to([1.35, 0, 0], LEFT)
-        self.play(Transform(isometry_formula, isometry_formula_transformed),
-                  Circumscribe(isometry_formula, stroke_width=1, fade_out=True))
-
-        self.wait(5)
+        self.play(ReplacementTransform(isometry_formula1, isometry_formula_transformed),
+                  ReplacementTransform(isometry_formula2, isometry_formula_transformed),
+                  ReplacementTransform(isometry_formula3, isometry_formula_transformed))
+        self.wait(2)
 
         # transition to Scene5
-        self.play(self.camera.frame.animate.move_to(isometry_formula.get_center()),
+        self.play(self.camera.frame.animate.move_to(isometry_formula_transformed.get_center()),
                   FadeOut(circle, g1_label, y1_label, transformed_hexagon, transformed_diagonals,
                           dot_p, triangle2),
-                  isometry_formula.animate.set(font_size=48))
+                  isometry_formula_transformed.animate.set(font_size=48))
         self.remove(circle, dot_p)  # remove foreground mobjects
         self.wait(2)
 
@@ -560,7 +566,7 @@ class Scene6(MovingCameraScene):
         self.camera.frame.width = 6
         self.camera.frame.move_to([.8, 0, 0])
 
-        circle = Circle(color=OUTER_CIRCLE_COLOR)
+        circle = Circle(color=OUTER_CIRCLE_COLOR, stroke_width=OUTER_CIRCLE_STROKE_WIDTH)
         self.add_foreground_mobject(circle)
         self.add(circle)
 
@@ -670,7 +676,7 @@ class Scene6(MovingCameraScene):
 class Scene7(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 6
-        circle = Circle(color=OUTER_CIRCLE_COLOR)
+        circle = Circle(color=OUTER_CIRCLE_COLOR, stroke_width=OUTER_CIRCLE_STROKE_WIDTH)
         self.add(circle)
         self.add_foreground_mobject(circle)
 
@@ -685,8 +691,9 @@ class Scene7(MovingCameraScene):
         self.add_subcaption("Schauen wir uns hierfür ein hyperbolisches Hexagon "
                             "mit Kreisen an, die tangential zum großen Kreis liegen,", duration=5)
         self.play(Create(hexagon), run_time=4)
-        inner_circles = HexagonCircles(hexagon, first_circle_radius=.4, color=GREEN, stroke_width=HEXAGON_STROKE_WIDTH)
-        inner_intersections = get_intersections_of_n_tangent_circles(inner_circles.circles, color=YELLOW, radius=.03)
+        inner_circles = HexagonCircles(hexagon, first_circle_radius=.4, color=GREEN_B,
+                                       stroke_width=HEXAGON_STROKE_WIDTH)
+        inner_intersections = get_intersections_of_n_tangent_circles(inner_circles.circles, color=PURPLE, radius=.03)
         # todo maybe also add
         #  outer_intersections = get_intersections_of_circles_with_unit_circle(hexagon_circles.circles)
         inner_intersection_points = get_intersection_points_of_n_tangent_circles(inner_circles.circles)
@@ -699,6 +706,8 @@ class Scene7(MovingCameraScene):
         self.play(Create(inner_intersections[-1]), run_time=.5)
 
         self.add_foreground_mobjects(*inner_intersections)
+        # hexagon is above inner_circles
+        self.add(hexagon)
 
         self.play(self.camera.frame.animate.set(width=4).move_to([.8, 0, 0]))
 
@@ -749,7 +758,7 @@ class Scene7(MovingCameraScene):
         self.add_subcaption(
             "Und das entspricht genau dem Umfang des Dreiecks in der Mitte aufgrund des Satzes, "
             "den wir gerade eben bewiesen haben.", duration=6)
-        diagonals = HexagonMainDiagonals(hexagon, stroke_width=HEXAGON_STROKE_WIDTH)
+        diagonals = HexagonMainDiagonals(hexagon, color=ORANGE, stroke_width=HEXAGON_STROKE_WIDTH)
 
         # replace formula with formula2 in order to animate it
         formula2 = MathTex(r'\mathrm{AltPer}(P) = 0', font_size=formula.font_size).move_to(formula.get_left(), LEFT)
@@ -760,7 +769,7 @@ class Scene7(MovingCameraScene):
         formula3 = MathTex(r'= \pm 2 \cdot \mathrm{Per}(T_P)', font_size=12).next_to(formula2, buff=.05)
         self.play(Write(formula3))
         self.wait(3)
-        self.add_foreground_mobjects(*inner_circles, *inner_intersections, circle)
+        self.add_foreground_mobjects(*inner_intersections, circle)
         self.play(Create(diagonals), run_time=3)
 
         self.add_subcaption("Also treffen sich die Hauptdiagonalen des Hexagons in einem Punkt.", duration=3)
@@ -783,11 +792,11 @@ class Scene7(MovingCameraScene):
                             "durchführen.", duration=4)
 
         # transform hyperbolic hexagon to euclidean hexagon
-        euclidean_hexagon = EuclideanHexagon(phis, stroke_width=2)
-        euclidean_diagonals = get_diagonals(hexagon, stroke_width=2)
+        euclidean_hexagon = EuclideanHexagon(phis, color=GREY, stroke_width=2)
+        euclidean_diagonals = get_diagonals(hexagon, color=ORANGE, stroke_width=2)
         euclidean_intersection_dot = Dot(get_intersection_from_angles(phis[0], phis[3], phis[1], phis[4]), color=YELLOW,
                                          radius=.03)
-        self.add_foreground_mobjects(hexagon, diagonals, *inner_circles, *inner_intersections, intersection_dot, circle)
+        self.add_foreground_mobjects(hexagon, diagonals, *inner_intersections, intersection_dot, circle)
 
         self.play(self.camera.frame.animate.set(width=6).move_to([0, 0, 0]))
         self.play(*[ReplacementTransform(hexagon.arcs[i], euclidean_hexagon.edges[i]) for i in range(6)],
@@ -797,7 +806,7 @@ class Scene7(MovingCameraScene):
                   ReplacementTransform(intersection_dot, euclidean_intersection_dot),
                   # turn uninteresting parts dark
                   *[inner_circles[i].animate.set_color(GREEN_E) for i in range(len(inner_circles))],
-                  *[inner_intersections[i].animate.set_color(YELLOW_E)
+                  *[inner_intersections[i].animate.set_color(PURPLE_E)
                     for i in range(len(inner_intersections))],
                   run_time=3)
         self.wait(2)

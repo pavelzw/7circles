@@ -10,7 +10,7 @@ jobs:
         id: renderer
         with:
           source_file: main_result.py
-          pre_render: tlmgr install mathtools
+          pre_render: tlmgr update --self && tlmgr install mathtools
           # concat all scenes into one video file
           post_render: sh ./ffmpeg_concat/concat_main_result.sh
       - name: Save output as artifacts
