@@ -10,8 +10,7 @@ from geometry_util import polar_to_point, \
     tf_klein_to_poincare, get_intersections_of_n_tangent_circles, get_intersections_of_circles_with_unit_circle, \
     get_intersection_from_angles, get_parallel_to_line_through_point, tf_poincare_to_klein, \
     get_both_intersections_line_with_unit_circle, hyperbolic_distance_function
-from hexagon import HexagonCircles, HexagonMainDiagonals, HyperbolicArcBetweenPoints
-from hexagon_util import create_phis
+from hexagon import HexagonCircles, HexagonMainDiagonals, HyperbolicArcBetweenPoints, HexagonAngles
 from hyperbolic_polygon import HyperbolicPolygon
 
 
@@ -58,7 +57,8 @@ class SevenCircles(MovingCameraScene):
             0.5).move_to([0, -2, 0])
 
         circle = Circle(color=OUTER_CIRCLE_COLOR, stroke_width=2)
-        phis = create_phis(min_dist=.9, max_dist=1.2)
+        # phis = create_phis(min_dist=.9, max_dist=1.2)
+        phis = HexagonAngles(np.array([.3, 1.6, 2.2, 3, 4.3]))
         first_circle_radius = .4
 
         hexagon = EuclideanHexagon(phis, color=HEXAGON_COLOR, stroke_width=2)
@@ -328,10 +328,10 @@ class HyperbolicModelsPoincare(MovingCameraScene):
         p_distance_text = Tex(r"$\mathrm{dist}(0,P) = $ ", font_size=30).next_to(pcircle, buff=.2)
         p_distance_number = DecimalNumber(0.0,
                                           num_decimal_places=2, show_ellipsis=True, group_with_commas=False,
-                                          font_size=40).next_to(p_distance_text, buff=.15)
+                                          font_size=35).next_to(p_distance_text, buff=.15)
 
         label = VGroup(p_distance_text, p_distance_number)
-        p_distance_infty = Tex(r"$\infty$", font_size=30).next_to(p_distance_text, buff=.05)
+        p_distance_infty = Tex(r"$\infty$", font_size=30).next_to(p_distance_text, buff=.15)
         p_distance_tracker = ValueTracker(0.0)
 
         self.add_subcaption("Es gibt verschiedene Modelle für die hyperbolische Ebene.", duration=3)
@@ -465,7 +465,7 @@ class HyperbolicModelsPoincare(MovingCameraScene):
             pos = p_current_point * scale_back + np.array(poincare_origin)
             moving_dot = Dot(pos, radius=0.08)
 
-            p_distance_number.font_size = 40
+            p_distance_number.font_size = 35
 
             p_distance_tracker.set_value(np.exp(
                 hyperbolic_distance_function(center, p_current_point)))
@@ -845,7 +845,8 @@ class SevenCirclesHyperbolic(MovingCameraScene):
             0.5).move_to([0, -2, 0])
 
         circle = Circle(color=OUTER_CIRCLE_COLOR, stroke_width=2)
-        phis = create_phis(min_dist=.9, max_dist=1.2)
+        phis = HexagonAngles(np.array([.3, 1.6, 2.2, 3, 4.3]))
+        # phis = create_phis(min_dist=.9, max_dist=1.2)
         first_circle_radius = .4
 
         hexagon = HyperbolicPolygon([polar_to_point(phi) for phi in phis], color=HEXAGON_COLOR,
@@ -944,8 +945,8 @@ class SevenCirclesHyperbolic(MovingCameraScene):
         self.wait(3)
 
         self.play(*[ReplacementTransform(hexagon.arcs[i], eucl_hexagon.edges[i]) for i in range(6)],
-                  ReplacementTransform(diagonals.arc1, eucl_diagonals[0]),
-                  ReplacementTransform(diagonals.arc2, eucl_diagonals[1]),
+                  ReplacementTransform(diagonals.arc1, eucl_diagonals[0].reverse_direction()),
+                  ReplacementTransform(diagonals.arc2, eucl_diagonals[1].reverse_direction()),
                   ReplacementTransform(diagonals.arc3, eucl_diagonals[2].reverse_direction()),
                   ReplacementTransform(diagonal_intersection, eucl_intersection),
                   # turn uninteresting parts dark
