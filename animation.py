@@ -27,7 +27,7 @@ class SevenCircles(MovingCameraScene):
         DIAGONAL_COLOR = ORANGE
         DIAGONAL_INTERSECTION_COLOR = YELLOW
 
-        title = Text("Der Sieben Kreise Satz").scale(0.8)
+        title = Text("Der Sieben-Kreise-Satz").scale(0.8)
 
         theorem_text_white = Tex(r"Sei $C_0\ $ein Kreis ", r"und $C_1, \ldots, C_6$ in $C_0$ enthaltene Kreise, ",
                                  "sodass jeder innere Kreis zu $C_0$ tangential ist ",
@@ -324,7 +324,9 @@ class HyperbolicModelsPoincare(MovingCameraScene):
         p_distance_text = Tex(r"$\mathrm{dist}(0,P) = $ ", font_size=30).next_to(pcircle, buff=.2)
         p_distance_number = DecimalNumber(0.0,
                                           num_decimal_places=2, show_ellipsis=True, group_with_commas=False,
-                                          font_size=45).next_to(p_distance_text, buff=.05)
+                                          font_size=40).next_to(p_distance_text, buff=.15)
+
+        label = VGroup(p_distance_text, p_distance_number)
         p_distance_infty = Tex(r"$\infty$", font_size=30).next_to(p_distance_text, buff=.05)
         p_distance_tracker = ValueTracker(0.0)
 
@@ -459,15 +461,20 @@ class HyperbolicModelsPoincare(MovingCameraScene):
             pos = p_current_point * scale_back + np.array(poincare_origin)
             moving_dot = Dot(pos, radius=0.08)
 
-            p_distance_number.font_size = 20
+            p_distance_number.font_size = 40
 
             p_distance_tracker.set_value(np.exp(
                 hyperbolic_distance_function(center, p_current_point)))
+            label.arrange(buff=.15)
+            label.next_to(pcircle, buff=.2)
+
             p_moving_text.next_to(p_moving_dot, 0.5 * RIGHT + 0.6 * UP, buff=0)
             self.play(Transform(p_moving_dot, moving_dot), run_time=frame_rate,
                       rate_func=lambda a: a)
             self.remove(p_moving_dot)
             p_moving_dot = moving_dot
+        label.arrange(buff=.05)
+        label.next_to(pcircle, buff=.2)
 
         self.add_subcaption("Der Einheitskreis liegt im Unendlichen und gehört nicht zum Poincare-Modell",
                             duration=5)
@@ -491,14 +498,13 @@ class HyperbolicModelsPoincare(MovingCameraScene):
         self.add_subcaption(
             "Dies ist eine Parkettierung der hyperbolischen Ebene. All diese Dreiecke haben die gleiche Form und Fläche im Hyperbolischen.",
             duration=8)
-        # todo inside triangle
         self.play(Create(ptri1), run_time=2)
-        self.play(Write(ptri1_text))
+        self.play(Write(ptri1_text.shift(0.6 * LEFT + 0.15 * DOWN)))
 
         self.wait(1)
 
         self.play(Create(ptri2), run_time=2)
-        self.play(Write(ptri2_text))
+        self.play(Write(ptri2_text.shift(0.8 * LEFT + 0.07 * UP)))
 
         self.wait(1)
 
@@ -575,9 +581,9 @@ class HyperbolicModelsKlein(MovingCameraScene):
                              k_point_geodesics_raw]
 
         # todo inside triangles
-        ktri1_text = Tex(r"$\Delta_1$").next_to(raw_ktri1, LEFT).scale(.6).shift(0.7 * RIGHT)
+        ktri1_text = Tex(r"$\Delta_1$").next_to(raw_ktri1, LEFT).scale(.6).shift(1.6 * RIGHT + 0.2 * DOWN)
 
-        ktri2_text = Tex(r"$\Delta_2$").next_to(raw_ktri2, LEFT).scale(.6).shift(0.4 * RIGHT)
+        ktri2_text = Tex(r"$\Delta_2$").next_to(raw_ktri2, LEFT).scale(.6).shift(1.05 * RIGHT + .2 * UP)
 
         ktri_size_text = Tex(r"$A(\Delta_1) = A(\Delta_2)$", font_size=37).next_to(kcircle, LEFT, buff=.35)
 
