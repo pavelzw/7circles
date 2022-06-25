@@ -8,7 +8,7 @@ from manim import Scene, Circle, Dot, Create, FadeIn, FadeOut, WHITE, BLUE, \
 
 from animation_constants import *
 from geometry_util import polar_to_point, hyperbolic_distance_function, create_min_circle_radius, \
-    get_intersection_in_unit_circle_of_two_tangent_circles
+    get_intersection_in_unit_circle_of_two_tangent_circles, hyperbolic_circle_to_euclidean_circle
 from hexagon_util import create_phis, create_radius_transition
 from hyperbolic_polygon import HyperbolicPolygon, HyperbolicArcBetweenPoints
 
@@ -239,12 +239,13 @@ class Scene3(MovingCameraScene):
         s_k_text = VGroup(s_1, s_2, s_3, s_4, s_5, s_6)
         radius = np.array([0.7, 0.6, .75, .56, .65, .53])
         phis = [0.47654, 2.065432, 2.876, 3.87623, 5.024, 5.673]
-        circle_radius = np.array([.2, .25, .16, .29, .18, .12])  # radius for disks
+        # circle_radius = np.array([.2, .25, .16, .29, .18, .12])  # radius for disks
+        circle_radius = np.array([.8, .8, .8, .8, .5, .4])  # radius for disks
 
         # without disks
         step_size = 50
         # phis = np.array([0, 1, 2, 3, 4, 5])
-        transition = create_radius_transition(radius=radius, step_size=step_size)
+        transition = create_radius_transition(radius, step_size=step_size)
         hexagon = HyperbolicPolygon.from_polar(phis, transition[0], dot_radius=0.01, stroke_width=2)
         for k in range(0, 6):
             self.add(hexagon.dots[k])
@@ -270,22 +271,33 @@ class Scene3(MovingCameraScene):
         hex_n_ideal = HyperbolicPolygon.from_polar(phis, radius, dot_radius=0.01, stroke_width=2)
         self.play(FadeIn(hex_n_ideal), Write(p1, stroke_width=.5))
         disks = []
+        euclidean_centers = []
+        euclidean_radii = []
         for k in range(0, 6):  # creating disks
-            point1 = hex_n_ideal.polygon_points[k]
-            circle = Circle(arc_center=point1, radius=circle_radius[k], color=GREEN_B, fill_opacity=0.5, stroke_width=2)
+            hyperbolic_center = hex_n_ideal.polygon_points[k]
+            hyperbolic_radius = circle_radius[k]
+            eucl_center, eucl_radius = hyperbolic_circle_to_euclidean_circle(hyperbolic_center, hyperbolic_radius)
+            euclidean_centers.append(eucl_center)
+            euclidean_radii.append(eucl_radius)
+
+            circle = Circle(arc_center=eucl_center, radius=eucl_radius, color=GREEN_B, fill_opacity=0.5, stroke_width=2)
             disks.append(circle)
             self.add_foreground_mobjects(circle)
             self.play(FadeIn(circle))
+        euclidean_centers = np.array(euclidean_centers)
+        euclidean_radii = np.array(euclidean_radii)
 
         dynamic_arcs = []
         for k in range(0, 6):  # creating S_k tilde
-            point1 = hex_n_ideal.polygon_points[k]
-            point2 = hex_n_ideal.polygon_points[(k + 1) % 6]
+            point1 = euclidean_centers[k]
+            radius1 = euclidean_radii[k]
+            point2 = euclidean_centers[(k + 1) % 6]
+            radius2 = euclidean_radii[(k + 1) % 6]
             arc = hex_n_ideal.arcs[k]
             intersection1 = get_intersection_in_unit_circle_of_two_tangent_circles(arc.circle_center, arc.radius,
-                                                                                   point1, circle_radius[k])
+                                                                                   point1, radius1)
             intersection2 = get_intersection_in_unit_circle_of_two_tangent_circles(point2,
-                                                                                   circle_radius[(k + 1) % 6],
+                                                                                   radius2,
                                                                                    arc.circle_center, arc.radius)
             arc_new = ArcBetweenPoints(intersection2, intersection1, color=ORANGE,
                                        radius=arc.radius, stroke_width=2).reverse_direction()
@@ -306,52 +318,52 @@ class Scene3(MovingCameraScene):
                           font_size=20).move_to([2.6, 1, 0])
         self.play(TransformFromCopy(s_k_text, formula[0]))
         self.wait(2)
+
         transformed_disk = disks[0]
         transformed_arc1 = dynamic_arcs[0]
         transformed_arc2 = dynamic_arcs[5]
         # changing disk in size
         step_size_one_direction = 20
-        s_k = [hex_n_ideal.polygon_points[0], hex_n_ideal.polygon_points[1], hex_n_ideal.polygon_points[2],
-               hex_n_ideal.polygon_points[3], hex_n_ideal.polygon_points[4], hex_n_ideal.polygon_points[5]]
         arc_k = [hex_n_ideal.arcs[0], hex_n_ideal.arcs[1], hex_n_ideal.arcs[2], hex_n_ideal.arcs[3],
                  hex_n_ideal.arcs[4], hex_n_ideal.arcs[5]]
 
         # transforming disk at s_0
         circle1_radii_transition = [circle_radius[0] * (
-                1 - t / step_size_one_direction) + .1 * t / step_size_one_direction
-                                    for t in range(step_size_one_direction)] + [
-                                       circle_radius[0] * t / step_size_one_direction + .1 * (
-                                               1 - t / step_size_one_direction)
-                                       for t in range(step_size_one_direction + 1)]
+                1 - t / step_size_one_direction) + .3 * t / step_size_one_direction
+                for t in range(step_size_one_direction)] + \
+            [circle_radius[0] * t / step_size_one_direction + .3 * (1 - t / step_size_one_direction)
+                for t in range(step_size_one_direction + 1)]
         num_steps = 2 * step_size_one_direction + 1
         for t in range(num_steps):
-            radius1 = circle1_radii_transition[t]
-            new_circle = Circle(radius1, arc_center=hex_n_ideal.polygon_points[0], color=GREEN_B, fill_opacity=.5,
-                                stroke_width=2)
+            hyperbolic_radius = circle1_radii_transition[t]
+            eucl_center, eucl_radius = hyperbolic_circle_to_euclidean_circle(hex_n_ideal.polygon_points[0], hyperbolic_radius)
+            new_circle = Circle(eucl_radius, arc_center=eucl_center, color=GREEN_B, fill_opacity=.5, stroke_width=2)
 
             # S_1 tilde
             moving_intersection1 = get_intersection_in_unit_circle_of_two_tangent_circles(arc_k[0].circle_center,
                                                                                           arc_k[0].radius,
-                                                                                          s_k[0], radius1)
-            intersection1 = get_intersection_in_unit_circle_of_two_tangent_circles(s_k[1],
-                                                                                   circle_radius[1],
+                                                                                          eucl_center, eucl_radius)
+            intersection1 = get_intersection_in_unit_circle_of_two_tangent_circles(euclidean_centers[1],
+                                                                                   euclidean_radii[1],
                                                                                    arc_k[0].circle_center,
                                                                                    arc_k[0].radius)
             arc_new1 = ArcBetweenPoints(intersection1, moving_intersection1, color=ORANGE,
                                         radius=arc_k[0].radius, stroke_width=2).reverse_direction()
-            # S_2 tilde
-            moving_intersection2 = get_intersection_in_unit_circle_of_two_tangent_circles(s_k[0], radius1,
+            # S_6 tilde
+            moving_intersection2 = get_intersection_in_unit_circle_of_two_tangent_circles(eucl_center, eucl_radius,
                                                                                           arc_k[5].circle_center,
-                                                                                          arc_k[5].radius, )
+                                                                                          arc_k[5].radius)
             intersection2 = get_intersection_in_unit_circle_of_two_tangent_circles(arc_k[5].circle_center,
                                                                                    arc_k[5].radius,
-                                                                                   s_k[5], circle_radius[5])
+                                                                                   euclidean_centers[5],
+                                                                                   euclidean_radii[5])
             arc_new2 = ArcBetweenPoints(moving_intersection2, intersection2, color=ORANGE,
                                         radius=arc_k[5].radius, stroke_width=2).reverse_direction()
             self.play(Transform(transformed_disk, new_circle), Transform(transformed_arc1, arc_new1),
                       Transform(transformed_arc2, arc_new2), rate_func=lambda a: a,
                       run_time=3 / num_steps)
         self.wait(7)
+
         # transforming all disks
         transformed_disks = VGroup(disks[0], disks[1], disks[2], disks[3], disks[4], disks[5])
         transformed_arcs = VGroup(dynamic_arcs[0], dynamic_arcs[1], dynamic_arcs[2], dynamic_arcs[3], dynamic_arcs[4],
@@ -375,15 +387,19 @@ class Scene3(MovingCameraScene):
                 self.wait(3)
                 self.remove(helping_dots)
             for i in range(0, 6):
-                radius1 = circle_radii_transition[t][i]
-                radius2 = circle_radii_transition[t][(i + 1) % 6]
+                hyperbolic_center1 = hex_n_ideal.polygon_points[i]
+                hyperbolic_radius1 = circle_radii_transition[t][i]
+                hyperbolic_center2 = hex_n_ideal.polygon_points[(i + 1) % 6]
+                hyperbolic_radius2 = circle_radii_transition[t][(i + 1) % 6]
+                eucl_center1, eucl_radius1 = hyperbolic_circle_to_euclidean_circle(hyperbolic_center1, hyperbolic_radius1)
+                eucl_center2, eucl_radius2 = hyperbolic_circle_to_euclidean_circle(hyperbolic_center2, hyperbolic_radius2)
                 new_circle_group.add(
-                    Circle(radius1, arc_center=hex_n_ideal.polygon_points[i], color=GREEN_B, fill_opacity=.5,
+                    Circle(eucl_radius1, arc_center=eucl_center1, color=GREEN_B, fill_opacity=.5,
                            stroke_width=2))
                 moving_intersection1 = get_intersection_in_unit_circle_of_two_tangent_circles(arc_k[i].circle_center,
-                                                                                              arc_k[i].radius, s_k[i],
-                                                                                              radius1)
-                moving_intersection2 = get_intersection_in_unit_circle_of_two_tangent_circles(s_k[(i + 1) % 6], radius2,
+                                                                                              arc_k[i].radius, eucl_center1,
+                                                                                              eucl_radius1)
+                moving_intersection2 = get_intersection_in_unit_circle_of_two_tangent_circles(eucl_center2, eucl_radius2,
                                                                                               arc_k[i].circle_center,
                                                                                               arc_k[i].radius)
                 arc_new1 = ArcBetweenPoints(moving_intersection2, moving_intersection1, color=ORANGE,
@@ -406,12 +422,12 @@ class Scene3(MovingCameraScene):
         step_size = 50
         new_disk_group = VGroup()
         new_arc_group = VGroup()
-        transition = create_radius_transition(radius=radius, step_size=step_size)
-        disk_transition = create_radius_transition(radius=radius, step_size=step_size, end_point=1 - circle_radius)
+        transition = create_radius_transition(start_point=radius, step_size=step_size)
+        disk_transition = create_radius_transition(start_point=np.linalg.norm(euclidean_centers, axis=1), step_size=step_size, end_point=1 - euclidean_radii)
         for t in range(1, step_size):
             hexagon_new = HyperbolicPolygon.from_polar(phis, transition[t], dot_radius=0.01, stroke_width=2)
             for i in range(0, 6):
-                circle = Circle(radius=circle_radius[i], arc_center=polar_to_point(phis[i], disk_transition[t][i]),
+                circle = Circle(radius=euclidean_radii[i], arc_center=polar_to_point(phis[i], disk_transition[t][i]),
                                 color=GREEN_B, fill_opacity=.5, stroke_width=2)
                 new_disk_group.add(circle)
                 # transforming orange s_k
@@ -421,10 +437,10 @@ class Scene3(MovingCameraScene):
                 moving_intersection1 = get_intersection_in_unit_circle_of_two_tangent_circles(
                     moving_arc.circle_center, moving_arc.radius,
                     polar_to_point(phis[i], disk_transition[t][i]),
-                    circle_radius[i])
+                    euclidean_radii[i])
                 intersection1 = get_intersection_in_unit_circle_of_two_tangent_circles(
                     polar_to_point(phis[(i + 1) % 6], disk_transition[t][(i + 1) % 6]),
-                    circle_radius[(i + 1) % 6], moving_arc.circle_center, moving_arc.radius)
+                    euclidean_radii[(i + 1) % 6], moving_arc.circle_center, moving_arc.radius)
                 arc_new = ArcBetweenPoints(intersection1, moving_intersection1, color=ORANGE,
                                            radius=moving_arc.radius, stroke_width=2).reverse_direction()
                 new_arc_group.add(arc_new)
