@@ -334,3 +334,40 @@ def moving_line(start_points, end_points):
     line3 = Line(start=start_points[2], end=end_points[2])
     line4 = Line(start=start_points[3], end=end_points[3])
     return [line1, line2, line3, line4]
+
+
+def hyperbolic_circle_to_euclidean_circle(center, radius):
+    eps = 0.001
+    x2min = 1
+    x2max = 1 / np.linalg.norm(center)
+    x1min = 0
+    x1max = 1
+
+    x1 = (x1max + x1min) / 2
+    curr_dist = hyperbolic_distance_function(x1 * center, center)
+    # print(f"center = {center}, radius = {radius}")
+    # i=0
+    while np.abs(curr_dist - radius) >= eps:
+        # print(f"x1 = {x1}, curr_dist = {curr_dist}, x1min = {x1min}, x1max = {x1max}")
+        if curr_dist < radius:
+            x1max = x1
+        else:
+            x1min = x1
+        x1 = (x1max + x1min) / 2
+
+        curr_dist = hyperbolic_distance_function(x1 * center, center)
+        # i += 1
+        # if i > 10: exit(0)
+
+    x2 = (x2max + x2min) / 2
+    curr_dist = hyperbolic_distance_function(x2 * center, center)
+    while np.abs(curr_dist - radius) >= eps:
+        if curr_dist < radius:
+            x2min = x2
+        else:
+            x2max = x2
+        x2 = (x2max + x2min) / 2
+
+        curr_dist = hyperbolic_distance_function(x2 * center, center)
+
+    return (x1 * center + x2 * center) / 2, np.linalg.norm(x1 * center - x2 * center) / 2

@@ -437,8 +437,8 @@ class Scene4(MovingCameraScene):
         y1_label = MathTex('Y_1', font_size=15).move_to([.35, -.2, 0])
         g1_label = MathTex('G_1', font_size=15).move_to([-.4, .2, 0])
         isometry_formula1 = MathTex('I_1(Y_1) = G_1', font_size=20).move_to([1.35, 0, 0], LEFT)
-        isometry_formula2 = MathTex('I_2(Y_1) = G_2', font_size=20).move_to([1.35, 0, 0], LEFT)
-        isometry_formula3 = MathTex('I_3(Y_1) = G_2', font_size=20).next_to(isometry_formula2, DOWN, buff=.1)
+        isometry_formula2 = MathTex('I_2(Y_2) = G_2', font_size=20).move_to([1.35, 0, 0], LEFT)
+        isometry_formula3 = MathTex('I_3(Y_3) = G_3', font_size=20).next_to(isometry_formula2, DOWN, buff=.1)
         self.play(Write(y1_label), Write(g1_label))
         self.play(self.camera.frame.animate.set(width=6),
                   ReplacementTransform(triangle1, triangle2), Write(isometry_formula1))
