@@ -28,32 +28,34 @@ class SevenCircles(MovingCameraScene):
 
         title = Text("The Seven Circles Theorem").scale(0.8)
 
-        theorem_text_white = Tex(r"Sei $C_0\ $ein Kreis ", r"und $C_1, \ldots, C_6$ in $C_0$ enthaltene Kreise, ",
-                                 "sodass jeder innere Kreis zu $C_0$ tangential ist ",
-                                 "und je zwei nebeneinanderliegende innere Kreise ebenfalls zueinander tangential sind. ",
-                                 "Dann treffen sich die drei Diagonalen des Hexagons, das von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildet wird, ",
-                                 "in einem Punkt.", "",
+        theorem_text_white = Tex(r"Let $C$ be a circle ", "containing six smaller circles, ",
+                                 "such that each inner circle is tangent to $C$ ",
+                                 "and any two adjacent inner circles are also tangent to each other. ",
+                                 "Let there also be a hexagon formed by the intersection points of each inner circle with $C$. ",
+                                 "Then the three main diagonals of the hexagon will always meet in a single point.", "",
                                  stroke_width=.05).scale(
             0.5).move_to([0, -2, 0])
 
-        theorem_text_colored = Tex(r"Sei $C_0\ $ein Kreis ", r"und $C_1, \ldots, C_6$ in $C_0$ enthaltene Kreise, ",
-                                   "sodass jeder innere Kreis zu $C_0$ tangential ist ",
-                                   "und je zwei nebeneinanderliegende innere Kreise ebenfalls zueinander tangential sind. ",
-                                   "Dann treffen sich die drei Diagonalen des Hexagons, das von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildet wird, ",
-                                   "in einem Punkt.", "",
-                                   substrings_to_isolate=[r"$C_0\ $", r"$C_1, \ldots, C_6$", "zu $C_0$ tangential",
-                                                          "nebeneinanderliegende innere Kreise ebenfalls zueinander tangential",
-                                                          "Diagonalen", "Hexagons", "Punkt"],
-                                   stroke_width=.05).set_color_by_tex(r"$C_0\ $",
+        theorem_text_colored = Tex(r"Let $C$ be a circle ", "containing six smaller circles, ",
+                                   "such that each inner circle is tangent to $C$ ",
+                                   "and any two adjacent inner circles are also tangent to each other. ",
+                                   "Let there also be a hexagon formed by the intersection points of each inner circle with $C$. ",
+                                   "Then the three main diagonals of the hexagon will always meet in a single point.",
+                                   "",
+                                   substrings_to_isolate=[r"$C$", "six smaller circles", "tangent to $C$",
+                                                          "adjacent inner circles are also tangent",
+                                                          "hexagon", "main diagonals", "single point"],
+                                   stroke_width=.05).set_color_by_tex(r"$C$",
                                                                       OUTER_CIRCLE_COLOR).set_color_by_tex(
-            r"$C_1, \ldots, C_6$",
+            "six smaller circles",
             INNER_CIRCLE_COLOR).set_color_by_tex(
-            "zu $C_0$ tangential",
+            "tangent to $C$",
             OUTER_INTERSECTION_COLOR).set_color_by_tex(
-            "nebeneinanderliegende innere Kreise ebenfalls zueinander tangential",
+            "adjacent inner circles are also tangent",
             INNER_INTERSECTION_COLOR).set_color_by_tex(
-            "Diagonalen", DIAGONAL_COLOR).set_color_by_tex(
-            "Hexagons", HEXAGON_COLOR).set_color_by_tex("Punkt", DIAGONAL_INTERSECTION_COLOR).scale(
+            "hexagon", HEXAGON_COLOR).set_color_by_tex(
+            "main diagonals", DIAGONAL_COLOR).set_color_by_tex(
+            "single point", DIAGONAL_INTERSECTION_COLOR).scale(
             0.5).move_to([0, -2, 0])
 
         circle = Circle(color=OUTER_CIRCLE_COLOR, stroke_width=2)
@@ -116,18 +118,20 @@ class SevenCircles(MovingCameraScene):
             "Dann treffen sich die drei Diagonalen des Hexagons, das von den Schnittpunkten der inneren Kreise mit dem äußeren Kreis gebildet wird,",
             duration=8)
 
-        self.play(Write(theorem_text_white[4]), run_time=8)
+        self.play(Write(theorem_text_white[4]), run_time=6)
 
-        self.play(Create(hexagon, run_time=5), FadeIn(theorem_text_colored[15], run_time=1))
-        self.play(FadeIn(theorem_text_colored[13]))
-        for x in diagonals:
-            self.play(Create(x), run_time=1)
+        self.play(Create(hexagon, run_time=5), FadeIn(theorem_text_colored[13]))
 
-        self.add_subcaption("in einem Punkt", duration=3)
+        self.add_subcaption("in einem Punkt", duration=7)
 
         self.play(Write(theorem_text_white[5]), run_time=3)
 
         self.play(FadeIn(theorem_text_colored[18], run_time=1))
+
+        for x in diagonals:
+            self.play(Create(x), run_time=1)
+
+        self.play(FadeIn(theorem_text_colored[22], run_time=1))
 
         self.play(Create(diagonal_intersection))
         self.wait(1)
