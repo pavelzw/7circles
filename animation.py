@@ -9,7 +9,7 @@ from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, \
     tf_klein_to_poincare, get_intersections_of_n_tangent_circles, get_intersections_of_circles_with_unit_circle, \
     get_intersection_from_angles, get_parallel_to_line_through_point, tf_poincare_to_klein, \
-    get_both_intersections_line_with_unit_circle, hyperbolic_distance_function, get_intersection
+    get_both_intersections_line_with_unit_circle, get_intersection, hyperbolic_distance_function
 from hexagon import HexagonCircles, HexagonMainDiagonals, HyperbolicArcBetweenPoints, HexagonAngles
 from hyperbolic_polygon import HyperbolicPolygon
 
@@ -272,13 +272,13 @@ class HyperbolicModelsPoincare(MovingCameraScene):
         MY_BLUE = "#22c1dd"
 
         title = MarkupText(
-            "Modelle für die hyperbolische Ebene").scale(
+            "Modesl for the hyperbolic plane").scale(
             0.8).shift(3.5 * UP)
 
         klein_model = ImageMobject("tessellation_klein.png").scale(0.7).move_to(klein_origin)
-        klein_text = Text("Klein-Modell").scale(0.6).move_to(3.5 * RIGHT + 2.2 * UP)
+        klein_text = Text("Klein model").scale(0.6).move_to(3.5 * RIGHT + 2.2 * UP)
         poincare_model = ImageMobject("tessellation_poincare.png").scale(0.7).move_to(poincare_origin)
-        poincare_text = Text("Poincaré-Modell").scale(0.6).move_to(3.5 * LEFT + 2.2 * UP)
+        poincare_text = Text("Poincaré model").scale(0.6).move_to(3.5 * LEFT + 2.2 * UP)
 
         p1 = np.array([[0., 0., 0.], [1.25, 0, 0], [0.78, 0.98, 0]])
         p2 = np.array([[-.28, 1.23, 0], [-1.12, 0.55, 0], [-1.12, 1.42, 0]])
@@ -308,10 +308,22 @@ class HyperbolicModelsPoincare(MovingCameraScene):
         ptri_size_text = Tex(r"$A(\Delta_1) = A(\Delta_2)$", font_size=35).next_to(pcircle, buff=.4)
 
         phis = [[0.4, 2], [1.3, 6], [3.5, 5], [4, 1.5]]
+        phis_as_points = [[polar_to_point(x), polar_to_point(y)] for [x, y] in phis]
 
-        p_geodesics_raw = [HyperbolicArcBetweenPoints(polar_to_point(x), polar_to_point(y)) for [x, y] in phis]
+        p_geodesics_raw = [HyperbolicArcBetweenPoints(x, y) for [x, y] in phis_as_points]
         p_geodesics = [geo.scale(scale_back).move_to(geo.get_center() * scale_back).shift(poincare_origin) for geo in
                        p_geodesics_raw]
+
+        right_angles = [[[Line(.925 * polar_to_point(x), .925 * polar_to_point(x - .08)),
+                          Line(.92 * polar_to_point(x - .08), polar_to_point(x - .08))],
+                         [Line(.925 * polar_to_point(y), .925 * polar_to_point(y - .08)),
+                          Line(.92 * polar_to_point(y - .08), polar_to_point(y - .08))]] for [x, y] in phis]
+
+        right_angles_shifted = [[[l1.scale(scale_back).move_to(l1.get_center() * scale_back).shift(poincare_origin),
+                                  l2.scale(scale_back).move_to(l2.get_center() * scale_back).shift(poincare_origin)],
+                                 [m1.scale(scale_back).move_to(m1.get_center() * scale_back).shift(poincare_origin),
+                                  m2.scale(scale_back).move_to(m2.get_center() * scale_back).shift(poincare_origin)]]
+                                for [[l1, l2], [m1, m2]] in right_angles]
 
         point_coords = [0, -0.3, 0]
         p_point = Dot(point_coords)
@@ -397,6 +409,23 @@ class HyperbolicModelsPoincare(MovingCameraScene):
         self.play(Create(p_geodesics[1]))
         self.play(Create(p_geodesics[2]))
         self.play(Create(p_geodesics[3]))
+
+        self.play(Create(right_angles_shifted[0][0][0], run_time=.2),
+                  Create(right_angles_shifted[0][1][0], run_time=.2))
+        self.play(Create(right_angles_shifted[0][0][1], run_time=.2),
+                  Create(right_angles_shifted[0][1][1], run_time=.2))
+        self.play(Create(right_angles_shifted[1][0][0], run_time=.2),
+                  Create(right_angles_shifted[1][1][0], run_time=.2))
+        self.play(Create(right_angles_shifted[1][0][1], run_time=.2),
+                  Create(right_angles_shifted[1][1][1], run_time=.2))
+        self.play(Create(right_angles_shifted[2][0][0], run_time=.2),
+                  Create(right_angles_shifted[2][1][0], run_time=.2))
+        self.play(Create(right_angles_shifted[2][0][1], run_time=.2),
+                  Create(right_angles_shifted[2][1][1], run_time=.2))
+        self.play(Create(right_angles_shifted[3][0][0], run_time=.2),
+                  Create(right_angles_shifted[3][1][0], run_time=.2))
+        self.play(Create(right_angles_shifted[3][0][1], run_time=.2),
+                  Create(right_angles_shifted[3][1][1], run_time=.2))
 
         self.wait(1)
 
@@ -552,15 +581,15 @@ class HyperbolicModelsKlein(MovingCameraScene):
         MY_BLUE = "#22c1dd"
 
         title = MarkupText(
-            "Modelle für die hyperbolische Ebene").scale(
+            "Models for the hyperbolic plane").scale(
             0.8).shift(3.5 * UP)
 
         klein_model = ImageMobject("tessellation_klein.png").scale(0.7).move_to(klein_origin)
-        klein_text = Text("Klein-Modell").scale(0.6).move_to(3.5 * RIGHT + 2.2 * UP)
+        klein_text = Text("Klein model").scale(0.6).move_to(3.5 * RIGHT + 2.2 * UP)
         poincare_model = ImageMobject("tessellation_poincare.png").scale(0.7).move_to(poincare_origin)
-        poincare_text = Text("Poincaré-Modell").scale(0.6).move_to(3.5 * LEFT + 2.2 * UP)
+        poincare_text = Text("Poincaré model").scale(0.6).move_to(3.5 * LEFT + 2.2 * UP)
 
-        title2 = Text("Transformationen zwischen hyperbolischen Modellen").scale(.75).shift(3.5 * UP)
+        title2 = Text("Transformations between hyperbolic models").scale(.75).shift(3.5 * UP)
 
         scale_back = 2.5
 
