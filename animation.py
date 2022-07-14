@@ -3,13 +3,13 @@ from manim import Circle, Dot, Create, FadeIn, Line, \
     Transform, MovingCameraScene, Flash, YELLOW, Text, UP, Write, \
     DOWN, Tex, WHITE, PURPLE, GREY, Uncreate, AnimationGroup, Unwrite, ImageMobject, LEFT, RIGHT, \
     MarkupText, Polygon, PI, DecimalNumber, ValueTracker, Arrow, VGroup, FadeOut, Indicate, \
-    ReplacementTransform, BLACK, VMobject, GREEN_B, ORANGE, DARK_GREY
+    ReplacementTransform, BLACK, VMobject, GREEN_B, ORANGE, DARK_GREY, RED
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, \
     tf_klein_to_poincare, get_intersections_of_n_tangent_circles, get_intersections_of_circles_with_unit_circle, \
     get_intersection_from_angles, get_parallel_to_line_through_point, tf_poincare_to_klein, \
-    get_both_intersections_line_with_unit_circle, hyperbolic_distance_function
+    get_both_intersections_line_with_unit_circle, hyperbolic_distance_function, get_intersection
 from hexagon import HexagonCircles, HexagonMainDiagonals, HyperbolicArcBetweenPoints, HexagonAngles
 from hyperbolic_polygon import HyperbolicPolygon
 
@@ -26,7 +26,7 @@ class SevenCircles(MovingCameraScene):
         DIAGONAL_COLOR = ORANGE
         DIAGONAL_INTERSECTION_COLOR = YELLOW
 
-        title = Text("Der Sieben-Kreise-Satz").scale(0.8)
+        title = Text("The Seven Circles Theorem").scale(0.8)
 
         theorem_text_white = Tex(r"Sei $C_0\ $ein Kreis ", r"und $C_1, \ldots, C_6$ in $C_0$ enthaltene Kreise, ",
                                  "sodass jeder innere Kreis zu $C_0$ tangential ist ",
@@ -162,9 +162,9 @@ class ParallelAxiom(MovingCameraScene):
     def construct(self):
         center = [0, 2, 0]
         left = -7
-        right = 7
+        right = 25
 
-        title = Text("Parallelenaxiom").scale(0.7).shift(5.4 * UP)
+        title = Text("Parallel axiom").scale(0.7).shift(5.4 * UP)
 
         g_fun = lambda x: -0.7 * x
         g_points = [[left, g_fun(left), 0], [right, g_fun(right), 0]]
@@ -186,13 +186,19 @@ class ParallelAxiom(MovingCameraScene):
         sim_h_points = [[[left, _(left), 0.], [right, _(right), 0.]] for _ in similar_funcs]
         similar_lines = [Line(_[0], _[1], stroke_width=1) for _ in sim_h_points]
 
+        intersection_points = [get_intersection(g_points[0], g_points[1],
+                                                [left, _(left), 0.], [right, _(right), 0.]) for _ in similar_funcs]
+        intersection_dots = [Dot(point=p, color=RED) for p in intersection_points]
+
         elements = [title, g, g_text, h, h_text, p, p_text, similar_lines[0], similar_lines[1],
-                    similar_lines[2],
-                    similar_lines[3]]
+                    similar_lines[2], similar_lines[3], intersection_dots[0],
+                    intersection_dots[1], intersection_dots[2], intersection_dots[3]]
 
         uncreate = AnimationGroup(*[Uncreate(i, run_time=1) for i in elements])
 
-        question = Text("Wie stellt man die hyperbolische Ebene im Euklidischen dar?").scale(0.65).move_to(center)
+        camera_shift = 1.7 * np.array([10, -7, 0])
+
+        question = Text("How can we represent the hyperbolic in the Euclidean plane?").scale(0.65).move_to(center)
 
         self.camera.frame.move_to(center)
         self.add_subcaption("Axiomatisch unterscheidet sich der hyperbolische Raum vom Euklidischen", duration=4)
@@ -226,13 +232,18 @@ class ParallelAxiom(MovingCameraScene):
         self.play(Create(similar_lines[1]))
         self.play(Create(similar_lines[2]))
         self.play(Create(similar_lines[3]))
+        for intersection_dot in intersection_dots:
+            self.add(intersection_dot)
 
         self.wait(6)
 
         self.add_subcaption(
             "Unsere Darstellung hier ist aber irreführend, denn natürlich wird g von allen außer der ursprünglichen Geraden h geschnitten, wenn wir ihnen nur lange genug folgen.",
             duration=10)
-        self.wait(10)
+        self.play(self.camera.frame.animate.shift(camera_shift),
+                  title.animate.shift(camera_shift),
+                  run_time=5)
+        self.wait(5)
         self.add_subcaption(
             "Allgemein haben wir das Problem, dass wir einen hyperbolischen Raum in der euklidischen Ebene - diesem Video - darstellen wollen.",
             duration=9)
@@ -241,7 +252,7 @@ class ParallelAxiom(MovingCameraScene):
             "Die Frage die wir jetzt angehen ist also: Wie stellt man die hyperbolische Ebene im Euklidischen dar?",
             duration=7)
         self.play(uncreate)
-        self.wait(1)
+        self.play(self.camera.frame.animate.move_to(center))
         self.play(Write(question))
         self.wait(3)
         self.play(Unwrite(question))
