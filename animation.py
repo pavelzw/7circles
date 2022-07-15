@@ -3,7 +3,7 @@ from manim import Circle, Dot, Create, FadeIn, Line, \
     Transform, MovingCameraScene, Flash, YELLOW, Text, UP, Write, \
     DOWN, Tex, WHITE, PURPLE, GREY, Uncreate, AnimationGroup, Unwrite, ImageMobject, LEFT, RIGHT, \
     MarkupText, Polygon, PI, DecimalNumber, ValueTracker, Arrow, VGroup, FadeOut, Indicate, \
-    ReplacementTransform, BLACK, VMobject, GREEN_B, ORANGE, DARK_GREY, RED
+    ReplacementTransform, BLACK, VMobject, GREEN_B, ORANGE, DARK_GREY, RED, LIGHT_GRAY
 
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
 from geometry_util import polar_to_point, \
@@ -272,7 +272,7 @@ class HyperbolicModelsPoincare(MovingCameraScene):
         MY_BLUE = "#22c1dd"
 
         title = MarkupText(
-            "Modesl for the hyperbolic plane").scale(
+            "Models for the hyperbolic plane").scale(
             0.8).shift(3.5 * UP)
 
         klein_model = ImageMobject("tessellation_klein.png").scale(0.7).move_to(klein_origin)
@@ -314,16 +314,23 @@ class HyperbolicModelsPoincare(MovingCameraScene):
         p_geodesics = [geo.scale(scale_back).move_to(geo.get_center() * scale_back).shift(poincare_origin) for geo in
                        p_geodesics_raw]
 
-        right_angles = [[[Line(.925 * polar_to_point(x), .925 * polar_to_point(x - .08)),
-                          Line(.92 * polar_to_point(x - .08), polar_to_point(x - .08))],
-                         [Line(.925 * polar_to_point(y), .925 * polar_to_point(y - .08)),
-                          Line(.92 * polar_to_point(y - .08), polar_to_point(y - .08))]] for [x, y] in phis]
+        angle_color = LIGHT_GRAY
+
+        right_angles = [[[Line(.925 * polar_to_point(x), .925 * polar_to_point(x - .08), color=angle_color),
+                          Dot(.925 * polar_to_point(x - .08), color=angle_color, radius=.008),
+                          Line(.92 * polar_to_point(x - .08), polar_to_point(x - .08), color=angle_color)],
+                         [Line(.925 * polar_to_point(y), .925 * polar_to_point(y - .08), color=angle_color),
+                          Dot(.925 * polar_to_point(y - .08), color=angle_color, radius=.008),
+                          Line(.92 * polar_to_point(y - .08), polar_to_point(y - .08), color=angle_color)]] for [x, y]
+                        in phis]
 
         right_angles_shifted = [[[l1.scale(scale_back).move_to(l1.get_center() * scale_back).shift(poincare_origin),
+                                  p.scale(scale_back).move_to(p.get_center() * scale_back).shift(poincare_origin),
                                   l2.scale(scale_back).move_to(l2.get_center() * scale_back).shift(poincare_origin)],
                                  [m1.scale(scale_back).move_to(m1.get_center() * scale_back).shift(poincare_origin),
+                                  q.scale(scale_back).move_to(q.get_center() * scale_back).shift(poincare_origin),
                                   m2.scale(scale_back).move_to(m2.get_center() * scale_back).shift(poincare_origin)]]
-                                for [[l1, l2], [m1, m2]] in right_angles]
+                                for [[l1, p, l2], [m1, q, m2]] in right_angles]
 
         point_coords = [0, -0.3, 0]
         p_point = Dot(point_coords)
@@ -410,22 +417,33 @@ class HyperbolicModelsPoincare(MovingCameraScene):
         self.play(Create(p_geodesics[2]))
         self.play(Create(p_geodesics[3]))
 
-        self.play(Create(right_angles_shifted[0][0][0], run_time=.2),
-                  Create(right_angles_shifted[0][1][0], run_time=.2))
-        self.play(Create(right_angles_shifted[0][0][1], run_time=.2),
-                  Create(right_angles_shifted[0][1][1], run_time=.2))
-        self.play(Create(right_angles_shifted[1][0][0], run_time=.2),
-                  Create(right_angles_shifted[1][1][0], run_time=.2))
-        self.play(Create(right_angles_shifted[1][0][1], run_time=.2),
-                  Create(right_angles_shifted[1][1][1], run_time=.2))
-        self.play(Create(right_angles_shifted[2][0][0], run_time=.2),
-                  Create(right_angles_shifted[2][1][0], run_time=.2))
-        self.play(Create(right_angles_shifted[2][0][1], run_time=.2),
-                  Create(right_angles_shifted[2][1][1], run_time=.2))
-        self.play(Create(right_angles_shifted[3][0][0], run_time=.2),
-                  Create(right_angles_shifted[3][1][0], run_time=.2))
-        self.play(Create(right_angles_shifted[3][0][1], run_time=.2),
-                  Create(right_angles_shifted[3][1][1], run_time=.2))
+        self.add_foreground_mobjects(*p_geodesics)
+
+        self.play(Create(right_angles_shifted[0][0][0]),
+                  Create(right_angles_shifted[0][1][0]),
+                  Create(right_angles_shifted[1][0][0]),
+                  Create(right_angles_shifted[1][1][0]),
+                  Create(right_angles_shifted[2][0][0]),
+                  Create(right_angles_shifted[2][1][0]),
+                  Create(right_angles_shifted[3][0][0]),
+                  Create(right_angles_shifted[3][1][0]), rate_func=lambda x: x)
+
+        self.play(Create(right_angles_shifted[0][0][1]),
+                  Create(right_angles_shifted[0][1][1]),
+                  Create(right_angles_shifted[1][0][1]),
+                  Create(right_angles_shifted[1][1][1]),
+                  Create(right_angles_shifted[2][0][1]),
+                  Create(right_angles_shifted[2][1][1]),
+                  Create(right_angles_shifted[3][0][1]),
+                  Create(right_angles_shifted[3][1][1]),
+                  Create(right_angles_shifted[0][0][2]),
+                  Create(right_angles_shifted[0][1][2]),
+                  Create(right_angles_shifted[1][0][2]),
+                  Create(right_angles_shifted[1][1][2]),
+                  Create(right_angles_shifted[2][0][2]),
+                  Create(right_angles_shifted[2][1][2]),
+                  Create(right_angles_shifted[3][0][2]),
+                  Create(right_angles_shifted[3][1][2]), rate_func=lambda x: x) # todo change rate_func
 
         self.wait(1)
 
@@ -436,8 +454,33 @@ class HyperbolicModelsPoincare(MovingCameraScene):
 
         self.add_subcaption("Damit wird klar, dass das Parallelenaxiom hier nicht gilt:", duration=4)
 
-        self.play(Uncreate(p_geodesics[1], run_time=3), Uncreate(p_geodesics[2], run_time=3),
-                  Uncreate(p_geodesics[3], run_time=3), Create(p_point, run_time=1),
+        self.play(Uncreate(right_angles_shifted[0][0][0]),
+                  Uncreate(right_angles_shifted[0][1][0]),
+                  Uncreate(right_angles_shifted[1][0][0]),
+                  Uncreate(right_angles_shifted[1][1][0]),
+                  Uncreate(right_angles_shifted[2][0][0]),
+                  Uncreate(right_angles_shifted[2][1][0]),
+                  Uncreate(right_angles_shifted[3][0][0]),
+                  Uncreate(right_angles_shifted[3][1][0]),
+                  Uncreate(right_angles_shifted[0][0][1]),
+                  Uncreate(right_angles_shifted[0][1][1]),
+                  Uncreate(right_angles_shifted[1][0][1]),
+                  Uncreate(right_angles_shifted[1][1][1]),
+                  Uncreate(right_angles_shifted[2][0][1]),
+                  Uncreate(right_angles_shifted[2][1][1]),
+                  Uncreate(right_angles_shifted[3][0][1]),
+                  Uncreate(right_angles_shifted[3][1][1]),
+                  Uncreate(right_angles_shifted[0][0][2]),
+                  Uncreate(right_angles_shifted[0][1][2]),
+                  Uncreate(right_angles_shifted[1][0][2]),
+                  Uncreate(right_angles_shifted[1][1][2]),
+                  Uncreate(right_angles_shifted[2][0][2]),
+                  Uncreate(right_angles_shifted[2][1][2]),
+                  Uncreate(right_angles_shifted[3][0][2]),
+                  Uncreate(right_angles_shifted[3][1][2]))
+
+        self.play(Uncreate(p_geodesics[1], run_time=2), Uncreate(p_geodesics[2], run_time=2),
+                  Uncreate(p_geodesics[3], run_time=2), Create(p_point, run_time=1),
                   Write(p_point_text, run_time=1))
 
         self.wait(2)
@@ -857,12 +900,12 @@ class SevenCirclesHyperbolic(MovingCameraScene):
         DIAGONAL_COLOR = ORANGE
         DIAGONAL_INTERSECTION_COLOR = YELLOW
 
-        title = Text("The hyperbolic Seven Circle Theorem").scale(0.8)
+        title = Text("The hyperbolic Seven Circles Theorem").scale(0.8)
 
-        theorem_text_colored = Tex(r"Let $C\ $ be a circle ", r"containing six smaller circles, ",
+        theorem_text_colored = Tex(r"Let $C\ $be a circle ", r"containing six smaller circles, ",
                                    r"such that each inner circle is tangent to $C$ ",
                                    "and any two adjacent inner circles are tangent. ",
-                                   r"Let there also be a hyperbolic hexagon formed by the intersection points of each inner cicle and $C$.",
+                                   r"Let there also be a hyperbolic hexagon formed by the intersection points of each inner cicle and $C$. ",
                                    "Then the three hyperbolic diagonals will always meet at a single point.", "",
                                    substrings_to_isolate=[r"$C\ $", r"six smaller circles", r"tangent to $C$",
                                                           "adjacent inner circles are tangent",
