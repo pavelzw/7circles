@@ -23,9 +23,9 @@ class Scene1(MovingCameraScene):
         def_dist_hyp = MathTex(r'\mathrm{dist_h}(b,c)=\log \frac{(a-c)(b-d)}{(a-b)(c-d)}', font_size=20).move_to(
             [2, -1.45, 0])
         radius_tex = MathTex(r'r', font_size=18, color=RED)
-        title_hyp = Tex(r'Hyperbolischer Raum', font_size=25, stroke_width=.5).move_to([2, 1.7, 0])
-        subtitle_hyp = Tex(r'Poincar\'{e}-Modell', font_size=18, stroke_width=.5).move_to([2, 1.5, 0])
-        title_eucl = Tex(r'Euklidischer Raum', font_size=25, stroke_width=.5).move_to([-2, 1.7, 0])
+        title_hyp = Tex(r'Hyperbolic space', font_size=25, stroke_width=.5).move_to([2, 1.7, 0])
+        subtitle_hyp = Tex(r'Poincaré model', font_size=18, stroke_width=.5).move_to([2, 1.5, 0])
+        title_eucl = Tex(r'Euclidean space', font_size=25, stroke_width=.5).move_to([-2, 1.7, 0])
         black_background = Rectangle(width=3, height=.5, color=BLACK, fill_opacity=1).move_to([0, -1.9, 0])
         white_rectangle = Rectangle(width=3, height=.5, color=WHITE, stroke_width=2).move_to([0, -1.9, 0])
         self.play(Write(title_hyp))
@@ -74,7 +74,7 @@ class Scene1(MovingCameraScene):
         dot.add_updater(go_around_circle)
         origin_to_circle_line = always_redraw(get_line_to_circle)
         self.play(Create(radius_red),
-                  FadeIn(radius_tex.next_to(radius_red, direction=0.3 * UP)))  # todo incorrect animation
+                  FadeIn(radius_tex.next_to(radius_red, direction=0.3 * UP)))
         # in quality k: weird animation, but 1.5165 correct, in quality h: 1.5165 incorrect timing, but animation correct
 
         self.wait(1)
