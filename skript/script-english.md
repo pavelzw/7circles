@@ -230,7 +230,7 @@ If we let n go towards infinity, this equality still holds.
 
 But since the lengths S_k^~ are now finite, we have actually found a meaningful calculation for the alternating perimeter.
 
-### Main result (T_P)
+### Main result i
 
 Now let's consider an ideal hexagon.
 
@@ -242,6 +242,8 @@ We now prove the following equality:
 
 For any ideal hexagon, the absolute value of the alternating perimeter is exactly twice the perimeter of T_P.
 
+### Main result ii
+
 For the proof we first define the notion of a semi-ideal triangle.
 
 It has two corners on the boundary of the circle - i.e., ideal points - and one corner in the hyperbolic plane.
@@ -251,6 +253,8 @@ In our ideal hexagon there are three such triangles: Y_1, Y_2 and Y_3.
 Three other semi-ideal triangles which intersect the inner triangle T_P can be found opposite to the Y_k triangles.
 
 We call them G_1, G_2 and G_3.
+
+### Main result iii
 
 For hyperbolic triangles we define a notion similar to the alternating perimeter.
 
@@ -262,7 +266,9 @@ the red one.
 The alternating perimeter does not depend on the size of each circle, since the same length is both added and
 subtracted.
 
-The triangles G_k and Y_k each share exactly one vertex for k = 1, ..., 3.
+### Main result iv
+
+The triangles G_k and Y_k each share exactly one vertex for k = 1, 2 and 3.
 
 In each case, there is an isometry I_k that maps opposite triangles onto each other.
 
@@ -277,6 +283,8 @@ Therefore, we can simply perform a point reflection at the origin, transforming 
 
 Of course, the whole thing works not only for the first pair of triangles, but for all three of them.
 
+### Main result v
+
 Since we have an isometry between the two triangles, their alternating perimeter is the same.
 
 We can write these formulas explicitly for all three pairs of triangles and bring the perimeter of G_k to the other
@@ -285,6 +293,8 @@ side.
 By adding everything together, we obtain the following formula.
 
 But what does this sum actually represent?
+
+### Main result vi
 
 Let's look at the sum in the picture.
 
@@ -297,7 +307,7 @@ Overall, our equality follows.
 
 ### Final proof (epic)
 
-Now we are finally ready to prove the Seven-Circles-Theorem.
+Now we are finally ready to prove the Seven Circles Theorem.
 
 Let's look at an ideal hyperbolic hexagon with circles tangent to the large circle such that adjacent circles touch at a
 single point.

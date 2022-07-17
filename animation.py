@@ -1,3 +1,5 @@
+from itertools import product
+
 import numpy as np
 from manim import Circle, Dot, Create, FadeIn, Line, \
     Transform, MovingCameraScene, Flash, YELLOW, Text, UP, Write, \
@@ -419,33 +421,15 @@ class HyperbolicModelsPoincare(MovingCameraScene):
 
         self.add_foreground_mobjects(*p_geodesics)
 
-        self.play(Create(right_angles_shifted[0][0][0]),
-                  Create(right_angles_shifted[0][1][0]),
-                  Create(right_angles_shifted[1][0][0]),
-                  Create(right_angles_shifted[1][1][0]),
-                  Create(right_angles_shifted[2][0][0]),
-                  Create(right_angles_shifted[2][1][0]),
-                  Create(right_angles_shifted[3][0][0]),
-                  Create(right_angles_shifted[3][1][0]), rate_func=lambda x: x)
+        self.play(*[Create(right_angles_shifted[i][j][0]) for i, j in product(range(4), range(2))],
+                  run_time=0.5,
+                  rate_func=lambda x: x)
 
-        self.play(Create(right_angles_shifted[0][0][1]),
-                  Create(right_angles_shifted[0][1][1]),
-                  Create(right_angles_shifted[1][0][1]),
-                  Create(right_angles_shifted[1][1][1]),
-                  Create(right_angles_shifted[2][0][1]),
-                  Create(right_angles_shifted[2][1][1]),
-                  Create(right_angles_shifted[3][0][1]),
-                  Create(right_angles_shifted[3][1][1]),
-                  Create(right_angles_shifted[0][0][2]),
-                  Create(right_angles_shifted[0][1][2]),
-                  Create(right_angles_shifted[1][0][2]),
-                  Create(right_angles_shifted[1][1][2]),
-                  Create(right_angles_shifted[2][0][2]),
-                  Create(right_angles_shifted[2][1][2]),
-                  Create(right_angles_shifted[3][0][2]),
-                  Create(right_angles_shifted[3][1][2]), rate_func=lambda x: x) # todo change rate_func
+        self.add(*[right_angles_shifted[i][j][1] for i, j in product(range(4), range(2))])
 
-        self.wait(1)
+        self.play(*[Create(right_angles_shifted[i][j][2]) for i, j in product(range(4), range(2))],
+                  run_time=0.5,
+                  rate_func=lambda x: x)
 
         self.add_subcaption("Kreissegmente, die den Einheitskreis im rechten Winkel schneiden",
                             duration=4)
@@ -454,30 +438,15 @@ class HyperbolicModelsPoincare(MovingCameraScene):
 
         self.add_subcaption("Damit wird klar, dass das Parallelenaxiom hier nicht gilt:", duration=4)
 
-        self.play(Uncreate(right_angles_shifted[0][0][0]),
-                  Uncreate(right_angles_shifted[0][1][0]),
-                  Uncreate(right_angles_shifted[1][0][0]),
-                  Uncreate(right_angles_shifted[1][1][0]),
-                  Uncreate(right_angles_shifted[2][0][0]),
-                  Uncreate(right_angles_shifted[2][1][0]),
-                  Uncreate(right_angles_shifted[3][0][0]),
-                  Uncreate(right_angles_shifted[3][1][0]),
-                  Uncreate(right_angles_shifted[0][0][1]),
-                  Uncreate(right_angles_shifted[0][1][1]),
-                  Uncreate(right_angles_shifted[1][0][1]),
-                  Uncreate(right_angles_shifted[1][1][1]),
-                  Uncreate(right_angles_shifted[2][0][1]),
-                  Uncreate(right_angles_shifted[2][1][1]),
-                  Uncreate(right_angles_shifted[3][0][1]),
-                  Uncreate(right_angles_shifted[3][1][1]),
-                  Uncreate(right_angles_shifted[0][0][2]),
-                  Uncreate(right_angles_shifted[0][1][2]),
-                  Uncreate(right_angles_shifted[1][0][2]),
-                  Uncreate(right_angles_shifted[1][1][2]),
-                  Uncreate(right_angles_shifted[2][0][2]),
-                  Uncreate(right_angles_shifted[2][1][2]),
-                  Uncreate(right_angles_shifted[3][0][2]),
-                  Uncreate(right_angles_shifted[3][1][2]))
+        self.play(*[Uncreate(right_angles_shifted[i][j][2]) for i, j in product(range(4), range(2))],
+                  run_time=0.5,
+                  rate_func=lambda x: 1 - x)  # inverse rate_func
+
+        self.remove(*[right_angles_shifted[i][j][1] for i, j in product(range(4), range(2))])
+
+        self.play(*[Uncreate(right_angles_shifted[i][j][0]) for i, j in product(range(4), range(2))],
+                  run_time=0.5,
+                  rate_func=lambda x: 1 - x)
 
         self.play(Uncreate(p_geodesics[1], run_time=2), Uncreate(p_geodesics[2], run_time=2),
                   Uncreate(p_geodesics[3], run_time=2), Create(p_point, run_time=1),
