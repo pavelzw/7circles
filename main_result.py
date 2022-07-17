@@ -62,7 +62,7 @@ class Scene1(MovingCameraScene):
         self.play(Create(hexagon_colored), run_time=6)
         self.remove(hexagon)
 
-        proposition = Tex(r'Für jedes ideale Hexagon $P$ gilt:', font_size=11).move_to([1.9, .1, 0])
+        proposition = Tex(r'For any ideal hexagon $P$:', font_size=11).move_to([1.9, .1, 0])
         formula = altper, equal, per = VGroup(MathTex(r'\mathrm{altPer}(P)', font_size=11),
                                               MathTex(r'= \pm 2 \cdot ', font_size=11),
                                               MathTex(r'\mathrm{Per}(T_P)', font_size=11)).arrange(buff=.05)
