@@ -305,7 +305,7 @@ class Scene3(MovingCameraScene):
             self.play(Create(arc_new), Write(s_k_text[k], stroke_width=.5))
             if k == 0:
                 distance_text, distance_number = label = VGroup(
-                    Tex(r'$\mathrm{length}(\tilde{S_1})=$', font_size=20),
+                    Tex(r'$\tilde{S_1}=$', font_size=20),
                     DecimalNumber(np.exp(hyperbolic_distance_function(intersection2, intersection1)),
                                   num_decimal_places=2, show_ellipsis=True, group_with_commas=False,
                                   font_size=20)).arrange(buff=.05).move_to([2.4, 0, 0])
