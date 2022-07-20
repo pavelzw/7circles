@@ -894,10 +894,10 @@ class SevenCirclesHyperbolic(MovingCameraScene):
             "single point", DIAGONAL_INTERSECTION_COLOR).scale(
             0.5).move_to([0, -2, 0])
 
-        theorem_text_white = Tex(r"Let $C\ $ be a circle ", r"containing six smaller circles, ",
+        theorem_text_white = Tex(r"Let $C\ $be a circle ", r"containing six smaller circles, ",
                                  r"such that each inner circle is tangent to $C$ ",
                                  "and any two adjacent inner circles are tangent. ",
-                                 r"Let there also be a hyperbolic hexagon formed by the intersection points of each inner cicle and $C$.",
+                                 r"Let there also be a hyperbolic hexagon formed by the intersection points of each inner cicle and $C$. ",
                                  "Then the three hyperbolic diagonals will always meet at a single point.", "",
                                  stroke_width=.05).scale(
             0.5).move_to([0, -2, 0])
