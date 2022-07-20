@@ -662,7 +662,7 @@ class HyperbolicModelsKlein(MovingCameraScene):
             poincare_origin + 1.5 * LEFT)
         p_geo0_copy = p_geo0.copy()
 
-        p_geo1 = p_geodesics[2].copy()
+        p_geo1 = p_geodesics[1].copy()
         p_geo1 = p_geo1.shift(-poincare_origin).scale(0.7).move_to(p_geo1.get_center() * 0.7).shift(
             poincare_origin + 1.5 * LEFT)
 
@@ -670,10 +670,20 @@ class HyperbolicModelsKlein(MovingCameraScene):
         k_geo0 = k_geo0.shift(-klein_origin).scale(0.7).move_to(k_geo0.get_center() * 0.7).shift(
             klein_origin + 1.5 * RIGHT)
 
-        k_geo1 = k_geodesics[2].copy()
+        k_geo1 = k_geodesics[1].copy()
         k_geo1 = k_geo1.shift(-klein_origin).scale(0.7).move_to(k_geo1.get_center() * 0.7).shift(
             klein_origin + 1.5 * RIGHT)
         k_geo1_copy = k_geo1.copy()
+
+        k_geo_intersect_coords = get_intersection_from_angles(phis[0][0], phis[0][1], phis[1][0], phis[1][1])
+        p_geo_intersect_coords = tf_klein_to_poincare(k_geo_intersect_coords)
+
+        k_geo_intersect_raw = Dot(k_geo_intersect_coords, color=YELLOW, radius=.075)
+        k_geo_intersect_moved = k_geo_intersect_raw.move_to(k_geo_intersect_raw.get_center() * 1.75).shift(
+            klein_origin + 1.5 * RIGHT)
+        p_geo_intersect_raw = Dot(p_geo_intersect_coords, color=YELLOW, radius=.075)
+        p_geo_intersect_moved = p_geo_intersect_raw.move_to(p_geo_intersect_raw.get_center() * 1.75).shift(
+            poincare_origin + 1.5 * LEFT)
 
         self.add(title, poincare_text, poincare_model, klein_text, klein_model)
 
@@ -844,7 +854,12 @@ class HyperbolicModelsKlein(MovingCameraScene):
             "bleiben Schnittpunkte zwischen Geodätischen erhalten.",
             duration=6)
 
-        self.wait(6)
+        self.wait(2)
+
+        self.play(Create(k_geo_intersect_moved), Create(p_geo_intersect_moved),
+                  Flash(k_geo_intersect_moved), Flash(p_geo_intersect_moved))
+
+        self.wait(3)
 
         self.add_subcaption("Das liefert uns jetzt die folgende Umformulierung des Sieben-Kreise-Satzes.", duration=4)
 
