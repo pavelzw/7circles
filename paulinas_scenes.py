@@ -35,8 +35,8 @@ class Scene1(MovingCameraScene):
         self.camera.frame.width = 9
 
         # showing four random non ideal hexagons and an ideal hexagon
-        text_non_ideal_ideal = VGroup(Tex(r'nichtideales\, Sechseck', font_size=20, color=BLUE, stroke_width=1),
-                                      Tex(r'ideales\, Sechseck', font_size=20, color=GREEN_B,
+        text_non_ideal_ideal = VGroup(Tex(r'nonideal\, hexagon', font_size=20, color=BLUE, stroke_width=1),
+                                      Tex(r'ideal\, hexagon', font_size=20, color=GREEN_B,
                                           stroke_width=1)).arrange(aligned_edge=LEFT, direction=DOWN)
         position = [[-3, 1.3, 0], [0, 1.3, 0], [3, 1.3, 0], [-3, -1.3, 0], [0, -1.3, 0], [3, -1.3, 0]]
         fixed_phis = [[.2, 1.5, 1.8, 4, 4.8, 6], [.5, 1.5, 2.4, 3.2, 4, 5], [1, 1.8, 2.5, 3.3, 3.8, 5.5],
