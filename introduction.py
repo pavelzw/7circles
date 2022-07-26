@@ -1,12 +1,18 @@
 import numpy as np
-from manim import MovingCameraScene, WHITE, GREEN_B, PURPLE, DARK_GREY, GREY, ORANGE, YELLOW, Circle, Dot, \
-    FadeIn, Write, Create, MathTex, LEFT, ReplacementTransform, DOWN, FadeOut, Transform, ImageMobject, Line, RIGHT, \
-    Arrow, VGroup, VMobject, DecimalNumber, ArcBetweenPoints, GREY_B
+from manim import MovingCameraScene, Rectangle, WHITE, GREEN_B, PURPLE, DARK_GREY, GREY, ORANGE, YELLOW, Circle, Dot, \
+    FadeIn, Write, Create, Flash, RED, BLUE, MathTex, LEFT, ReplacementTransform, GREEN_E, PURPLE_E, DOWN, Group, \
+    Square, FadeOut, Transform, TransformFromCopy, ImageMobject, Polygon, Line, UP, RIGHT, Arrow, VGroup, Uncreate, \
+    VMobject, BLACK, DecimalNumber, ArcBetweenPoints, GREY_B, always_redraw, BLUE_A, BLUE_E, MoveAlongPath, Arc
 
 from animation_constants import OUTER_CIRCLE_STROKE_WIDTH, HEXAGON_STROKE_WIDTH
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
-from geometry_util import get_intersection_from_angles, get_intersection_in_unit_circle_of_two_tangent_circles, \
-    hyperbolic_circle_to_euclidean_circle, hyperbolic_distance_function, polar_to_point
+from geometry_util import get_intersection_from_angles, moving_line, moving_circle, \
+    hyperbolic_circle_to_euclidean_circle
+from hexagon import HexagonAngles, HexagonCircles
+from geometry_util import get_intersections_of_n_tangent_circles, get_intersections_of_circles_with_unit_circle, \
+    get_intersection_from_angles, get_intersection_points_of_n_tangent_circles, \
+    get_intersection_in_unit_circle_of_two_tangent_circles, polar_to_point, \
+    get_both_intersections_line_with_unit_circle, tf_klein_to_poincare, hyperbolic_distance_function
 from hexagon import HexagonAngles, HexagonCircles, HexagonMainDiagonals
 from hexagon_util import create_radius_transition
 from hyperbolic_polygon import HyperbolicPolygon, HyperbolicArcBetweenPoints
@@ -20,8 +26,6 @@ class Rectangles(MovingCameraScene):
 
 class Scene1(MovingCameraScene):
     def construct(self):
-        # todo create different hexagons
-
         self.camera.frame.scale(.3)
         OUTER_CIRCLE_COLOR = WHITE
         INNER_CIRCLE_COLOR = GREEN_B
@@ -45,7 +49,7 @@ class Scene1(MovingCameraScene):
 
         frame_rate = 60
         frame_time = 1 / 60
-        run_time = 2
+        run_time = 4
         frames = run_time * frame_rate
 
         i = 0
@@ -453,4 +457,90 @@ class Scene5(MovingCameraScene):
 
 class Scene6(MovingCameraScene):
     def construct(self):
-        pass
+        self.camera.frame.width = 4
+
+        self.wait(2)
+
+        center = [0, 0, 0]
+        start_points = np.array([center, center, center, center])
+        length = [1 / 2, 1 / 2, -3 / 2]  # 1 is 1 unit to the left, -3 is 3 units to the right, way of circles moving
+        angles = [0, np.pi / 4, 4 * np.pi / 3]
+        outer_circle = Circle(color=WHITE, radius=1, stroke_width=HEXAGON_STROKE_WIDTH).move_to(center)
+        self.add_foreground_mobjects(outer_circle)
+        circle = [Dot(color=WHITE, radius=0.04), Circle(color=BLUE_A, radius=0.25, stroke_width=2),
+                  Circle(color=BLUE, radius=.5, stroke_width=2), Circle(color=BLUE_E, radius=0.75, stroke_width=2)]
+        # circle[0] is dot, circle[1] is smallest circle, circle[2] is middle circle, circle[3] is biggest circle
+        Group(circle[0], circle[1], circle[2], circle[3]).move_to(center)
+
+        # todo from here on
+
+        self.play(FadeIn(outer_circle, circle[0]))
+        self.add_foreground_mobjects(circle[0])
+        # self.wait(2)
+        self.play(Create(circle[1]), Create(circle[2]), Create(circle[3]))
+        # self.wait(2)
+
+        # circles moving along a line 3 times
+        for t in range(3):
+            end_points = np.array([start_points[0] - [1 * length[t], 0, 0],
+                                   start_points[1] - [0.75 * length[t], 0, 0],
+                                   start_points[2] - [0.5 * length[t], 0, 0],
+                                   start_points[3] - [0.25 * length[t], 0, 0]])
+            lines = moving_line(start_points, end_points)
+            self.play(MoveAlongPath(circle[0], lines[0]), MoveAlongPath(circle[3], lines[3]),  # hyperbolic
+                      MoveAlongPath(circle[2], lines[2]), MoveAlongPath(circle[1], lines[1]))
+            # self.wait(1)
+            start_points = end_points
+
+        # circles moving along part circle twice
+        for t in range(2):
+            arcs = moving_circle(angles[t], angles[t + 1], center)
+            self.play(MoveAlongPath(circle[0], arcs[0]), MoveAlongPath(circle[3], arcs[1]),
+                      MoveAlongPath(circle[2], arcs[2]), MoveAlongPath(circle[1], arcs[3]))
+            # self.wait(1)
+
+        self.wait(1)
+        self.play(*[FadeOut(mob) for mob in self.mobjects])
+
+
+class Scene6Unused(MovingCameraScene):
+    def construct(self):
+        # Labels
+        s_1 = MathTex('S_1', color=BLUE, font_size=15).move_to([0.15, .5, 0])
+        s_2 = MathTex('S_2', color=BLUE, font_size=15).move_to([-.6, .45, 0])
+        s_2_red = MathTex('S_2', color=RED, font_size=15).move_to([-.6, .45, 0])
+        s_3 = MathTex('S_3', color=BLUE, font_size=15).move_to([-.7, -0.1, 0])
+        s_4 = MathTex('S_4', color=BLUE, font_size=15).move_to([-.1, -0.6, 0])
+        s_4_red = MathTex('S_4', color=RED, font_size=15).move_to([-.1, -0.6, 0])
+        s_5 = MathTex('S_5', color=BLUE, font_size=15).move_to([0.4, -.55, 0])
+        s_6 = MathTex('S_6', color=BLUE, font_size=15).move_to([.6, 0, 0])
+        s_6_red = MathTex('S_6', color=RED, font_size=15).move_to([.6, 0, 0])
+        s_k = [s_1, s_2, s_3, s_4, s_5, s_6]
+        s_k_colored = [s_1, s_2_red, s_3, s_4_red, s_5, s_6_red]
+        formula_size = 15
+
+        self.camera.frame.width = 6
+        circle = Circle(color=WHITE, stroke_width=HEXAGON_STROKE_WIDTH)
+
+        self.wait(1)
+        # creating our nonideal hexagon
+        radius = [0.5, 0.7, 0.6, 0.7, 0.5, 0.6]
+        phis = [0.47654, 2.065432, 2.876, 3.87623, 5.024, 5.673]
+
+        hexagon = HyperbolicPolygon.from_polar(phis, radius, dot_radius=0.01, stroke_width=2)
+        hex_name = MathTex('P', font_size=15).move_to([0.6, 0.4, 0])
+
+        self.play(FadeIn(circle, hexagon), Write(hex_name))
+        self.wait(2)
+
+        arc = HyperbolicPolygon.from_polar(phis, radius, dot_radius=0.01, color=BLUE, stroke_width=2).arcs
+        dots = hexagon.dots
+        # Kantenbeschriftung
+        dots[-1].set_color(BLUE)
+        for i in range(0, 6):
+            dots[i].set_color(BLUE)
+            self.play(Create(arc[i]), Write(s_k[i], stroke_width=.5),
+                      rate_func=lambda a: a, run_time=1)
+
+        self.wait(2)
+        self.play(FadeOut(*self.mobjects))
