@@ -2,9 +2,12 @@ import numpy as np
 from manim import MovingCameraScene, Rectangle, WHITE, GREEN_B, PURPLE, DARK_GREY, GREY, ORANGE, YELLOW, Circle, Dot, \
     FadeIn, Write, Create, Flash, RED, BLUE, MathTex, LEFT, ReplacementTransform, GREEN_E, PURPLE_E, DOWN, Group, \
     Square, FadeOut, Transform, TransformFromCopy
+from manim import MovingCameraScene, WHITE, GREEN_B, PURPLE, DARK_GREY, GREY, ORANGE, YELLOW, Circle, Dot, Transform
 
 from animation_constants import OUTER_CIRCLE_COLOR, OUTER_CIRCLE_STROKE_WIDTH, HEXAGON_STROKE_WIDTH
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
+from geometry_util import get_intersection_from_angles
+from hexagon import HexagonAngles, HexagonCircles
 from geometry_util import get_intersections_of_n_tangent_circles, get_intersections_of_circles_with_unit_circle, \
     get_intersection_from_angles, get_intersection_points_of_n_tangent_circles, \
     get_intersection_in_unit_circle_of_two_tangent_circles
@@ -21,6 +24,7 @@ class Rectangles(MovingCameraScene):
 class Scene1(MovingCameraScene):
     def construct(self):
         # todo create different hexagons
+
         self.camera.frame.scale(.3)
         OUTER_CIRCLE_COLOR = WHITE
         INNER_CIRCLE_COLOR = GREEN_B
@@ -31,45 +35,111 @@ class Scene1(MovingCameraScene):
         DIAGONAL_INTERSECTION_COLOR = YELLOW
 
         circle = Circle(color=OUTER_CIRCLE_COLOR, stroke_width=2)
-        # phis = create_phis(min_dist=.9, max_dist=1.2)
-        phis = HexagonAngles(np.array([.3, 1.6, 2.2, 3, 4.3]))
-        first_circle_radius = .4
 
-        hexagon = EuclideanHexagon(phis, color=HEXAGON_COLOR, stroke_width=2)
-        hexagon_circles = HexagonCircles(hexagon, first_circle_radius, stroke_width=2, color=INNER_CIRCLE_COLOR)
-        inner_intersections = get_intersections_of_n_tangent_circles(hexagon_circles.circles,
-                                                                     color=INNER_INTERSECTION_COLOR)
-        outer_intersections = get_intersections_of_circles_with_unit_circle(hexagon_circles.circles,
-                                                                            color=OUTER_INTERSECTION_COLOR)
+        # keyframe hexagons
+        phis1 = HexagonAngles(np.array([.3, 1.6, 2.2, 3, 4.3]))
+        phis2 = HexagonAngles(np.array([.3, 1.2, 2.7, 3.6, 4.2]))
+        phis3 = HexagonAngles(np.array([.7, 1.4, 2.3, 3.0, 4.1]))
+
+        first_circle_radius = 0.4
+
+        self.add(circle)
+        self.add_foreground_mobject(circle)
+
+        frame_rate = 60
+        frame_time = 1 / 60
+        run_time = 2
+        frames = run_time * frame_rate
+
+        i = 0
+        phis = np.array([phis1[j] + ((i * (phis2[j] - phis1[j])) / frames) for j in range(5)])
+        hexagon = EuclideanHexagon(HexagonAngles(np.array(phis)), color=HEXAGON_COLOR, stroke_width=2)
+        hex_circles = HexagonCircles(hexagon, first_circle_radius, stroke_width=2, color=INNER_CIRCLE_COLOR)
         diagonals = get_diagonals(hexagon, color=DIAGONAL_COLOR, stroke_width=2)
         diagonal_intersection = Dot(get_intersection_from_angles(phis[0], phis[3], phis[1], phis[4]),
                                     color=DIAGONAL_INTERSECTION_COLOR, radius=.05)
 
-        self.wait(2)
+        self.add(*hex_circles.circles, *diagonals, diagonal_intersection)
 
-        self.play(FadeIn(circle))
-        self.add_foreground_mobject(circle)
+        for i in range(1, frames):
+            prev_hex_circles = hex_circles
+            prev_diagonals = diagonals
+            prev_diagonal_intersection = diagonal_intersection
 
-        self.play(Create(hexagon_circles, run_time=5))
-        self.remove_foreground_mobjects(circle)
+            phis = np.array([phis1[j] + ((i * (phis2[j] - phis1[j])) / frames) for j in range(5)])
+            hexagon = EuclideanHexagon(HexagonAngles(np.array(phis)), color=HEXAGON_COLOR, stroke_width=2)
+            hex_circles = HexagonCircles(hexagon, first_circle_radius, stroke_width=2, color=INNER_CIRCLE_COLOR)
+            diagonals = get_diagonals(hexagon, color=DIAGONAL_COLOR, stroke_width=2)
+            diagonal_intersection = Dot(get_intersection_from_angles(phis[0], phis[3], phis[1], phis[4]),
+                                        color=DIAGONAL_INTERSECTION_COLOR, radius=.05)
 
-        for i in range(6):
-            self.play(Create(outer_intersections[i], run_time=.5))
+            self.play(Transform(prev_hex_circles[0], hex_circles[0]),
+                      Transform(prev_hex_circles[1], hex_circles[1]),
+                      Transform(prev_hex_circles[2], hex_circles[2]),
+                      Transform(prev_hex_circles[3], hex_circles[3]),
+                      Transform(prev_hex_circles[4], hex_circles[4]),
+                      Transform(prev_hex_circles[5], hex_circles[5]),
+                      Transform(prev_diagonals[0], diagonals[0]),
+                      Transform(prev_diagonals[1], diagonals[1]),
+                      Transform(prev_diagonals[2], diagonals[2]),
+                      Transform(prev_diagonal_intersection, diagonal_intersection),
+                      run_time=frame_time
+                      )
+            self.remove(*prev_hex_circles, *prev_diagonals, prev_diagonal_intersection)
 
-        self.add_foreground_mobjects(*outer_intersections)
+        for i in range(frames):
+            prev_hex_circles = hex_circles
+            prev_diagonals = diagonals
+            prev_diagonal_intersection = diagonal_intersection
 
-        for i in range(6):
-            self.play(Create(inner_intersections[i], run_time=.5))
+            phis = np.array([phis2[j] + ((i * (phis3[j] - phis2[j])) / frames) for j in range(5)])
+            hexagon = EuclideanHexagon(HexagonAngles(np.array(phis)), color=HEXAGON_COLOR, stroke_width=2)
+            hex_circles = HexagonCircles(hexagon, first_circle_radius, stroke_width=2, color=INNER_CIRCLE_COLOR)
+            diagonals = get_diagonals(hexagon, color=DIAGONAL_COLOR, stroke_width=2)
+            diagonal_intersection = Dot(get_intersection_from_angles(phis[0], phis[3], phis[1], phis[4]),
+                                        color=DIAGONAL_INTERSECTION_COLOR, radius=.05)
 
-        self.play(Create(hexagon, run_time=5))
+            self.play(Transform(prev_hex_circles[0], hex_circles[0]),
+                      Transform(prev_hex_circles[1], hex_circles[1]),
+                      Transform(prev_hex_circles[2], hex_circles[2]),
+                      Transform(prev_hex_circles[3], hex_circles[3]),
+                      Transform(prev_hex_circles[4], hex_circles[4]),
+                      Transform(prev_hex_circles[5], hex_circles[5]),
+                      Transform(prev_diagonals[0], diagonals[0]),
+                      Transform(prev_diagonals[1], diagonals[1]),
+                      Transform(prev_diagonals[2], diagonals[2]),
+                      Transform(prev_diagonal_intersection, diagonal_intersection),
+                      run_time=frame_time
+                      )
+            self.remove(*prev_hex_circles, *prev_diagonals, prev_diagonal_intersection)
 
-        for x in diagonals:
-            self.play(Create(x), run_time=1)
+        for i in range(frames):
+            prev_hex_circles = hex_circles
+            prev_diagonals = diagonals
+            prev_diagonal_intersection = diagonal_intersection
 
-        self.play(Create(diagonal_intersection))
-        self.wait(1)
-        self.play(Flash(diagonal_intersection))
-        self.wait(1)
+            phis = np.array([phis3[j] + ((i * (phis1[j] - phis3[j])) / frames) for j in range(5)])
+            hexagon = EuclideanHexagon(HexagonAngles(np.array(phis)), color=HEXAGON_COLOR, stroke_width=2)
+            hex_circles = HexagonCircles(hexagon, first_circle_radius, stroke_width=2, color=INNER_CIRCLE_COLOR)
+            diagonals = get_diagonals(hexagon, color=DIAGONAL_COLOR, stroke_width=2)
+            diagonal_intersection = Dot(get_intersection_from_angles(phis[0], phis[3], phis[1], phis[4]),
+                                        color=DIAGONAL_INTERSECTION_COLOR, radius=.05)
+
+            self.play(Transform(prev_hex_circles[0], hex_circles[0]),
+                      Transform(prev_hex_circles[1], hex_circles[1]),
+                      Transform(prev_hex_circles[2], hex_circles[2]),
+                      Transform(prev_hex_circles[3], hex_circles[3]),
+                      Transform(prev_hex_circles[4], hex_circles[4]),
+                      Transform(prev_hex_circles[5], hex_circles[5]),
+                      Transform(prev_diagonals[0], diagonals[0]),
+                      Transform(prev_diagonals[1], diagonals[1]),
+                      Transform(prev_diagonals[2], diagonals[2]),
+                      Transform(prev_diagonal_intersection, diagonal_intersection),
+                      run_time=frame_time
+                      )
+            self.remove(*prev_hex_circles, *prev_diagonals, prev_diagonal_intersection)
+
+        self.add(*hex_circles, *diagonals, diagonal_intersection)
 
 
 class Scene2(MovingCameraScene):
