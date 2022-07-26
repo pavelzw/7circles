@@ -33,6 +33,20 @@ jobs:
         with:
           name: benedikt
           path: ${{ steps.renderer.outputs.video_path }}
+  introduction:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Rendering Scenes (Introduction)
+        uses: pavelzw/manim_community_renderer@v2
+        id: renderer
+        with:
+          source_file: introduction.py
+      - name: Save output as artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: introduction
+          path: ${{ steps.renderer.outputs.video_path }}
   paulina:
     runs-on: ubuntu-latest
     steps:

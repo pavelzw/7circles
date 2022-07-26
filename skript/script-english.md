@@ -3,16 +3,16 @@
 Today, we will take a look at the so-called "Seven circles theorem".
 
 While the statement of the theorem can be expressed in simple geometric terms,
-<!-- Kreise werden gebildet (in großen weißen Kasten?) -->
+<!-- Scene1: Kreise werden gebildet (in großen weißen Kasten?) -->
 the method we will use to prove it delves into seemingly unrelated concepts from hyperbolic geometry.
-<!-- Was mit hyperbolisch -->
+<!-- Scene2: Was mit hyperbolisch -->
 
 It involves a surprising change of perspective between Euclidean and hyperbolic space. 
-<!-- euclidean seven circles -> hyperbolic seven circles -->
+<!-- Scene3: euclidean seven circles -> hyperbolic seven circles -->
 
-On the way we will learn about two different models of hyperbolic space, <!-- benedikts model transformations -->
-how distances are measured <!-- paulina animation -->
-as well as circles and polygons in this hyperbolic setting. <!-- hyperbolic seven circles -->
+On the way we will learn about two different models of hyperbolic space, <!-- Scene4: benedikts model transformations -->
+how distances are measured <!-- Scene5: paulina animation -->
+as well as circles and polygons in this hyperbolic setting. <!-- Scene6: hyperbolic seven circles -->
 
 Mind you, this is not the only way to prove our theorem. 
 The first proofs of the seven circles theorem in the 1970s did not wander through the lands of hyperbolic geometry but used mainly euclidean methods. <!-- über Paper scrollen -->
