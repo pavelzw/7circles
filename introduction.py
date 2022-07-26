@@ -1,18 +1,13 @@
 import numpy as np
-from manim import MovingCameraScene, Rectangle, WHITE, GREEN_B, PURPLE, DARK_GREY, GREY, ORANGE, YELLOW, Circle, Dot, \
-    FadeIn, Write, Create, Flash, RED, BLUE, MathTex, LEFT, ReplacementTransform, GREEN_E, PURPLE_E, DOWN, Group, \
-    Square, FadeOut, Transform, TransformFromCopy, ImageMobject, Polygon, Line, UP, RIGHT, Arrow, VGroup, Uncreate, \
-    VMobject, BLACK, DecimalNumber, ArcBetweenPoints, GREY_B, always_redraw, BLUE_A, BLUE_E, MoveAlongPath, Arc
+from manim import MovingCameraScene, WHITE, GREEN_B, PURPLE, DARK_GREY, GREY, ORANGE, YELLOW, Circle, Dot, \
+    FadeIn, Write, Create, RED, BLUE, MathTex, LEFT, ReplacementTransform, DOWN, Group, \
+    FadeOut, Transform, ImageMobject, Line, RIGHT, Arrow, VGroup, \
+    VMobject, DecimalNumber, ArcBetweenPoints, GREY_B, BLUE_A, BLUE_E, MoveAlongPath
 
 from animation_constants import OUTER_CIRCLE_STROKE_WIDTH, HEXAGON_STROKE_WIDTH
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
-from geometry_util import get_intersection_from_angles, moving_line, moving_circle, \
-    hyperbolic_circle_to_euclidean_circle
-from hexagon import HexagonAngles, HexagonCircles
-from geometry_util import get_intersections_of_n_tangent_circles, get_intersections_of_circles_with_unit_circle, \
-    get_intersection_from_angles, get_intersection_points_of_n_tangent_circles, \
-    get_intersection_in_unit_circle_of_two_tangent_circles, polar_to_point, \
-    get_both_intersections_line_with_unit_circle, tf_klein_to_poincare, hyperbolic_distance_function
+from geometry_util import get_intersection_from_angles, get_intersection_in_unit_circle_of_two_tangent_circles, \
+    polar_to_point, hyperbolic_distance_function, moving_line, moving_circle, hyperbolic_circle_to_euclidean_circle
 from hexagon import HexagonAngles, HexagonCircles, HexagonMainDiagonals
 from hexagon_util import create_radius_transition
 from hyperbolic_polygon import HyperbolicPolygon, HyperbolicArcBetweenPoints
