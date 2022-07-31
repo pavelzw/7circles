@@ -413,20 +413,19 @@ class Scene5(MovingCameraScene):
         point2 = hexagon.polygon_points[1]
         arc = hexagon.arcs[0]
 
-        distance_text = MathTex(r'\mathrm{dist_h}(a,b) =', font_size=20).move_to([1.2, 0, 0],
+        distance_text = MathTex(r'\mathrm{dist_h}(a,b) =', font_size=27).move_to([1.2, 0, 0],
                                                                                  aligned_edge=LEFT)  # partially new
-        infinity = MathTex(r'\infty', font_size=20).next_to(distance_text, buff=.05)
+        infinity = MathTex(r'\infty', font_size=27).next_to(distance_text, buff=.05)
         s_0 = Dot(hexagon.polygon_points[0], radius=.02, color=ORANGE)
         s_1 = Dot(hexagon.polygon_points[1], radius=.02, color=ORANGE)
-        a = MathTex(r'a', font_size=15, color=ORANGE).next_to(s_0, direction=0.16 * DOWN + 0.01 * LEFT)  # new
-        b = MathTex(r'b', font_size=15, color=ORANGE).next_to(s_1, direction=0.18 * DOWN + 0.01 * LEFT)  # new
-        self.play(FadeIn(hexagon, circle, arc_colored, a, b, s_0, s_1),
+
+        self.play(FadeIn(hexagon, circle, arc_colored, s_0, s_1),
                   Write(VGroup(distance_text, infinity), stroke_width=.5))
-        self.add_foreground_mobjects(a, b, circle)
+        self.add_foreground_mobjects(circle)
         self.wait(2)
         distance_number = DecimalNumber(6343.242564,
                                         num_decimal_places=2, show_ellipsis=True, group_with_commas=False,
-                                        font_size=20).next_to(distance_text, buff=.05)
+                                        font_size=27).next_to(distance_text, buff=.05)
 
         self.remove(infinity)
         # self.add(distance_number, s_0, s_1)
@@ -445,12 +444,10 @@ class Scene5(MovingCameraScene):
                                                                                    arc.circle_center, arc.radius)
             new_arc = ArcBetweenPoints(interp_point2, interp_point1, color=ORANGE,
                                        radius=arc.radius, stroke_width=2).reverse_direction()
-            self.remove(a, b)  # new
-            self.add(a.next_to(interp_point1, direction=0.2 * DOWN + 0.05 * LEFT),
-                     b.next_to(interp_point2, direction=0.2 * DOWN + 0.1 * LEFT))  # new
+
             distance = np.exp(
                 hyperbolic_distance_function(interp_point2, interp_point1))
-            distance_number.font_size = 20
+            distance_number.font_size = 27
             label.arrange(buff=.05)
             label.move_to([1.2, 0, 0], aligned_edge=LEFT)
 
