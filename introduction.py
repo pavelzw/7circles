@@ -2,7 +2,7 @@ import numpy as np
 from manim import MovingCameraScene, WHITE, GREEN_B, PURPLE, DARK_GREY, GREY, ORANGE, YELLOW, Circle, Dot, \
     FadeIn, Write, Create, RED, BLUE, MathTex, LEFT, ReplacementTransform, DOWN, Group, \
     FadeOut, Transform, ImageMobject, Line, RIGHT, Arrow, VGroup, \
-    VMobject, DecimalNumber, ArcBetweenPoints, GREY_B, BLUE_A, BLUE_E, MoveAlongPath
+    VMobject, DecimalNumber, ArcBetweenPoints, GREY_B, BLUE_A, BLUE_E, MoveAlongPath, Rectangle
 
 from animation_constants import OUTER_CIRCLE_STROKE_WIDTH, HEXAGON_STROKE_WIDTH
 from euclidean_hexagon import EuclideanHexagon, get_diagonals
@@ -15,8 +15,30 @@ from hyperbolic_polygon import HyperbolicPolygon, HyperbolicArcBetweenPoints
 
 class Rectangles(MovingCameraScene):
     def construct(self):
-        # todo implement
-        pass
+        static = False
+        scaling = .25
+        rectangle1 = Rectangle(height=13 * scaling, width=13 * scaling).move_to([-4.5, 2, 0])
+        rectangle2 = Rectangle(height=9 * scaling, width=16 * scaling).move_to([0, 2, 0])
+        rectangle3 = Rectangle(height=13 * scaling, width=13 * scaling).move_to([4.5, 2, 0])
+        rectangle4 = Rectangle(height=9 * scaling, width=16 * scaling).move_to([-4.5, -2, 0])
+        rectangle5 = Rectangle(height=9 * scaling, width=16 * scaling).move_to([0, -2, 0])
+        rectangle6 = Rectangle(height=13 * scaling, width=13 * scaling).move_to([4.5, -2, 0])
+        if not static:
+            self.wait(2)
+            self.play(Write(rectangle1))
+            self.wait(2)
+            self.play(Write(rectangle2))
+            self.wait(2)
+            self.play(Write(rectangle3))
+            self.wait(2)
+            self.play(Write(rectangle4))
+            self.wait(2)
+            self.play(Write(rectangle5))
+            self.wait(2)
+            self.play(Write(rectangle6))
+            self.wait(2)
+        else:
+            self.add(rectangle1, rectangle2, rectangle3, rectangle4, rectangle5, rectangle6)
 
 
 class Scene1(MovingCameraScene):
