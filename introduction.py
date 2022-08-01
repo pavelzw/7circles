@@ -17,12 +17,12 @@ class Rectangles(MovingCameraScene):
     def construct(self):
         static = False
         scaling = .25
-        rectangle1 = Rectangle(height=13 * scaling, width=13 * scaling).move_to([-4.5, 2, 0])
+        rectangle1 = Rectangle(height=9 * scaling, width=16 * scaling).move_to([-4.5, 2, 0])
         rectangle2 = Rectangle(height=9 * scaling, width=16 * scaling).move_to([0, 2, 0])
-        rectangle3 = Rectangle(height=13 * scaling, width=13 * scaling).move_to([4.5, 2, 0])
+        rectangle3 = Rectangle(height=9 * scaling, width=16 * scaling).move_to([4.5, 2, 0])
         rectangle4 = Rectangle(height=9 * scaling, width=16 * scaling).move_to([-4.5, -2, 0])
         rectangle5 = Rectangle(height=9 * scaling, width=16 * scaling).move_to([0, -2, 0])
-        rectangle6 = Rectangle(height=13 * scaling, width=13 * scaling).move_to([4.5, -2, 0])
+        rectangle6 = Rectangle(height=9 * scaling, width=16 * scaling).move_to([4.5, -2, 0])
         if not static:
             self.wait(2)
             self.play(Write(rectangle1))
@@ -261,8 +261,7 @@ class Scene3(MovingCameraScene):
         DIAGONAL_INTERSECTION_COLOR = YELLOW
 
         circle = Circle(color=OUTER_CIRCLE_COLOR, stroke_width=OUTER_CIRCLE_STROKE_WIDTH)
-        self.add(circle)
-        self.add_foreground_mobject(circle)
+
 
         phis = HexagonAngles(np.array([.3, 1.6, 2.2, 3, 4.3]))
 
@@ -278,7 +277,8 @@ class Scene3(MovingCameraScene):
                                                                               diagonals.arc2.radius)
         intersection_dot = Dot(intersection, color=YELLOW, radius=.03)
 
-        self.play(FadeIn(hexagon, inner_circles, diagonals, intersection_dot))
+        self.add(circle, hexagon, inner_circles, diagonals, intersection_dot)
+        self.add_foreground_mobject(circle)
         self.add_foreground_mobjects(hexagon, diagonals, intersection_dot, circle)
         self.wait(1)
 
@@ -314,7 +314,7 @@ class Scene3(MovingCameraScene):
                   ReplacementTransform(euclidean_diagonals[2], diagonals.arc3),
                   ReplacementTransform(euclidean_intersection_dot, intersection_dot),
                   run_time=3)
-        self.wait(2)
+        self.wait(1)
 
 
 class Scene4(MovingCameraScene):
@@ -369,7 +369,7 @@ class Scene4(MovingCameraScene):
         poincare_model.scale(0.7).shift(1.5 * LEFT)
         klein_model.scale(0.7).shift(1.5 * RIGHT)
 
-        self.play(FadeIn(poincare_model, klein_model), Write(arrow_group))
+        self.add(poincare_model, klein_model, arrow_group)
 
         self.add(pcircle.scale(0.7).shift(1.5 * LEFT), kcircle.scale(0.7).shift(1.5 * RIGHT))
 
@@ -390,7 +390,7 @@ class Scene4(MovingCameraScene):
 
         self.play(Transform(k_geo1, p_geo1))
 
-        self.wait(3)
+        self.wait(1)
 
 
 class Scene5(MovingCameraScene):
@@ -413,11 +413,10 @@ class Scene5(MovingCameraScene):
         infinity = MathTex(r'\infty', font_size=27).next_to(distance_text, buff=.05)
         s_0 = Dot(hexagon.polygon_points[0], radius=.02, color=ORANGE)
         s_1 = Dot(hexagon.polygon_points[1], radius=.02, color=ORANGE)
-
-        self.play(FadeIn(hexagon, circle, arc_colored, s_0, s_1),
-                  Write(VGroup(distance_text, infinity), stroke_width=.5))
+        self.add(hexagon, circle, arc_colored, s_0, s_1, distance_text, infinity)
         self.add_foreground_mobjects(circle)
-        self.wait(2)
+        self.wait(1)
+        
         distance_number = DecimalNumber(6343.242564,
                                         num_decimal_places=2, show_ellipsis=True, group_with_commas=False,
                                         font_size=27).next_to(distance_text, buff=.05)
@@ -461,14 +460,11 @@ class Scene5(MovingCameraScene):
         self.remove(s_0, s_1)
         self.wait(2)
         everything = VGroup(*filter(lambda x: isinstance(x, VMobject), self.mobjects))
-        self.play(FadeOut(everything))
 
 
 class Scene6(MovingCameraScene):
     def construct(self):
         self.camera.frame.width = 4
-
-        self.wait(2)
 
         center = [0, 0, 0]
         start_points = np.array([center, center, center, center])
@@ -483,7 +479,7 @@ class Scene6(MovingCameraScene):
 
         # todo from here on
 
-        self.play(FadeIn(outer_circle, circle[0]))
+        self.add(outer_circle, circle[0])
         self.add_foreground_mobjects(circle[0])
         # self.wait(2)
         self.play(Create(circle[1]), Create(circle[2]), Create(circle[3]))
@@ -509,7 +505,6 @@ class Scene6(MovingCameraScene):
             # self.wait(1)
 
         self.wait(1)
-        self.play(*[FadeOut(mob) for mob in self.mobjects])
 
 
 class Scene6Unused(MovingCameraScene):
