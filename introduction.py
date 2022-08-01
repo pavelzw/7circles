@@ -162,22 +162,17 @@ class Scene1(MovingCameraScene):
 
 class Scene2(MovingCameraScene):
     def construct(self):
-        self.camera.frame.width = 6
-        self.camera.frame.move_to([1.5, 0, 0])
+        self.camera.frame.width = 4.1
+        self.camera.frame.move_to([1, 0, 0])
         outer_circle = Circle(color=WHITE, stroke_width=2)
         self.add(outer_circle)
-        konvergenz = MathTex(r'P_n \xrightarrow{n \rightarrow \infty}P_\infty', font_size=25).move_to(
-            [2.5, 0, 0])
+        konvergenz = MathTex(r'P_n \xrightarrow{n \rightarrow \infty}P_\infty', font_size=30).move_to(
+            [2, 0, 0])
         radius = np.array([0.7, 0.6, .75, .56, .65, .53])
         phis = [0.47654, 2.065432, 2.876, 3.87623, 5.024, 5.673]
         # circle_radius = np.array([.2, .25, .16, .29, .18, .12])  # radius for disks
         circle_radius = np.array([.8, .8, .8, .8, .5, .4])  # radius for disks
 
-        formula = MathTex(r'&\tilde{S_1} - \tilde{S_2} + \tilde{S_3} - \tilde{S_4} + \tilde{S_5} - \tilde{S_6} \\',
-                          r'= \, &S_1 - S_2 + S_3 - S_4 + S_5 - S_6 \\',
-                          r'= \, &\mathrm{AltPer}', '(P_1)',
-                          font_size=20).move_to([2.6, 1, 0])
-        self.add(formula)
         self.add(konvergenz)
         self.add_foreground_mobjects(outer_circle)
 
