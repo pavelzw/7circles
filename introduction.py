@@ -326,15 +326,15 @@ class Scene4(MovingCameraScene):
     def construct(self):
         center = np.array([0, 0, 0])
 
-        klein_origin = np.array([3.5, 0, 0])
-        poincare_origin = np.array([-3.5, 0, 0])
+        klein_origin = np.array([2, 0, 0])
+        poincare_origin = np.array([-2, 0, 0])
 
         MY_BLUE = "#22c1dd"
 
-        klein_model = ImageMobject("tessellation_klein.png").scale(0.7).move_to(klein_origin)
-        poincare_model = ImageMobject("tessellation_poincare.png").scale(0.7).move_to(poincare_origin)
+        klein_model = ImageMobject("tessellation_klein.png").scale(1.0).move_to(klein_origin)
+        poincare_model = ImageMobject("tessellation_poincare.png").scale(1.0).move_to(poincare_origin)
 
-        scale_back = 2.5
+        scale_back = 3.57
         phis = [[0.4, 2], [3.3, 5.2]]
 
         kcircle = Circle(color=MY_BLUE, stroke_width=1).scale(scale_back).move_to(klein_origin)
@@ -348,8 +348,8 @@ class Scene4(MovingCameraScene):
         k_geodesics = [geo.scale(scale_back).move_to(geo.get_center() * scale_back).shift(klein_origin) for geo in
                        k_geodesics_raw]
 
-        arrow_lr = Arrow(start=2.5 * LEFT, end=2.5 * RIGHT, stroke_width=4, max_tip_length_to_length_ratio=.5)
-        arrow_rl = Arrow(start=2.5 * RIGHT, end=2.5 * LEFT, stroke_width=4, max_tip_length_to_length_ratio=.5)
+        arrow_lr = Arrow(start=LEFT, end=RIGHT, stroke_width=4, max_tip_length_to_length_ratio=.5)
+        arrow_rl = Arrow(start=RIGHT, end=LEFT, stroke_width=4, max_tip_length_to_length_ratio=.5)
         arrow_group = VGroup(arrow_lr, arrow_rl).arrange(DOWN)
 
         p_geo0 = p_geodesics[0].copy()
