@@ -74,7 +74,7 @@ class Scene1(MovingCameraScene):
         self.wait(10)
 
         # transition to Scene2
-        self.play(FadeOut(triangle, triangle_label, hexagon_colored, hexagon_label, diagonals, proposition, formula),
+        self.play(FadeOut(triangle, triangle_label, hexagon_colored, hexagon_label, diagonals, proposition, formula, hexagon),
                   self.camera.frame.animate.set(width=6).move_to([0, 0, 0]))
 
 
