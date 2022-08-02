@@ -1,0 +1,828 @@
+1
+00:00:00,748 --> 00:00:03,658
+Today we are dealing with the Seven-Circle-Theorem.
+
+2
+00:00:04,465 --> 00:00:06,820
+The Seven-Circle-Theorem states the following:
+
+3
+00:00:07,198 --> 00:00:12,328
+Let C_0 be a circle and C_1, ..., C_6 circles contained in C_0, 
+
+4
+00:00:16,552 --> 00:00:21,000
+such that each inner circle is tangent to the outer circle
+
+5
+00:00:23,816 --> 00:00:28,990
+and any two adjacent inner circles are also tangent to each other. 
+
+6
+00:00:33,609 --> 00:00:41,150
+Then the three diagonals of the hexagon formed by the intersections of the inner circles with the outer circle meet
+
+7
+00:00:49,930 --> 00:00:51,474
+in one point.
+
+8
+00:00:56,880 --> 00:01:00,390
+Our goal now is to prove this theorem.
+
+9
+00:01:01,455 --> 00:01:05,940
+We will be able to do this by embedding the problem in a Hyperbolic framework.
+
+10
+00:01:05,940 --> 00:01:09,960
+First, we give a small introduction to Hyperbolic geometry 
+
+11
+00:01:09,960 --> 00:01:16,115
+in order to reformulate and further work on the problem with our newly gained knowledge.
+
+12
+00:01:18,673 --> 00:01:22,110
+Axiomatically, the Hyperbolic space differs from the Euclidean space
+
+13
+00:01:22,110 --> 00:01:25,792
+in that the parallel axiom does not hold.
+
+14
+00:01:26,310 --> 00:01:28,260
+The parallel axiom states
+
+15
+00:01:28,260 --> 00:01:33,585
+that for every straight line g and every point P that does not lie on g,
+
+16
+00:01:33,585 --> 00:01:38,850
+there is exactly one straight line h that runs through P and is parallel to g.
+
+17
+00:01:39,228 --> 00:01:42,990
+Parallel here simply means that the two straight lines do not intersect.
+
+18
+00:01:43,591 --> 00:01:47,130
+This property does not exist in Hyperbolic geometry.
+
+19
+00:01:47,130 --> 00:01:53,460
+There, for every such g and P there are several - even infinitely many - straight lines through P
+
+20
+00:01:53,460 --> 00:01:56,610
+which are parallel to g, i.e., do not intersect g.
+
+21
+00:01:57,400 --> 00:01:59,220
+However, our representation here is misleading,
+
+22
+00:01:59,220 --> 00:02:04,110
+because of course g will be intersected by all but the original line h
+
+23
+00:02:04,110 --> 00:02:06,360
+if we follow them long enough. 
+
+24
+00:02:07,545 --> 00:02:10,620
+In general, we have the problem that we want to
+
+25
+00:02:10,620 --> 00:02:15,177
+represent a Hyperbolic space in the Euclidean plane - this video.
+
+26
+00:02:16,224 --> 00:02:18,270
+So the question we are now addressing is:
+
+27
+00:02:18,270 --> 00:02:21,870
+How do you represent the Hyperbolic plane in the Euclidean space?
+
+28
+00:02:25,115 --> 00:02:28,200
+There are different models for the Hyperbolic plane.
+
+29
+00:02:28,698 --> 00:02:33,060
+Such models are simply mappings from the Hyperbolic to the Euclidean plane.
+
+30
+00:02:33,661 --> 00:02:37,749
+We take a closer look at the Poincaré and Klein models.
+
+31
+00:02:41,780 --> 00:02:45,260
+First, let's take a closer look at the Poincaré model.
+
+32
+00:02:46,016 --> 00:02:48,200
+The representation of the hyperbolic plane in the
+
+33
+00:02:48,200 --> 00:02:51,531
+Poincaré model is limited to the unit disk.
+
+34
+00:02:51,977 --> 00:02:57,185
+The geodesics of the Poincaré model are - in contrast to straight lines in Euclidean -
+
+35
+00:02:57,185 --> 00:03:01,053
+circle segments that intersect the unit circle at right angles.
+
+36
+00:03:01,517 --> 00:03:05,044
+This makes it clear that the parallel axiom does not apply here.
+
+37
+00:03:05,919 --> 00:03:11,000
+For a point P and a geodesic one finds any number of other geodesics that
+
+38
+00:03:11,000 --> 00:03:15,282
+intersect P but not the original geodesic.
+
+39
+00:03:16,244 --> 00:03:18,260
+Even if it seems so at first glance,
+
+40
+00:03:18,260 --> 00:03:21,080
+the hyperbolic plane is by no means limited.
+
+41
+00:03:22,265 --> 00:03:24,620
+If we let a point in the hyperbolic plane
+
+42
+00:03:24,620 --> 00:03:27,560
+move in one direction with constant speed,
+
+43
+00:03:27,560 --> 00:03:31,760
+we see that it never reaches the boundary of the Poincaré model.
+
+44
+00:03:35,177 --> 00:03:39,612
+The unit circle is at infinity and does not belong to the Poincaré model.
+
+45
+00:03:40,488 --> 00:03:44,150
+The following representation of the distortion is helpful for further understanding.
+
+46
+00:03:45,283 --> 00:03:48,440
+This is a tiling of the hyperbolic plane.
+
+47
+00:03:48,440 --> 00:03:53,000
+All these triangles have the same Hyperbolic shape and area.
+
+48
+00:03:55,078 --> 00:04:00,710
+The Poincaré model thus provides a highly distorted representation of Hyperbolic space.
+
+49
+00:04:04,780 --> 00:04:06,320
+Now we consider the Klein model.
+
+50
+00:04:06,320 --> 00:04:09,890
+We will see strong similarities to the Poincaré model.
+
+51
+00:04:11,538 --> 00:04:16,520
+The biggest difference is that geodesics here actually correspond to Euclidean lines.
+
+52
+00:04:18,110 --> 00:04:22,370
+However, since these are limited by the unit circle, as in the Poincaré model,
+
+53
+00:04:22,370 --> 00:04:25,100
+the parallel axiom does not apply here either.
+
+54
+00:04:29,754 --> 00:04:33,380
+There is also a strong distortion of space in the Klein model.
+
+55
+00:04:33,380 --> 00:04:38,030
+Here, we see the same tiling of the Hyperbolic plane in the Klein model.
+
+56
+00:04:44,160 --> 00:04:47,030
+Towards the border, distances also become larger and larger here.
+
+57
+00:04:54,911 --> 00:04:57,140
+Since both models represent the same space,
+
+58
+00:04:57,140 --> 00:05:03,050
+it is obvious that there are mappings that identify the points of the models with each other.
+
+59
+00:05:03,050 --> 00:05:07,820
+In fact, they exist. We call them f and f^ -1.
+
+60
+00:05:07,820 --> 00:05:12,381
+As we see here, the formulas for these mappings are fairly simple.
+
+61
+00:05:19,660 --> 00:05:24,220
+With f and f^-1 we can now transfer objects from one model to the
+
+62
+00:05:24,220 --> 00:05:27,684
+other, especially geodesics.
+
+63
+00:05:28,491 --> 00:05:33,370
+Since the mappings act pointwise, intersections between geodesics are preserved.
+
+64
+00:05:33,370 --> 00:05:37,930
+This now gives us the following reformulation of the Seven-Circles-Theorem.
+
+65
+00:05:44,000 --> 00:05:51,123
+Let C_0 be a circle and C_1 to C_6 ​​circles contained in C_0 such
+
+66
+00:05:54,506 --> 00:05:58,447
+that each inner circle is tangent to the outer circle
+
+67
+00:05:59,667 --> 00:06:04,730
+and any two adjacent inner circles are also tangent to each other. 
+
+68
+00:06:07,580 --> 00:06:11,900
+Then the three hyperbolic diagonals of the hyperbolic hexagon 
+
+69
+00:06:11,900 --> 00:06:16,370
+formed by the intersections of the inner circles with the outer circle meet
+
+70
+00:06:23,444 --> 00:06:25,724
+in one point.
+
+71
+00:06:31,134 --> 00:06:33,400
+When we have proved this theorem,
+
+72
+00:06:33,400 --> 00:06:37,390
+we simply apply the transformation from the Poincaré to the Klein model
+
+73
+00:06:37,390 --> 00:06:40,690
+and have thus also proved the original theorem.
+
+74
+00:06:45,326 --> 00:06:49,001
+Now we introduce some new concepts in the Hyperbolic space.
+
+75
+00:06:49,001 --> 00:06:51,670
+Let's take a closer look at the behavior of circles and
+
+76
+00:06:51,670 --> 00:06:53,860
+radii in hyperbolic space.
+
+77
+00:06:53,860 --> 00:06:57,610
+To do this, we compare it to the Euclidean circles we are familiar with.
+
+78
+00:06:57,610 --> 00:07:00,580
+A circle consists of all points that
+
+79
+00:07:00,580 --> 00:07:03,700
+are the same distance from their center P.
+
+80
+00:07:09,340 --> 00:07:14,230
+In Euclidean, of course, we measure distance with the Euclidean distance function.
+
+81
+00:07:14,230 --> 00:07:17,980
+Hyperbolic discs, which we embed in the Poincaré model,
+
+82
+00:07:17,980 --> 00:07:20,650
+are defined exactly like Euclidean circles,
+
+83
+00:07:20,650 --> 00:07:24,670
+except here we use a different distance function to measure lengths.
+
+84
+00:07:24,670 --> 00:07:29,770
+At the center of the Poincaré disk, the hyperbolic circles look the
+
+85
+00:07:29,770 --> 00:07:31,450
+same as the Euclidean ones.
+
+86
+00:07:31,450 --> 00:07:33,700
+If we now change the center,
+
+87
+00:07:33,700 --> 00:07:38,320
+the shape of the hyperbolic circles still corresponds to that of the Euclidean circles,
+
+88
+00:07:38,320 --> 00:07:41,680
+but the center of the Euclidean circles no longer
+
+89
+00:07:41,680 --> 00:07:43,900
+corresponds to that of the hyperbolic ones.
+
+90
+00:07:47,437 --> 00:07:50,350
+Let's take a closer look at the hyperbolic radius.
+
+91
+00:07:50,350 --> 00:07:53,800
+This is measured using the hyperbolic distance function,
+
+92
+00:07:53,800 --> 00:07:56,860
+which measures the distance between two points b and c
+
+93
+00:07:56,860 --> 00:07:59,020
+in the hyperbolic plane.
+
+94
+00:07:59,020 --> 00:08:01,780
+For the calculation we still need the intersection points
+
+95
+00:08:01,780 --> 00:08:04,780
+of the geodesic with the edge of the unit disc.
+
+96
+00:08:04,780 --> 00:08:07,330
+We call these points a and d.
+
+97
+00:08:07,330 --> 00:08:10,540
+To evaluate the hyperbolic distance function, we
+
+98
+00:08:10,540 --> 00:08:16,305
+interpret points a through d as points in the complex number plane.
+
+99
+00:08:16,305 --> 00:08:18,250
+Although it doesn't seem like it to us,
+
+100
+00:08:18,250 --> 00:08:23,531
+the hyperbolic circle is at every point the same distance from its center.
+
+101
+00:08:27,340 --> 00:08:30,100
+If we move the hyperbolic center to the edge
+
+102
+00:08:30,100 --> 00:08:33,250
+and look at the associated concentric circles,
+
+103
+00:08:33,250 --> 00:08:36,580
+the hyperbolic radius converges to infinity
+
+104
+00:08:36,580 --> 00:08:39,520
+and we get so-called horodisks.
+
+105
+00:08:39,520 --> 00:08:44,200
+Having got a feel for circles in hyperbolic space,
+
+106
+00:08:44,200 --> 00:08:46,540
+we now look at hyperbolic hexagons in
+
+107
+00:08:46,540 --> 00:08:49,720
+order to then be able to define the alternating perimeter,
+
+108
+00:08:49,720 --> 00:08:52,960
+which is of great importance to our main theorem.
+
+109
+00:08:55,536 --> 00:08:58,900
+A hyperbolic polygon is defined as in Euclidean,
+
+110
+00:08:58,900 --> 00:09:01,540
+but the curves connecting the vertices are
+
+111
+00:09:01,540 --> 00:09:05,320
+not straight lines, but segments of a circle, as is always the case in the Poincaré model.
+
+112
+00:09:05,320 --> 00:09:09,280
+The corners of the polygon can be anywhere in the hyperbolic plane.
+
+113
+00:09:09,280 --> 00:09:12,730
+If the vertices all lie on the edge of the Poincaré disk,
+
+114
+00:09:12,730 --> 00:09:15,673
+we call our polygon ideal.
+
+115
+00:09:19,948 --> 00:09:21,414
+As in Euclidean, 
+
+116
+00:09:21,414 --> 00:09:26,170
+the perimeter of a hyperbolic polygon can be defined as the sum of the side lengths.
+
+117
+00:09:26,170 --> 00:09:30,370
+Note that we are measuring the hyperbolic distance of the vertices.
+
+118
+00:09:30,370 --> 00:09:34,000
+In the case of hexagons, an even number of corners can
+
+119
+00:09:34,000 --> 00:09:36,850
+also be used to define an alternating perimeter.
+
+120
+00:09:36,850 --> 00:09:41,980
+Instead of taking the sum of all side lengths, we now calculate the alternating sum,
+
+121
+00:09:41,980 --> 00:09:44,904
+i.e., subtract every other length.
+
+122
+00:09:47,779 --> 00:09:52,070
+So now let's look at the alternating perimeter of an ideal hexagon.
+
+123
+00:09:52,070 --> 00:09:56,030
+The problem here is that the individual segments S_k
+
+124
+00:09:56,030 --> 00:09:59,000
+have infinite length because they touch the border.
+
+125
+00:09:59,000 --> 00:10:02,840
+So we cannot calculate the alternating perimeter directly.
+
+126
+00:10:02,840 --> 00:10:08,143
+However, geodesic segments that do not touch the boundary have finite length.
+
+127
+00:10:08,143 --> 00:10:11,053
+We can take advantage of this in the following.
+
+128
+00:10:11,053 --> 00:10:14,510
+We trace the alternating perimeter of an ideal hexagon
+
+129
+00:10:14,510 --> 00:10:17,485
+to that of a non-ideal hexagon.
+
+130
+00:10:17,880 --> 00:10:23,240
+Since its edges have finite length, we can explicitly calculate the alternating perimeter here. 
+
+131
+00:10:25,198 --> 00:10:30,230
+To do this, consider a sequence P_n of hyperbolic non-ideal hexagons 
+
+132
+00:10:30,230 --> 00:10:34,568
+that converge to an ideal hexagon P_∞.
+
+133
+00:10:37,762 --> 00:10:42,440
+We now put a disk D_i at each vertex of P_n
+
+134
+00:10:42,440 --> 00:10:44,960
+so that consecutive disks do not overlap.
+
+135
+00:10:44,960 --> 00:10:50,949
+Further we define S_k^~ as the edge to the borders of the disks.
+
+136
+00:10:50,949 --> 00:10:54,800
+We see that the lengths of the S_k^~ are finite.
+
+137
+00:10:59,480 --> 00:11:01,940
+If we change the radius of a disc,
+
+138
+00:11:01,940 --> 00:11:05,660
+we add and subtract the same amount on both sides,
+
+139
+00:11:05,660 --> 00:11:08,120
+in this case for S_1 and S_6.
+
+140
+00:11:10,026 --> 00:11:14,060
+So the alternating perimeter is independent of the size of our disks,
+
+141
+00:11:14,060 --> 00:11:17,210
+even if our disks have zero radius.
+
+142
+00:11:17,210 --> 00:11:23,583
+It follows that the alternating sum of S_k is equal to the alternating sum of S_k^~.
+
+143
+00:11:24,493 --> 00:11:26,510
+If we let n go towards infinity,
+
+144
+00:11:26,510 --> 00:11:28,580
+this relationship still applies.
+
+145
+00:11:28,580 --> 00:11:31,730
+But since the lengths S_k^~ are now finite,
+
+146
+00:11:31,730 --> 00:11:36,350
+we have actually found a meaningful calculation for the alternating circumference.
+
+147
+00:11:40,660 --> 00:11:43,435
+Now let's consider an ideal hexagon.
+
+148
+00:11:46,852 --> 00:11:49,940
+If we connect the opposite sides of this hexagon,
+
+149
+00:11:49,940 --> 00:11:53,180
+we see that a triangle is formed in the middle.
+
+150
+00:11:53,180 --> 00:11:55,812
+Let's call this triangle T_P.
+
+151
+00:12:01,620 --> 00:12:03,330
+We now show the following theorem:
+
+152
+00:12:03,330 --> 00:12:06,030
+For any ideal hexagon,
+
+153
+00:12:06,030 --> 00:12:09,210
+the alternating perimeter is exactly
+
+154
+00:12:09,210 --> 00:12:11,730
+twice the perimeter of T_P, except for the sign.
+
+155
+00:12:23,100 --> 00:12:27,600
+For the proof we first define the notion of a semi-ideal triangle.
+
+156
+00:12:27,600 --> 00:12:31,470
+It has two corners on the edge of the circle - that is, ideal points -
+
+157
+00:12:31,470 --> 00:12:34,016
+plus one corner in the hyperbolic plane.
+
+158
+00:12:37,176 --> 00:12:43,860
+In our ideal hexagon there are three such triangles: Y_1, Y_2 and Y_3.
+
+159
+00:12:43,860 --> 00:12:47,640
+There are also
+
+160
+00:12:47,640 --> 00:12:49,590
+three more semi-ideal triangles on the respective opposite sides,
+
+161
+00:12:49,590 --> 00:12:52,020
+which intersect the inner triangle T_P.
+
+162
+00:12:52,020 --> 00:12:56,144
+We call them G_1, G_2 and G_3.
+
+163
+00:13:03,254 --> 00:13:08,444
+We define a quantity similar to the alternating perimeter for hyperbolic triangles.
+
+164
+00:13:08,444 --> 00:13:13,170
+If we remove disjoint horodisks from the two ideal nodes of the triangle,
+
+165
+00:13:13,170 --> 00:13:18,000
+we get lengths L_1', L_2' and L_3'.
+
+166
+00:13:20,125 --> 00:13:24,210
+We use this to define the alternating perimeter of a semi-ideal triangle
+
+167
+00:13:24,210 --> 00:13:27,000
+by adding the two blue lengths
+
+168
+00:13:27,000 --> 00:13:28,290
+and subtracting the red one.
+
+169
+00:13:28,290 --> 00:13:32,910
+The alternating perimeter does not depend on the size of each circle,
+
+170
+00:13:32,910 --> 00:13:36,180
+since the same length is both added to and subtracted from it.
+
+171
+00:13:45,420 --> 00:13:50,520
+The triangles G_k and Y_k each share exactly one node for k=1, ..., 3.
+
+172
+00:13:51,360 --> 00:13:54,990
+In each case there is an isometry I_k that
+
+173
+00:13:54,990 --> 00:13:58,110
+maps the opposite triangles to each other.
+
+174
+00:14:02,180 --> 00:14:04,890
+We can construct this as follows:
+
+175
+00:14:04,890 --> 00:14:10,110
+With the help of so-called Möbius transformations - isometries in the hyperbolic plane -
+
+176
+00:14:10,110 --> 00:14:13,710
+we can map the intersection of the two triangles to the origin.
+
+177
+00:14:15,255 --> 00:14:20,070
+The two diagonals that intersect the point are now both straight lines through the origin.
+
+178
+00:14:21,324 --> 00:14:24,600
+Therefore, we can simply do a point reflection at the origin,
+
+179
+00:14:24,600 --> 00:14:27,750
+transforming the right triangle onto the left.
+
+180
+00:14:30,360 --> 00:14:33,210
+Of course, the whole thing works not only for the first pair of triangles,
+
+181
+00:14:33,210 --> 00:14:34,290
+but for all of them.
+
+182
+00:14:41,380 --> 00:14:44,230
+Since we have an isometry between the two triangles,
+
+183
+00:14:44,230 --> 00:14:46,930
+the alternating perimeters of the triangles are the same.
+
+184
+00:14:49,386 --> 00:14:53,590
+We can write these formulas explicitly for all three pairs of triangles
+
+185
+00:14:53,590 --> 00:14:57,400
+and bring the perimeter of G_k to the other side.
+
+186
+00:14:57,400 --> 00:15:01,090
+Now we can add everything together and get the following formula.
+
+187
+00:15:07,720 --> 00:15:09,700
+What does this sum actually mean now?
+
+188
+00:15:09,700 --> 00:15:11,921
+Let's look at the whole picture.
+
+189
+00:15:24,439 --> 00:15:26,940
+If we subtract the perimeter of the G_i,
+
+190
+00:15:26,940 --> 00:15:30,292
+a part with the perimeter of the Y_i cancels out.
+
+191
+00:15:45,730 --> 00:15:48,820
+We see that we have summed twice
+
+192
+00:15:48,820 --> 00:15:52,450
+the perimeter of the inner triangle as well as the alternating perimeter of the hexagon.
+
+193
+00:15:54,528 --> 00:15:57,132
+Overall, our assertion follows.
+
+194
+00:16:04,140 --> 00:16:07,230
+Now we are finally ready to prove the Seven-Circles-Theorem.
+
+195
+00:16:07,230 --> 00:16:10,830
+Let's look here for a Hyperbolic hexagon with circles
+
+196
+00:16:10,830 --> 00:16:13,110
+tangent to the large circle,
+
+197
+00:16:13,110 --> 00:16:16,410
+with adjacent circles touching at exactly one point.
+
+198
+00:16:21,981 --> 00:16:25,200
+If we now look at the alternating perimeter of this hexagon,
+
+199
+00:16:25,200 --> 00:16:30,660
+we see that it is exactly zero since the individual pieces in the circles cancel out.
+
+200
+00:16:39,610 --> 00:16:42,850
+And that's exactly the perimeter of the triangle in the middle
+
+201
+00:16:42,850 --> 00:16:45,760
+by the theorem we just proved.
+
+202
+00:16:47,666 --> 00:16:51,220
+So the main diagonals of the hexagon meet at one point.
+
+203
+00:16:51,220 --> 00:16:56,500
+Now we only have to perform the transformation from the Poincaré model to the Klein model.
+
+204
+00:16:57,754 --> 00:17:01,390
+The statement also applies here because the intersection points of the diagonals
+
+205
+00:17:01,390 --> 00:17:03,280
+continue to run through a point.
+
+206
+00:17:03,280 --> 00:17:07,330
+This corresponds exactly to the scenario from the original Seven Circles Theorem,
+
+207
+00:17:07,330 --> 00:17:09,040
+which we have thus proved.
+

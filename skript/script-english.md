@@ -25,7 +25,7 @@ Let C be a circle containing six smaller circles, such that each inner circle is
 
 Let us also draw the hexagon formed by the intersection points of each inner circle with the outer circle.
 
-The Seven-circles theorem then states that the three main diagonals of the hexagon will always meet at a single point.
+The Seven Circles Theorem then states that the three main diagonals of the hexagon will always meet at a single point.
 
 Our goal is to now prove this statement.
 
@@ -63,7 +63,7 @@ Such models simply map the hyperbolic to the Euclidean plane.
 
 We take a closer look at the Poincaré and Klein models.
 
-There are however multiple other models, which can be helpful in other contexts.
+There are however multiple other models which can be helpful in other contexts.
 
 ## Poincaré model i
 
@@ -132,7 +132,7 @@ Since the maps act pointwise, intersections between geodesics are preserved.
 
 ## Rephrased theorem
 
-This helps us rephrase the Seven-Circles-Theorem:
+This helps us rephrase the Seven CirclesTheorem:
 
 Let C be a circle containing six smaller circles, such that each inner circle is tangent to the outer circle and any two
 adjacent inner circles are also tangent to each other.
