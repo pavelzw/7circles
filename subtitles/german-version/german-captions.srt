@@ -1,0 +1,968 @@
+1
+00:00:00,748 --> 00:00:03,658
+Wir beschäftigen uns heute 
+mit dem Sieben-Kreise-Satz.
+
+2
+00:00:04,465 --> 00:00:06,820
+Der Sieben-Kreise-Satz sagt Folgendes aus:
+
+3
+00:00:07,198 --> 00:00:12,328
+Sei C_0 ein Kreis und C_1, ..., 
+C_6 in C_0 enthaltene Kreise,
+
+4
+00:00:16,552 --> 00:00:21,000
+sodass jeder innere Kreis zum 
+äußeren Kreis tangential ist
+
+5
+00:00:23,816 --> 00:00:28,990
+und je zwei nebeneinander liegende innere 
+Kreise ebenfalls zueinander tangential sind.
+
+6
+00:00:33,609 --> 00:00:36,310
+Dann treffen sich die drei 
+Diagonalen des Hexagons,  
+
+7
+00:00:36,310 --> 00:00:41,650
+das von den Schnittpunkten der inneren 
+Kreise mit dem äußeren Kreis gebildet wird,
+
+8
+00:00:49,930 --> 00:00:51,474
+in einem Punkt.
+
+9
+00:00:56,880 --> 00:01:00,390
+Unser Ziel ist es jetzt, diesen Satz zu beweisen.
+
+10
+00:01:01,455 --> 00:01:05,940
+Das wird uns mithilfe einer Einbettung des 
+Problems in einen hyperbolischen Rahmen gelingen.
+
+11
+00:01:05,940 --> 00:01:09,960
+Zuerst geben wir dafür eine kleine 
+Einführung in die hyperbolische Geometrie,
+
+12
+00:01:09,960 --> 00:01:16,115
+um das Problem mit unserem neu gewonnenen 
+Wissen umzuformulieren und weiter zu bearbeiten.
+
+13
+00:01:18,673 --> 00:01:22,110
+Axiomatisch unterscheidet sich der 
+hyperbolische Raum von euklidischen  
+
+14
+00:01:22,110 --> 00:01:25,792
+dadurch, dass das Parallelenaxiom nicht gilt.
+
+15
+00:01:26,310 --> 00:01:28,260
+Das Parallelenaxiom sagt aus,  
+
+16
+00:01:28,260 --> 00:01:33,585
+dass zu jeder Geraden g und jedem 
+Punkt P, der nicht auf g liegt,
+
+17
+00:01:33,585 --> 00:01:38,850
+genau eine Gerade h existiert, die 
+durch P verläuft und zu g parallel ist.
+
+18
+00:01:39,228 --> 00:01:42,990
+Parallel heißt hier einfach, dass sich 
+die beiden Geraden nicht schneiden.
+
+19
+00:01:43,591 --> 00:01:47,130
+In hyperbolischer Geometrie ist 
+diese Eigenschaft nicht gegeben.
+
+20
+00:01:47,130 --> 00:01:53,460
+Dort gibt es für jede solche g und P mehrere 
+- sogar unendlich viele - Geraden durch P,  
+
+21
+00:01:53,460 --> 00:01:56,610
+die zu g parallel sind, also g nicht schneiden.
+
+22
+00:01:57,400 --> 00:01:59,220
+Unsere Darstellung hier ist aber irreführend,  
+
+23
+00:01:59,220 --> 00:02:04,110
+denn natürlich wird g von allen außer 
+der ursprünglichen Gerade h geschnitten,
+
+24
+00:02:04,110 --> 00:02:06,360
+wenn wir ihnen nur lang genug folgen.
+
+25
+00:02:07,545 --> 00:02:10,620
+Allgemein haben wir das Problem, 
+dass wir einen hyperbolischen  
+
+26
+00:02:10,620 --> 00:02:15,177
+Raum in der euklidischen Ebene - 
+diesem Video - darstellen wollen.
+
+27
+00:02:16,224 --> 00:02:18,270
+Die Frage, die wir jetzt angehen, ist also:
+
+28
+00:02:18,270 --> 00:02:21,870
+Wie stellt man die hyperbolische 
+Ebene im Euklidischen dar?
+
+29
+00:02:25,115 --> 00:02:28,200
+Es gibt verschiedene Modelle 
+für die hyperbolische Ebene.
+
+30
+00:02:28,698 --> 00:02:33,060
+Solche Modelle sind einfach Abbildungen von 
+der hyperbolischen in die euklidische Ebene.
+
+31
+00:02:33,661 --> 00:02:37,749
+Wir beschäftigen uns genauer mit 
+dem Poincaré- und dem Klein-Modell.
+
+32
+00:02:41,780 --> 00:02:45,260
+Zuerst schauen wir uns das 
+Poincaré-Modell etwas genauer an.
+
+33
+00:02:46,016 --> 00:02:48,200
+Die Darstellung der hyperbolischen Ebene im
+
+34
+00:02:48,200 --> 00:02:51,531
+Poincaré-Modell beschränkt 
+sich auf die Einheitsscheibe.
+
+35
+00:02:51,977 --> 00:02:57,185
+Die Geodätischen des Poincaré-Modells sind 
+- im Gegensatz zu Geraden im Euklidischen -
+
+36
+00:02:57,185 --> 00:03:01,053
+Kreissegmente, die den Einheitskreis 
+im rechten Winkel schneiden.
+
+37
+00:03:01,517 --> 00:03:05,044
+Damit wird klar, dass das 
+Parallelenaxiom hier nicht gilt.
+
+38
+00:03:05,919 --> 00:03:11,000
+Für einen Punkt P und eine Geodätische 
+findet man beliebig viele andere Geodätische,
+
+39
+00:03:11,000 --> 00:03:15,282
+die P, aber nicht die ursprüngliche 
+Geodätische schneiden.
+
+40
+00:03:16,244 --> 00:03:18,260
+Auch wenn es auf den ersten Blick so scheint,
+
+41
+00:03:18,260 --> 00:03:21,080
+ist die hyperbolische Ebene keineswegs beschränkt.
+
+42
+00:03:22,265 --> 00:03:24,620
+Lassen wir einen Punkt in der hyperbolischen Ebene  
+
+43
+00:03:24,620 --> 00:03:27,560
+mit konstanter Geschwindigkeit 
+in eine Richtung laufen,
+
+44
+00:03:27,560 --> 00:03:31,760
+so sehen wir, dass dieser den Rand 
+des Poincaré-Modells nie erreicht.
+
+45
+00:03:35,177 --> 00:03:39,612
+Der Einheitskreis liegt im Unendlichen 
+und gehört nicht zum Poincaré-Modell.
+
+46
+00:03:40,488 --> 00:03:44,150
+Zum weiteren Verständnis ist folgende 
+Darstellung der Verzerrung hilfreich.
+
+47
+00:03:45,283 --> 00:03:48,440
+Das ist eine Parkettierung 
+der hyperbolischen Ebene.
+
+48
+00:03:48,440 --> 00:03:53,000
+All diese Dreiecke haben die gleiche 
+Form und Fläche im Hyperbolischen.
+
+49
+00:03:55,078 --> 00:04:00,710
+Das Poincaré-Modell liefert also eine stark 
+verzerrte Darstellung des hyperbolischen Raumes.
+
+50
+00:04:04,780 --> 00:04:06,320
+Nun betrachten wir das Klein-Modell.
+
+51
+00:04:06,320 --> 00:04:09,890
+Wir werden starke Ähnlichkeiten 
+zum Poincaré-Modell erkennen.
+
+52
+00:04:11,538 --> 00:04:16,520
+Der größte Unterschied ist, dass Geodätische hier 
+tatsächlich euklidischen Geraden entsprechen.
+
+53
+00:04:18,110 --> 00:04:22,370
+Da diese aber wie im Poincaré-Modell 
+durch den Einheitskreis beschränkt werden,  
+
+54
+00:04:22,370 --> 00:04:25,100
+gilt das Parallelenaxiom auch hier nicht.
+
+55
+00:04:29,754 --> 00:04:33,380
+Ebenso gibt es im Klein-Modell 
+eine starke Verzerrung des Raumes.
+
+56
+00:04:33,380 --> 00:04:38,030
+Hier sehen wir die gleiche Parkettierung 
+der hyperbolischen Ebene im Klein-Modell.
+
+57
+00:04:44,160 --> 00:04:47,030
+Zum Rand hin werden Distanzen 
+auch hier immer größer.
+
+58
+00:04:54,911 --> 00:04:57,140
+Da beide Modelle den gleichen Raum darstellen,
+
+59
+00:04:57,140 --> 00:05:03,050
+ist es naheliegend, dass es Abbildungen gibt, die 
+die Punkte der Modelle miteinander identifizieren.
+
+60
+00:05:03,050 --> 00:05:07,820
+Tatsächlich gibt es diese. 
+Wir nennen sie f und f^ -1.
+
+61
+00:05:07,820 --> 00:05:12,381
+Wie wir hier sehen, sind die Formeln 
+für diese Abbildungen ziemlich einfach.
+
+62
+00:05:19,660 --> 00:05:24,220
+Mit f und f^-1 können wir jetzt 
+Objekte aus dem einen Modell ins  
+
+63
+00:05:24,220 --> 00:05:27,684
+andere übertragen, insbesondere Geodätische.
+
+64
+00:05:28,491 --> 00:05:33,370
+Da die Abbildungen punktweise agieren, bleiben 
+Schnittpunkte zwischen Geodätischen erhalten.
+
+65
+00:05:33,370 --> 00:05:37,930
+Das liefert uns jetzt die folgende 
+Umformulierung des Sieben-Kreise-Satzes.
+
+66
+00:05:44,000 --> 00:05:51,123
+Sei C_0 ein Kreis und C_1 bis 
+C_6 in C_0 enthaltene Kreise,
+
+67
+00:05:54,506 --> 00:05:58,447
+sodass jeder innere Kreis zum 
+äußeren Kreis tangential ist
+
+68
+00:05:59,667 --> 00:06:04,730
+und je zwei nebeneinander liegende innere 
+Kreise ebenfalls zueinander tangential sind.
+
+69
+00:06:07,580 --> 00:06:11,900
+Dann treffen sich die drei hyperbolischen 
+Diagonalen des hyperbolischen Hexagons,
+
+70
+00:06:11,900 --> 00:06:16,370
+das von den Schnittpunkten der inneren 
+Kreise mit dem äußeren Kreis gebildet wird,
+
+71
+00:06:23,444 --> 00:06:25,724
+in einem Punkt.
+
+72
+00:06:31,134 --> 00:06:33,400
+Wenn wir diesen Satz bewiesen haben,
+
+73
+00:06:33,400 --> 00:06:37,390
+wenden wir einfach die Transformation 
+vom Poincaré- zum Klein-Modell an
+
+74
+00:06:37,390 --> 00:06:40,690
+und haben somit auch den 
+ursprünglichen Satz bewiesen.
+
+75
+00:06:45,326 --> 00:06:49,001
+Jetzt führen wir ein paar neue 
+Konzepte im Hyperbolischen ein.
+
+76
+00:06:49,001 --> 00:06:51,670
+Betrachten wir zunächst 
+das Verhalten von Kreisen und  
+
+77
+00:06:51,670 --> 00:06:53,860
+Radien im hyperbolischen etwas genauer.
+
+78
+00:06:53,860 --> 00:06:57,610
+Dazu vergleichen wir es zu den uns 
+bekannten euklidischen Kreisen.
+
+79
+00:06:57,610 --> 00:07:00,580
+Ein Kreis besteht aus allen Punkten,
+
+80
+00:07:00,580 --> 00:07:03,700
+die den gleichen Abstand zu ihren Zentrum P haben.
+
+81
+00:07:09,340 --> 00:07:14,230
+Im Euklidischen messen wir die Distanz 
+natürlich mit der euklidischen Distanzfunktion.
+
+82
+00:07:14,230 --> 00:07:17,980
+Hyperbolische Scheiben, die wir 
+im Poincaré-Model einbetten,
+
+83
+00:07:17,980 --> 00:07:20,650
+sind genau so definiert wie euklidische Kreise,
+
+84
+00:07:20,650 --> 00:07:24,670
+nur benutzen wir hier eine andere 
+Distanzfunktion zum Messen von Längen.
+
+85
+00:07:24,670 --> 00:07:29,770
+Im Zentrum der Poincaré-Scheibe 
+sehen die hyperbolischen Kreise
+
+86
+00:07:29,770 --> 00:07:31,450
+genauso aus wie die euklidischen.
+
+87
+00:07:31,450 --> 00:07:33,700
+Ändern wir nun das Zentrum,
+
+88
+00:07:33,700 --> 00:07:38,320
+so entspricht die Form der hyperbolischen 
+Kreise immer noch der der euklidischen Kreise,
+
+89
+00:07:38,320 --> 00:07:41,680
+allerdings stimmt das Zentrum 
+der euklidischen Kreise nicht  
+
+90
+00:07:41,680 --> 00:07:43,900
+mehr mit dem der hyperbolischen überein.
+
+91
+00:07:47,437 --> 00:07:50,350
+Betrachten wir den hyperbolischen 
+Radius etwas genauer.
+
+92
+00:07:50,350 --> 00:07:53,800
+Dieser wird über die hyperbolische 
+Distanzfunktion gemessen,  
+
+93
+00:07:53,800 --> 00:07:56,860
+welcher den Abstand von zwei Punkten b und c
+
+94
+00:07:56,860 --> 00:07:59,020
+in der hyperbolischen Ebene misst.
+
+95
+00:07:59,020 --> 00:08:01,780
+Für die Berechnung benötigen 
+wir noch die Schnittpunkte  
+
+96
+00:08:01,780 --> 00:08:04,780
+der Geodätischen mit dem Rand der Einheitsscheibe.
+
+97
+00:08:04,780 --> 00:08:07,330
+Diese Punkte nennen wir a und d.
+
+98
+00:08:07,330 --> 00:08:10,540
+Um die hyperbolische Distanzfunktion auszuwerten,
+
+99
+00:08:10,540 --> 00:08:16,305
+interpretieren wie die Punkte a bis d 
+als Punkte in der komplexen Zahlenebene.
+
+100
+00:08:16,305 --> 00:08:18,250
+Auch wenn es für uns nicht so wirkt,
+
+101
+00:08:18,250 --> 00:08:23,531
+hat der hyperbolische Kreis in jedem Punkt 
+den gleichen Abstand zu seinem Zentrum.
+
+102
+00:08:27,340 --> 00:08:30,100
+Bewegen wir das hyperbolische Zentrum an den Rand
+
+103
+00:08:30,100 --> 00:08:33,250
+und schauen uns die zugehörigen 
+konzentrischen Kreise an,
+
+104
+00:08:33,250 --> 00:08:36,580
+so konvergiert der hyperbolische 
+Radius gegen unendlich
+
+105
+00:08:36,580 --> 00:08:39,520
+und wir erhalten sogenannte Horodisks.
+
+106
+00:08:39,520 --> 00:08:44,200
+Nachdem wir ein Gefühl für Kreise in 
+dem hyperbolischen Raum bekommen haben,
+
+107
+00:08:44,200 --> 00:08:46,540
+schauen wir uns jetzt hyperbolische Sechsecke an,
+
+108
+00:08:46,540 --> 00:08:49,720
+um daraufhin den alternierenden 
+Umfang definieren zu können,
+
+109
+00:08:49,720 --> 00:08:52,960
+der für unser Haupttheorem 
+von großer Bedeutung ist.
+
+110
+00:08:55,536 --> 00:08:58,900
+Ein hyperbolisches Vieleck ist 
+wie im Euklidischen definiert,
+
+111
+00:08:58,900 --> 00:09:01,540
+allerdings sind die Kurven, 
+die die Ecken verbinden,
+
+112
+00:09:01,540 --> 00:09:05,320
+keine Geraden, sondern wie immer 
+im Poincaré-Modell Kreissegmente.
+
+113
+00:09:05,320 --> 00:09:09,280
+Die Ecken des Vielecks können überall 
+in der hyperbolischen Ebene liegen.
+
+114
+00:09:09,280 --> 00:09:12,730
+Falls die Ecken allesamt auf dem 
+Rand der Poincaré-Scheibe liegen,
+
+115
+00:09:12,730 --> 00:09:15,673
+so nennen wir unser Polygon ideal.
+
+116
+00:09:19,948 --> 00:09:23,320
+Wie im Euklidischen kann man in 
+einem hyperbolischen Vieleck den  
+
+117
+00:09:23,320 --> 00:09:26,170
+Umfang als die Summe der Seitenlangen definieren.
+
+118
+00:09:26,170 --> 00:09:30,370
+Zu beachten ist, dass wir den 
+hyperbolischen Abstand der Eckpunkte messen.
+
+119
+00:09:30,370 --> 00:09:34,000
+Bei Sechsecken kann man durch 
+die gerade Anzahl an Ecken  
+
+120
+00:09:34,000 --> 00:09:36,850
+außerdem einen alternierenden Umfang definieren.
+
+121
+00:09:36,850 --> 00:09:41,980
+Anstatt die Summe aller Seitenlängen zu nehmen, 
+berechnen wir nun die alternierende Summe,
+
+122
+00:09:41,980 --> 00:09:44,904
+subtrahieren also jede zweite Länge.
+
+123
+00:09:47,779 --> 00:09:52,070
+Betrachten wir nun also den alternierenden 
+Umfang eines idealen Sechsecks.
+
+124
+00:09:52,070 --> 00:09:56,030
+Hier ergibt sich das Problem, 
+dass die einzelnen Segmente S_k  
+
+125
+00:09:56,030 --> 00:09:59,000
+unendliche Länge haben, da sie den Rand berühren.
+
+126
+00:09:59,000 --> 00:10:02,840
+Wir können den alternierenden 
+Umfang also nicht direkt berechnen.
+
+127
+00:10:02,840 --> 00:10:08,143
+Geodätensegmente, die nicht den Rand 
+berühren, haben allerdings endliche Länge.
+
+128
+00:10:08,143 --> 00:10:11,053
+Das können wir uns im Folgenden zunutze machen.
+
+129
+00:10:11,053 --> 00:10:14,510
+Wie führen den alternierenden 
+Umfang eines idealen Sechsecks  
+
+130
+00:10:14,510 --> 00:10:17,485
+auf den eines nichtidealen Hexagons zurück.
+
+131
+00:10:17,880 --> 00:10:23,240
+Da dessen Kanten endliche Länge haben, können wir 
+den alternierenden Umfang hier explizit berechnen.
+
+132
+00:10:25,198 --> 00:10:30,230
+Betrachten wir dazu eine Folge P_n 
+hyperbolischer nichtidealer Sechsecke, 
+
+133
+00:10:30,230 --> 00:10:34,568
+die gegen ein ideales 
+Sechseck P_∞ konvergieren.
+
+134
+00:10:37,762 --> 00:10:42,440
+Wir setzen nun an jeden 
+Eckpunkt von P_n eine Disk D_i,
+
+135
+00:10:42,440 --> 00:10:44,960
+sodass sich aufeinanderfolgende 
+Disks nicht überlappen.
+
+136
+00:10:44,960 --> 00:10:50,949
+Weiter definieren wir S_k^~ als die 
+Kante bis zu den Grenzen der Disks.
+
+137
+00:10:50,949 --> 00:10:54,800
+Wir sehen, dass die Längen der S_k^~ endlich sind.
+
+138
+00:10:59,480 --> 00:11:01,940
+Falls wir den Radius einer Disk ändern,  
+
+139
+00:11:01,940 --> 00:11:05,660
+addieren und subtrahieren wir den 
+gleichen Betrag auf beiden Seiten,
+
+140
+00:11:05,660 --> 00:11:08,120
+in diesem fall für S_1 und S_6.
+
+141
+00:11:10,026 --> 00:11:14,060
+Der alternierende Umfang ist also 
+unabhängig von der Größe unserer Disks,
+
+142
+00:11:14,060 --> 00:11:17,210
+auch wenn unsere Disks 
+einen Radius von Null haben.
+
+143
+00:11:17,210 --> 00:11:23,583
+Daraus folgt, dass die alternierende Summe der 
+S_k gleich der alternierenden Summe der S_k^~ ist.
+
+144
+00:11:24,493 --> 00:11:26,510
+Lassen wir n gegen unendlich laufen,
+
+145
+00:11:26,510 --> 00:11:28,580
+so gilt dieser Zusammenhang immer noch,
+
+146
+00:11:28,580 --> 00:11:31,730
+da die Längen S_k^~ nun aber endlich sind,
+
+147
+00:11:31,730 --> 00:11:36,350
+haben wir tatsächlich eine sinnvolle Berechnung 
+für den alternierenden Umfang gefunden.
+
+148
+00:11:40,660 --> 00:11:43,435
+Betrachten wir nun ein ideales Hexagon.
+
+149
+00:11:46,852 --> 00:11:49,940
+Wenn wir bei diesem Hexagon die 
+gegenüberliegenden Seiten verbinden,
+
+150
+00:11:49,940 --> 00:11:53,180
+sehen wir, dass ein Dreieck in der Mitte entsteht.
+
+151
+00:11:53,180 --> 00:11:55,812
+Nennen wir dieses Dreieck T_P.
+
+152
+00:12:01,620 --> 00:12:03,330
+Wir zeigen jetzt den folgenden Satz:
+
+153
+00:12:03,330 --> 00:12:06,030
+Für jedes ideale Hexagon gilt,
+
+154
+00:12:06,030 --> 00:12:09,210
+dass der alternierende Umfang 
+bis auf das Vorzeichen genau  
+
+155
+00:12:09,210 --> 00:12:11,730
+zweimal dem Umfang von T_P entspricht.
+
+156
+00:12:23,100 --> 00:12:27,600
+Für den Beweis definieren wir uns zuerst 
+den Begriff des semiidealen Dreiecks.
+
+157
+00:12:27,600 --> 00:12:31,470
+Es hat zwei Ecken am Rand des 
+Kreises - also ideale Punkte -
+
+158
+00:12:31,470 --> 00:12:34,016
+sowie eine Ecke in der hyperbolischen Ebene.
+
+159
+00:12:37,176 --> 00:12:43,860
+In unserem idealen Sechseck gibt es drei 
+solcher Dreiecke: Y_1, Y_2 sowie Y_3.
+
+160
+00:12:43,860 --> 00:12:47,640
+Auf den jeweils gegenüberliegenden 
+Seiten gibt es außerdem noch
+
+161
+00:12:47,640 --> 00:12:49,590
+drei weitere semiideale Dreiecke,
+
+162
+00:12:49,590 --> 00:12:52,020
+die das innere Dreieck T_P schneiden.
+
+163
+00:12:52,020 --> 00:12:56,144
+Die nennen wir G_1, G_2 und G_3.
+
+164
+00:13:03,254 --> 00:13:08,444
+Wir definieren uns eine ähnliche Größe wie den 
+alternierenden Umfang für hyperbolische Dreiecke.
+
+165
+00:13:08,444 --> 00:13:13,170
+Wenn wir disjunkte Horodisks von den beiden 
+idealen Knoten des Dreiecks entfernen,
+
+166
+00:13:13,170 --> 00:13:18,000
+erhalten wir die Längen L_1', L_2' und L_3'.
+
+167
+00:13:20,125 --> 00:13:24,210
+Damit definieren wir uns den alternierenden 
+Umfang eines semiidealen Dreiecks,
+
+168
+00:13:24,210 --> 00:13:27,000
+indem wir die beiden blauen 
+Längen aufeinander addieren
+
+169
+00:13:27,000 --> 00:13:28,290
+und die rote abziehen.
+
+170
+00:13:28,290 --> 00:13:32,910
+Der alternierende Umfang hängt nicht 
+von der Größe der einzelnen Kreise ab,
+
+171
+00:13:32,910 --> 00:13:36,180
+da die gleiche Länge sowohl dazu 
+addiert als auch abgezogen wird.
+
+172
+00:13:45,420 --> 00:13:50,520
+Die Dreiecke G_k und Y_k teilen sich 
+jeweils genau einen Knoten für k=1,...,3.
+
+173
+00:13:51,360 --> 00:13:54,990
+Es gibt jeweils eine Isometrie I_k,
+
+174
+00:13:54,990 --> 00:13:58,110
+die die gegenüberliegenden 
+Dreiecke aufeinander abbildet.
+
+175
+00:13:58,110 --> 00:14:04,890
+Diese können wir uns folgendermaßen konstruieren:
+
+176
+00:14:04,890 --> 00:14:10,110
+Mithilfe sogenannter Möbiustransformationen 
+- Isometrien in der hyperbolischen Ebene -
+
+177
+00:14:10,110 --> 00:14:13,710
+können wir den Schnittpunkt der beiden 
+Dreiecke auf den Ursprung abbilden.
+
+178
+00:14:13,710 --> 00:14:20,070
+Die beiden Diagonalen, die den Punkt schneiden 
+sind nun beides Geraden durch den Ursprung.
+
+179
+00:14:20,070 --> 00:14:24,600
+Deshalb können wir einfach eine 
+Punktspiegelung am Ursprung durchführen,
+
+180
+00:14:24,600 --> 00:14:27,750
+sodass das rechte Dreieck auf 
+das linke transformiert wird.
+
+181
+00:14:30,360 --> 00:14:33,210
+Das Ganze geht natürlich nicht 
+nur für das erste Dreieckspaar, 
+
+182
+00:14:33,210 --> 00:14:34,290
+sondern für alle,
+
+183
+00:14:41,380 --> 00:14:44,230
+Da wir eine Isometrie zwischen 
+den beiden Dreiecken haben,
+
+184
+00:14:44,230 --> 00:14:46,930
+sind die alternierenden 
+Umfänge der Dreiecke gleich.
+
+185
+00:14:49,386 --> 00:14:53,590
+Diese Formeln können wir explizit für 
+alle drei Dreieckspaare aufschreiben
+
+186
+00:14:53,590 --> 00:14:57,400
+und den Umfang von G_k auf 
+die andere Seite bringen.
+
+187
+00:14:57,400 --> 00:15:01,090
+Nun können wir alles zusammenaddieren 
+und erhalten folgende Formel.
+
+188
+00:15:07,720 --> 00:15:09,700
+Was bedeutet diese Summe jetzt eigentlich?
+
+189
+00:15:09,700 --> 00:15:11,921
+Betrachten wir das Ganze im Bild.
+
+190
+00:15:24,439 --> 00:15:26,940
+Wenn wir den Umfang der G_i abziehen,
+
+191
+00:15:26,940 --> 00:15:30,292
+kürzt sich ein Teil mit dem Umfang der Y_i weg.
+
+192
+00:15:45,730 --> 00:15:48,820
+Wir sehen, dass wir zweimal 
+den Umfang des inneren Dreiecks
+
+193
+00:15:48,820 --> 00:15:52,450
+sowie den alternierenden Umfang 
+des Hexagons aufsummiert haben.
+
+194
+00:15:54,528 --> 00:15:57,132
+Insgesamt folgt unsere Behauptung.
+
+195
+00:16:04,140 --> 00:16:07,230
+Jetzt beweisen wir endlich den Sieben-Kreise-Satz.
+
+196
+00:16:07,230 --> 00:16:10,830
+Schauen wir uns hier für ein 
+hyperbolisches Hexagon mit Kreisen an,  
+
+197
+00:16:10,830 --> 00:16:13,110
+die tangential zum großen Kreis liegen,
+
+198
+00:16:13,110 --> 00:16:16,410
+wobei sich benachbarte Kreise 
+in exakt einem Punkt berühren.
+
+199
+00:16:21,981 --> 00:16:25,200
+Wenn wir nun den alternierenden 
+Umfang dieses Hexagons betrachten,
+
+200
+00:16:25,200 --> 00:16:30,660
+sehen wir, dass dieser genau Null ist, da sich 
+die einzelnen Stücke in den Kreisen rauskürzen.
+
+201
+00:16:39,610 --> 00:16:42,850
+Und das entspricht genau dem 
+uUmfang des Dreiecks in der Mitte
+
+202
+00:16:42,850 --> 00:16:45,760
+aufgrund des Satzes, den wir 
+gerade eben bewiesen haben.
+
+203
+00:16:47,666 --> 00:16:51,220
+Also treffen sich die Hauptdiagonalen 
+des Hexagons in einem Punkt.
+
+204
+00:16:51,220 --> 00:16:56,500
+Nun müssen wir nur noch die Transformation vom 
+Poincaré-Modell in das Klein-Modell durchführen.
+
+205
+00:16:57,754 --> 00:17:01,390
+Die Aussage gilt auch hier, weil 
+die Schnittpunkte der Diagonalen
+
+206
+00:17:01,390 --> 00:17:03,280
+weiterhin durch einen Punkt verlaufen.
+
+207
+00:17:03,280 --> 00:17:07,330
+Das entspricht genau dem Szenario aus 
+dem ursprünglichen Sieben-Kreise-Satz,  
+
+208
+00:17:07,330 --> 00:17:09,040
+den wir somit bewiesen haben.
+
