@@ -547,7 +547,7 @@ class Scene5(MovingCameraScene):
         self.wait(3.5)
 
         # transition to Scene6
-        circle = Circle(color=OUTER_CIRCLE_COLOR)
+        circle = Circle(color=OUTER_CIRCLE_COLOR, stroke_width=OUTER_CIRCLE_STROKE_WIDTH)
         phis = [.3, 1.6, 2.2, 3.4, 4.3, 5.9]
         hexagon = HyperbolicPolygon.from_polar(phis, add_dots=False, stroke_width=HEXAGON_STROKE_WIDTH)
         diagonals = HexagonMainDiagonals(hexagon, stroke_width=HEXAGON_STROKE_WIDTH)
