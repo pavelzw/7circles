@@ -25,4 +25,5 @@ render-all = {depends_on = [
 python = "3.11.*"
 manim = ">=0.18.0,<0.19"
 ffmpeg = ">=5.1.2,<5.2"
-tectonic = ">=0.15.0,<0.16"
+# needed for pkg_resources
+setuptools = ">=69.2.0,<69.3"

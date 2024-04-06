@@ -150,13 +150,13 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/scipy-1.13.0-py311h64a7726_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/screeninfo-0.8.1-py311h38be061_1.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/secretstorage-3.3.3-py311h38be061_2.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/setuptools-69.2.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/shellingham-1.5.4-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/six-1.16.0-pyh6c4a22f_0.tar.bz2
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/skia-pathops-0.7.4-py311h4dd048b_0.tar.bz2
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/skia-pathops-0.8.0.post1-py311h9547e67_2.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/srt-3.5.3-py311h38be061_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/svgelements-1.9.6-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/svt-av1-1.4.1-hcb278e6_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/tectonic-0.15.0-hffe7e2f_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/tk-8.6.13-noxft_h4845f30_101.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.0.1-pyhd8ed1ab_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomlkit-0.12.4-pyha770c72_0.conda
@@ -326,11 +326,10 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/setuptools-69.2.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/shellingham-1.5.4-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/six-1.16.0-pyh6c4a22f_0.tar.bz2
-      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/skia-pathops-0.7.4-py311hd6ee22a_0.tar.bz2
+      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/skia-pathops-0.8.0.post1-py311hd03642b_2.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/srt-3.5.3-py311h267d04e_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/svgelements-1.9.6-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/svt-av1-1.4.1-h7ea286d_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/tectonic-0.15.0-he52c5f7_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/tk-8.6.13-h5083fa2_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.0.1-pyhd8ed1ab_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomlkit-0.12.4-pyha770c72_0.conda
@@ -469,20 +468,20 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/python_abi-3.11-4_cp311.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/pywin32-ctypes-0.2.2-py311h1ea47a8_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/pyyaml-6.0.1-py311ha68e1ae_1.conda
-      - conda: https://conda.anaconda.org/conda-forge/win-64/rapidfuzz-3.7.0-py311h12c1d0e_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/rapidfuzz-3.8.0-py311h12c1d0e_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/requests-2.31.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/requests-toolbelt-1.0.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/rich-13.7.1-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/scipy-1.13.0-py311h0b4df5a_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/screeninfo-0.8.1-py311h1ea47a8_1.tar.bz2
+      - conda: https://conda.anaconda.org/conda-forge/noarch/setuptools-69.2.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/shellingham-1.5.4-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/six-1.16.0-pyh6c4a22f_0.tar.bz2
-      - conda: https://conda.anaconda.org/conda-forge/win-64/skia-pathops-0.7.4-py311h005e61a_0.tar.bz2
+      - conda: https://conda.anaconda.org/conda-forge/win-64/skia-pathops-0.8.0.post1-py311h005e61a_2.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/srt-3.5.3-py311h1ea47a8_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/svgelements-1.9.6-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/svt-av1-1.4.1-h63175ca_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/tbb-2021.11.0-h91493d7_1.conda
-      - conda: https://conda.anaconda.org/conda-forge/win-64/tectonic-0.15.0-h1cbdeb6_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/tk-8.6.13-h5226925_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.0.1-pyhd8ed1ab_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomlkit-0.12.4-pyha770c72_0.conda
@@ -5389,12 +5388,12 @@ packages:
   timestamp: 1695373829282
 - kind: conda
   name: rapidfuzz
-  version: 3.7.0
+  version: 3.8.0
   build: py311h12c1d0e_0
   subdir: win-64
-  url: https://conda.anaconda.org/conda-forge/win-64/rapidfuzz-3.7.0-py311h12c1d0e_0.conda
-  sha256: 54886f930c42f70e33a7e4d3e48b7255be5e0d70d7c0bd1b8d504b82b519b958
-  md5: 6cb77a913ddab1848557237a41e62817
+  url: https://conda.anaconda.org/conda-forge/win-64/rapidfuzz-3.8.0-py311h12c1d0e_0.conda
+  sha256: df7097fe47df9e770ab65ee48a86a13792dc01f1db7927e356b3a544cddeb7ff
+  md5: 0ec8859301c4f70458774763b4b49ccd
   depends:
   - numpy
   - python >=3.11,<3.12.0a0
@@ -5404,8 +5403,8 @@ packages:
   - vc14_runtime >=14.29.30139
   license: MIT
   license_family: MIT
-  size: 1076352
-  timestamp: 1711325254904
+  size: 1086297
+  timestamp: 1712433648490
 - kind: conda
   name: rapidfuzz
   version: 3.8.0
@@ -5717,30 +5716,32 @@ packages:
   timestamp: 1620240338595
 - kind: conda
   name: skia-pathops
-  version: 0.7.4
-  build: py311h005e61a_0
+  version: 0.8.0.post1
+  build: py311h005e61a_2
+  build_number: 2
   subdir: win-64
-  url: https://conda.anaconda.org/conda-forge/win-64/skia-pathops-0.7.4-py311h005e61a_0.tar.bz2
-  sha256: 3a8ae6249eb17f398383ba5179adbc4e9cf784a7d6ccd9b8e26dd6ab63563a62
-  md5: 596b4c23b13882710bd588464ff4490a
+  url: https://conda.anaconda.org/conda-forge/win-64/skia-pathops-0.8.0.post1-py311h005e61a_2.conda
+  sha256: 2aec03be006cac5242cf60f9df36922e6c5b7ac987352919f8e73939b515ae80
+  md5: 3bb11a2efec04f5001cd60ff1fd60dfc
   depends:
   - python >=3.11,<3.12.0a0
   - python_abi 3.11.* *_cp311
   - ucrt >=10.0.20348.0
   - vc >=14.2,<15
-  - vs2015_runtime >=14.29.30139
+  - vc14_runtime >=14.29.30139
   license: BSD-3-Clause
   license_family: BSD
-  size: 2644600
-  timestamp: 1668207891821
+  size: 2457608
+  timestamp: 1700073926937
 - kind: conda
   name: skia-pathops
-  version: 0.7.4
-  build: py311h4dd048b_0
+  version: 0.8.0.post1
+  build: py311h9547e67_2
+  build_number: 2
   subdir: linux-64
-  url: https://conda.anaconda.org/conda-forge/linux-64/skia-pathops-0.7.4-py311h4dd048b_0.tar.bz2
-  sha256: affb7691705cd5d0fec74e269490df17aa828e6760471f84b43c07a9e38e85b1
-  md5: 22231397ff80fd3571229e5cfd8f5bc3
+  url: https://conda.anaconda.org/conda-forge/linux-64/skia-pathops-0.8.0.post1-py311h9547e67_2.conda
+  sha256: 7479fc8a740d447ab634d6a8ec0d00a3ef43faba1ab96987073ce6adfa7ef0e5
+  md5: 31bd27d8f207b56d699c7fabe20968ec
   depends:
   - libgcc-ng >=12
   - libstdcxx-ng >=12
@@ -5748,25 +5749,27 @@ packages:
   - python_abi 3.11.* *_cp311
   license: BSD-3-Clause
   license_family: BSD
-  size: 400800
-  timestamp: 1668206654613
+  size: 400594
+  timestamp: 1700072833237
 - kind: conda
   name: skia-pathops
-  version: 0.7.4
-  build: py311hd6ee22a_0
+  version: 0.8.0.post1
+  build: py311hd03642b_2
+  build_number: 2
   subdir: osx-arm64
-  url: https://conda.anaconda.org/conda-forge/osx-arm64/skia-pathops-0.7.4-py311hd6ee22a_0.tar.bz2
-  sha256: e0b5d39911a169ab997574803fd96e419c4f8d991ecb633921e50adeb68ba57e
-  md5: add0bcf52861c050364897d92bc3a9ee
+  url: https://conda.anaconda.org/conda-forge/osx-arm64/skia-pathops-0.8.0.post1-py311hd03642b_2.conda
+  sha256: 4c17fa1d4d28816f2415782cdd1764d73166a2b3adc256d563b1d99995393303
+  md5: 4362cdcf23192c457fd0d90ae9b50af8
   depends:
-  - libcxx >=14.0.6
+  - __osx >=10.9
+  - libcxx >=16.0.6
   - python >=3.11,<3.12.0a0
   - python >=3.11,<3.12.0a0 *_cpython
   - python_abi 3.11.* *_cp311
   license: BSD-3-Clause
   license_family: BSD
-  size: 1264178
-  timestamp: 1668207100892
+  size: 1156213
+  timestamp: 1700073684195
 - kind: conda
   name: srt
   version: 3.5.3
@@ -5891,84 +5894,6 @@ packages:
   license_family: APACHE
   size: 161382
   timestamp: 1706164225098
-- kind: conda
-  name: tectonic
-  version: 0.15.0
-  build: h1cbdeb6_0
-  subdir: win-64
-  url: https://conda.anaconda.org/conda-forge/win-64/tectonic-0.15.0-h1cbdeb6_0.conda
-  sha256: e43ceb7fd467941ddf646e71c22a1d78b9b6d3e15a036c90b042824a13b4293c
-  md5: 9fbcc9a259a4976dc52cda673d3b8888
-  depends:
-  - fontconfig >=2.14.2,<3.0a0
-  - fonts-conda-ecosystem
-  - freetype >=2.12.1,<3.0a0
-  - graphite2
-  - harfbuzz >=8.3.0,<9.0a0
-  - icu >=73.2,<74.0a0
-  - libglib >=2.78.3,<3.0a0
-  - libpng >=1.6.42,<1.7.0a0
-  - libzlib >=1.2.13,<1.3.0a0
-  - openssl >=3.2.1,<4.0a0
-  - ucrt >=10.0.20348.0
-  - vc >=14.2,<15
-  - vc14_runtime >=14.29.30139
-  - zlib
-  license: MIT
-  license_family: MIT
-  size: 4246197
-  timestamp: 1707164116101
-- kind: conda
-  name: tectonic
-  version: 0.15.0
-  build: he52c5f7_0
-  subdir: osx-arm64
-  url: https://conda.anaconda.org/conda-forge/osx-arm64/tectonic-0.15.0-he52c5f7_0.conda
-  sha256: 91ca2480adbb272b14f4dc54f308c16e3790b0b71b39d514466f32ecb5e92c69
-  md5: e466bbc04586bc6b4d271622d5be06af
-  depends:
-  - freetype >=2.12.1,<3.0a0
-  - graphite2
-  - harfbuzz >=8.3.0,<9.0a0
-  - icu >=73.2,<74.0a0
-  - libcxx >=16
-  - libglib >=2.78.3,<3.0a0
-  - libpng >=1.6.42,<1.7.0a0
-  - libzlib >=1.2.13,<1.3.0a0
-  - openssl >=3.2.1,<4.0a0
-  - zlib
-  constrains:
-  - __osx >=11.0
-  license: MIT
-  license_family: MIT
-  size: 4503198
-  timestamp: 1707163238436
-- kind: conda
-  name: tectonic
-  version: 0.15.0
-  build: hffe7e2f_0
-  subdir: linux-64
-  url: https://conda.anaconda.org/conda-forge/linux-64/tectonic-0.15.0-hffe7e2f_0.conda
-  sha256: df6edf6df6d066848815498211b6a7513b9d4d9fdfa65ac9999385b2b7262d4f
-  md5: 0006439b1ff83024fd3c858a8125381f
-  depends:
-  - fontconfig >=2.14.2,<3.0a0
-  - fonts-conda-ecosystem
-  - freetype >=2.12.1,<3.0a0
-  - graphite2
-  - harfbuzz >=8.3.0,<9.0a0
-  - icu >=73.2,<74.0a0
-  - libgcc-ng >=12
-  - libglib >=2.78.3,<3.0a0
-  - libpng >=1.6.42,<1.7.0a0
-  - libstdcxx-ng >=12
-  - libzlib >=1.2.13,<1.3.0a0
-  - openssl >=3.2.1,<4.0a0
-  - zlib
-  license: MIT
-  license_family: MIT
-  size: 5818499
-  timestamp: 1707162370909
 - kind: conda
   name: tk
   version: 8.6.13

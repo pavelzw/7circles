@@ -1,4 +1,4 @@
-name: Render videos
+name: CI
 on: push
 jobs:
   render-video:
@@ -6,7 +6,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: main-results
+          - name: main-result
             file: main_result
           - name: benedikt
             file: animation
