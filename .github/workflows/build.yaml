@@ -22,7 +22,7 @@ jobs:
       - uses: teatimeguest/setup-texlive-action@9855afe404b85dff721b382b9b50337e2dc252bd
         with:
           packages: mathtools
-      - run: latex --version
+      - run: ls /home/runner/work/_temp/setup-texlive-action/2024/bin/x86_64-linux/
       - uses: prefix-dev/setup-pixi@19b5e6071f70a82d3c5741d7b3f98a71d192eb20
       - name: Render Scenes
         run: |
