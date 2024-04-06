@@ -22,6 +22,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/click-default-group-1.2.4-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/cloup-0.13.1-pyhd8ed1ab_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/noarch/colorama-0.4.6-pyhd8ed1ab_0.tar.bz2
+      - conda: https://conda.anaconda.org/conda-forge/noarch/colour-0.1.5-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/crashtest-0.4.1-pyhd8ed1ab_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/cryptography-42.0.5-py311h63ff55d_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/dataclasses-0.8-pyhc8e2a94_3.tar.bz2
@@ -97,8 +98,8 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libxcrypt-4.4.36-hd590300_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libxml2-2.12.6-h232c23b_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libzlib-1.2.13-hd590300_5.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/manim-0.18.0-pyhd8ed1ab_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/manimpango-0.5.0-py311h5fe2a17_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/manim-0.17.3-pyhd8ed1ab_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/manimpango-0.4.4-py311h5fe2a17_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/mapbox_earcut-1.0.1-py311h9547e67_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/markdown-it-py-3.0.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/mdurl-0.1.2-pyhd8ed1ab_0.conda
@@ -153,7 +154,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/setuptools-69.2.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/shellingham-1.5.4-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/six-1.16.0-pyh6c4a22f_0.tar.bz2
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/skia-pathops-0.8.0.post1-py311h9547e67_2.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/skia-pathops-0.7.4-py311h4dd048b_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/srt-3.5.3-py311h38be061_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/svgelements-1.9.6-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/svt-av1-1.4.1-hcb278e6_0.conda
@@ -204,6 +205,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/click-default-group-1.2.4-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/cloup-0.13.1-pyhd8ed1ab_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/noarch/colorama-0.4.6-pyhd8ed1ab_0.tar.bz2
+      - conda: https://conda.anaconda.org/conda-forge/noarch/colour-0.1.5-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/crashtest-0.4.1-pyhd8ed1ab_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/cython-3.0.10-py311h92babd0_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/dataclasses-0.8-pyhc8e2a94_3.tar.bz2
@@ -269,8 +271,8 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/libxml2-2.12.6-h0d0cfa8_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/libzlib-1.2.13-h53f4e23_5.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/llvm-openmp-18.1.2-hcd81f8e_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/manim-0.18.0-pyhd8ed1ab_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/manimpango-0.5.0-py311ha6b7259_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/manim-0.17.3-pyhd8ed1ab_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/manimpango-0.4.4-py311h632eba6_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/mapbox_earcut-1.0.1-py311he4fd1f5_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/markdown-it-py-3.0.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/mdurl-0.1.2-pyhd8ed1ab_0.conda
@@ -326,7 +328,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/setuptools-69.2.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/shellingham-1.5.4-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/six-1.16.0-pyh6c4a22f_0.tar.bz2
-      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/skia-pathops-0.8.0.post1-py311hd03642b_2.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/skia-pathops-0.7.4-py311hd6ee22a_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/srt-3.5.3-py311h267d04e_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/svgelements-1.9.6-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/svt-av1-1.4.1-h7ea286d_0.conda
@@ -366,6 +368,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/click-default-group-1.2.4-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/cloup-0.13.1-pyhd8ed1ab_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/noarch/colorama-0.4.6-pyhd8ed1ab_0.tar.bz2
+      - conda: https://conda.anaconda.org/conda-forge/noarch/colour-0.1.5-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/crashtest-0.4.1-pyhd8ed1ab_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/noarch/dataclasses-0.8-pyhc8e2a94_3.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/win-64/dav1d-1.2.1-hcfcfb64_0.conda
@@ -423,8 +426,8 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/m2w64-gcc-libs-core-5.3.0-7.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/win-64/m2w64-gmp-6.1.0-2.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/win-64/m2w64-libwinpthread-git-5.0.0.4634.697f757-2.tar.bz2
-      - conda: https://conda.anaconda.org/conda-forge/noarch/manim-0.18.0-pyhd8ed1ab_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/win-64/manimpango-0.5.0-py311h3e72c53_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/manim-0.17.3-pyhd8ed1ab_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/manimpango-0.4.4-py311h3e72c53_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/mapbox_earcut-1.0.1-py311h005e61a_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/markdown-it-py-3.0.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/mdurl-0.1.2-pyhd8ed1ab_0.conda
@@ -477,7 +480,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/setuptools-69.2.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/shellingham-1.5.4-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/six-1.16.0-pyh6c4a22f_0.tar.bz2
-      - conda: https://conda.anaconda.org/conda-forge/win-64/skia-pathops-0.8.0.post1-py311h005e61a_2.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/skia-pathops-0.7.4-py311h005e61a_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/win-64/srt-3.5.3-py311h1ea47a8_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/svgelements-1.9.6-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/svt-av1-1.4.1-h63175ca_0.conda
@@ -995,6 +998,22 @@ packages:
   license_family: BSD
   size: 25170
   timestamp: 1666700778190
+- kind: conda
+  name: colour
+  version: 0.1.5
+  build: pyhd8ed1ab_1
+  build_number: 1
+  subdir: noarch
+  noarch: python
+  url: https://conda.anaconda.org/conda-forge/noarch/colour-0.1.5-pyhd8ed1ab_1.conda
+  sha256: 43fbcfc672a0b4947edfa94e60718211167297b64c699f3e7767e2c8814e8697
+  md5: de5ef3b303f625ac94939665ab85e996
+  depends:
+  - python >=3.7
+  license: BSD-2-Clause
+  license_family: BSD
+  size: 21760
+  timestamp: 1700634807060
 - kind: conda
   name: crashtest
   version: 0.4.1
@@ -3666,26 +3685,27 @@ packages:
   timestamp: 1608166099896
 - kind: conda
   name: manim
-  version: 0.18.0
+  version: 0.17.3
   build: pyhd8ed1ab_0
   subdir: noarch
   noarch: python
-  url: https://conda.anaconda.org/conda-forge/noarch/manim-0.18.0-pyhd8ed1ab_0.conda
-  sha256: 6931f8ee75731b4c5937a105e5dbc3f6f07eaf7c1f6300f11427110d0764405c
-  md5: 782ba1924677ac450621477de390ca77
+  url: https://conda.anaconda.org/conda-forge/noarch/manim-0.17.3-pyhd8ed1ab_0.conda
+  sha256: 2c28e00cac36eaf5b029422da1bd6ac3b967ee3cd37da6ccfdd9809f7b73952d
+  md5: 987021b63105a28e377ab90963be8920
   depends:
   - click >=7.2,<9.0
   - click-default-group >=1.2.2,<2.0.0
-  - cloup >=0.13.0,<2.2
+  - cloup >=0.13.0,<0.14.0
+  - colour >=0.1.5,<0.2.0
   - decorator >=5.0.7,<6.0.0
   - ffmpeg
   - isosurfaces 0.1.0
-  - manimpango >=0.5.0,<1.0.0
+  - manimpango >=0.4.0.post0,<0.5.0
   - mapbox_earcut >=1.0.0,<2.0.0
   - moderngl >=5.6.3,<6.0.0
   - moderngl-window >=2.3.0,<3.0.0
-  - networkx >=2.5,<3.3
-  - numpy >=1.22,<2.0
+  - networkx >=2.5,<3.0
+  - numpy >=1.19,<2.0
   - pillow >=9.1,<10.0
   - pycairo >=1.21,<2.0
   - pydub >=0.25.1,<0.26.0
@@ -3695,26 +3715,26 @@ packages:
   - rich >=6.0,!=12.0.0
   - scipy >=1.7.3,<2.0.0
   - screeninfo >=0.8.0,<0.9.0
-  - skia-pathops >=0.7.0
+  - skia-pathops >=0.7.0,<0.8.0
   - srt >=3.5.0,<4.0.0
-  - svgelements >=1.8.0,<2.0.0
+  - svgelements >=1.7.2,<2.0.0
   - tqdm >=4.62.3,<5.0.0
-  - typing-extensions >=4.7.1,<5.0.0
-  - watchdog >=2.1,<3.0.0
+  - watchdog >=2.1.6,<3.0.0
   license: MIT
   license_family: MIT
-  size: 401364
-  timestamp: 1700042749588
+  size: 365377
+  timestamp: 1680848459142
 - kind: conda
   name: manimpango
-  version: 0.5.0
-  build: py311h3e72c53_0
+  version: 0.4.4
+  build: py311h3e72c53_1
+  build_number: 1
   subdir: win-64
-  url: https://conda.anaconda.org/conda-forge/win-64/manimpango-0.5.0-py311h3e72c53_0.conda
-  sha256: dda77bad6f2bd70dde0198a6239c4b3d1271f00b40d22b1d88ed67500d563899
-  md5: 48ad648bb3a02704965d2ed63db514db
+  url: https://conda.anaconda.org/conda-forge/win-64/manimpango-0.4.4-py311h3e72c53_1.conda
+  sha256: 708dfd2022f7b5b16d8fe488fbf46eec032d55ee1ad30f3107c6ea4bcf0d5bf0
+  md5: aa84333b467b0b780c337fc6d2e2cae5
   depends:
-  - cairo >=1.18.0,<2.0a0
+  - cairo >=1.16.0,<2.0a0
   - glib
   - libglib >=2.78.0,<3.0a0
   - pango >=1.50.14,<2.0a0
@@ -3725,18 +3745,19 @@ packages:
   - vc14_runtime >=14.29.30139
   license: MIT
   license_family: MIT
-  size: 74754
-  timestamp: 1697323350225
+  size: 74036
+  timestamp: 1696429731301
 - kind: conda
   name: manimpango
-  version: 0.5.0
-  build: py311h5fe2a17_0
+  version: 0.4.4
+  build: py311h5fe2a17_1
+  build_number: 1
   subdir: linux-64
-  url: https://conda.anaconda.org/conda-forge/linux-64/manimpango-0.5.0-py311h5fe2a17_0.conda
-  sha256: 6fffba738ee7f5c0abaf37d073ecbd629f9af579793d49e5db2bdd2fec5f988b
-  md5: f778e4c48ed500e6a146f2b2bb86feb9
+  url: https://conda.anaconda.org/conda-forge/linux-64/manimpango-0.4.4-py311h5fe2a17_1.conda
+  sha256: ff5c05e00a3f18247cfcfdc6655faa4e9a435443c9910a81a17590a9c2cc4d9e
+  md5: 5b42d6e185866c9655ede6ce6e2d3d42
   depends:
-  - cairo >=1.18.0,<2.0a0
+  - cairo >=1.16.0,<2.0a0
   - glib
   - libgcc-ng >=12
   - libglib >=2.78.0,<3.0a0
@@ -3745,18 +3766,19 @@ packages:
   - python_abi 3.11.* *_cp311
   license: MIT
   license_family: MIT
-  size: 87029
-  timestamp: 1697323011658
+  size: 87351
+  timestamp: 1696429109621
 - kind: conda
   name: manimpango
-  version: 0.5.0
-  build: py311ha6b7259_0
+  version: 0.4.4
+  build: py311h632eba6_1
+  build_number: 1
   subdir: osx-arm64
-  url: https://conda.anaconda.org/conda-forge/osx-arm64/manimpango-0.5.0-py311ha6b7259_0.conda
-  sha256: 675ba4bc2354be5e473a470d422167fd40119705d5d07eea6a22a0c59ade0f29
-  md5: 4df70dda69567c469cc40b2d27f6f058
+  url: https://conda.anaconda.org/conda-forge/osx-arm64/manimpango-0.4.4-py311h632eba6_1.conda
+  sha256: a4add0fa1d8eceac6bc28d2b1a0199a473794bbc10158bec771475c608552725
+  md5: 732f31745727fe2fd5dc62e77e66cdf9
   depends:
-  - cairo >=1.18.0,<2.0a0
+  - cairo >=1.16.0,<2.0a0
   - glib
   - libglib >=2.78.0,<3.0a0
   - pango >=1.50.14,<2.0a0
@@ -3765,8 +3787,8 @@ packages:
   - python_abi 3.11.* *_cp311
   license: MIT
   license_family: MIT
-  size: 76835
-  timestamp: 1697323204347
+  size: 79451
+  timestamp: 1696430014852
 - kind: conda
   name: mapbox_earcut
   version: 1.0.1
@@ -5716,32 +5738,30 @@ packages:
   timestamp: 1620240338595
 - kind: conda
   name: skia-pathops
-  version: 0.8.0.post1
-  build: py311h005e61a_2
-  build_number: 2
+  version: 0.7.4
+  build: py311h005e61a_0
   subdir: win-64
-  url: https://conda.anaconda.org/conda-forge/win-64/skia-pathops-0.8.0.post1-py311h005e61a_2.conda
-  sha256: 2aec03be006cac5242cf60f9df36922e6c5b7ac987352919f8e73939b515ae80
-  md5: 3bb11a2efec04f5001cd60ff1fd60dfc
+  url: https://conda.anaconda.org/conda-forge/win-64/skia-pathops-0.7.4-py311h005e61a_0.tar.bz2
+  sha256: 3a8ae6249eb17f398383ba5179adbc4e9cf784a7d6ccd9b8e26dd6ab63563a62
+  md5: 596b4c23b13882710bd588464ff4490a
   depends:
   - python >=3.11,<3.12.0a0
   - python_abi 3.11.* *_cp311
   - ucrt >=10.0.20348.0
   - vc >=14.2,<15
-  - vc14_runtime >=14.29.30139
+  - vs2015_runtime >=14.29.30139
   license: BSD-3-Clause
   license_family: BSD
-  size: 2457608
-  timestamp: 1700073926937
+  size: 2644600
+  timestamp: 1668207891821
 - kind: conda
   name: skia-pathops
-  version: 0.8.0.post1
-  build: py311h9547e67_2
-  build_number: 2
+  version: 0.7.4
+  build: py311h4dd048b_0
   subdir: linux-64
-  url: https://conda.anaconda.org/conda-forge/linux-64/skia-pathops-0.8.0.post1-py311h9547e67_2.conda
-  sha256: 7479fc8a740d447ab634d6a8ec0d00a3ef43faba1ab96987073ce6adfa7ef0e5
-  md5: 31bd27d8f207b56d699c7fabe20968ec
+  url: https://conda.anaconda.org/conda-forge/linux-64/skia-pathops-0.7.4-py311h4dd048b_0.tar.bz2
+  sha256: affb7691705cd5d0fec74e269490df17aa828e6760471f84b43c07a9e38e85b1
+  md5: 22231397ff80fd3571229e5cfd8f5bc3
   depends:
   - libgcc-ng >=12
   - libstdcxx-ng >=12
@@ -5749,27 +5769,25 @@ packages:
   - python_abi 3.11.* *_cp311
   license: BSD-3-Clause
   license_family: BSD
-  size: 400594
-  timestamp: 1700072833237
+  size: 400800
+  timestamp: 1668206654613
 - kind: conda
   name: skia-pathops
-  version: 0.8.0.post1
-  build: py311hd03642b_2
-  build_number: 2
+  version: 0.7.4
+  build: py311hd6ee22a_0
   subdir: osx-arm64
-  url: https://conda.anaconda.org/conda-forge/osx-arm64/skia-pathops-0.8.0.post1-py311hd03642b_2.conda
-  sha256: 4c17fa1d4d28816f2415782cdd1764d73166a2b3adc256d563b1d99995393303
-  md5: 4362cdcf23192c457fd0d90ae9b50af8
+  url: https://conda.anaconda.org/conda-forge/osx-arm64/skia-pathops-0.7.4-py311hd6ee22a_0.tar.bz2
+  sha256: e0b5d39911a169ab997574803fd96e419c4f8d991ecb633921e50adeb68ba57e
+  md5: add0bcf52861c050364897d92bc3a9ee
   depends:
-  - __osx >=10.9
-  - libcxx >=16.0.6
+  - libcxx >=14.0.6
   - python >=3.11,<3.12.0a0
   - python >=3.11,<3.12.0a0 *_cpython
   - python_abi 3.11.* *_cp311
   license: BSD-3-Clause
   license_family: BSD
-  size: 1156213
-  timestamp: 1700073684195
+  size: 1264178
+  timestamp: 1668207100892
 - kind: conda
   name: srt
   version: 3.5.3

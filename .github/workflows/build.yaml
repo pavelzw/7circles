@@ -27,13 +27,10 @@ jobs:
             standalone
             preview
             dvisvgm
-      - run: |
-          ls /home/runner/work/_temp/setup-texlive-action/2024/bin/x86_64-linux/
-          latex --version
       - uses: prefix-dev/setup-pixi@19b5e6071f70a82d3c5741d7b3f98a71d192eb20
       - name: Render Scenes
         run: |
-          pixi run render-${{ matrix.name }}
+          pixi run ci-render-${{ matrix.name }}
       - name: Save output as artifacts
         uses: actions/upload-artifact@v4
         with:
