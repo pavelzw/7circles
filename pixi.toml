@@ -22,6 +22,7 @@ render-all = {depends_on = [
 ]}
 
 [dependencies]
-manim = ">=0.17.0,<0.18"
+python = "3.11.*"
+manim = ">=0.18.0,<0.19"
 ffmpeg = ">=5.1.2,<5.2"
 tectonic = ">=0.15.0,<0.16"

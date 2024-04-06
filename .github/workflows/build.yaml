@@ -1,7 +1,8 @@
 name: Render videos
 on: push
 jobs:
-  main_result:
+  render-video:
+    name: Render video (${{ matrix.name }})
     strategy:
       matrix:
         include:
