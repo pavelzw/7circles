@@ -26,6 +26,7 @@ jobs:
             mathtools
             standalone
             preview
+            dvisvgm
       - run: |
           ls /home/runner/work/_temp/setup-texlive-action/2024/bin/x86_64-linux/
           latex --version
