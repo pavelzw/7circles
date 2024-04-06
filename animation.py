@@ -592,9 +592,9 @@ class HyperbolicModelsKlein(MovingCameraScene):
 
         MY_BLUE = "#22c1dd"
 
-        title = MarkupText(
-            "Models for the hyperbolic plane").scale(
-            0.8).shift(3.5 * UP)
+        title = MarkupText("Models for the hyperbolic plane")\
+            .scale(0.8)\
+            .shift(3.5 * UP)
 
         klein_model = ImageMobject("tessellation_klein.png").scale(0.7).move_to(klein_origin)
         klein_text = Text("Klein model").scale(0.6).move_to(3.5 * RIGHT + 2.2 * UP)
