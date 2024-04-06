@@ -35,5 +35,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.name }}
-          path: media/videos/${{ matrix.file }}/1440p60/*.mp4
+          path: |
+            media/videos/${{ matrix.file }}/1440p60/*.mp4
+            media/videos/${{ matrix.file }}/1440p60/*.srt
           retention-days: 5
