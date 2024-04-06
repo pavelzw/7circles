@@ -5,11 +5,11 @@ channels = ["conda-forge"]
 platforms = ["osx-arm64", "linux-64", "win-64"]
 
 [tasks]
-ci-render-introduction = "manim -qp --progress-bar none -a introduction.py"
-ci-render-main-result = "manim -qp --progress-bar none -a main_result.py && ./ffmpeg_concat/concat_main_result.sh 1440p60"
-ci-render-benedikt = "manim -qp --progress-bar none -a animation.py"
-ci-render-paulina = "manim -qp --progress-bar none -a paulinas_scenes.py"
-ci-render-horodisks = "manim -qp --progress-bar none -a horodisks.py"
+ci-render-introduction = "manim -qp --progress_bar none -a introduction.py"
+ci-render-main-result = "manim -qp --progress_bar none -a main_result.py && ./ffmpeg_concat/concat_main_result.sh 1440p60"
+ci-render-benedikt = "manim -qp --progress_bar none -a animation.py"
+ci-render-paulina = "manim -qp --progress_bar none -a paulinas_scenes.py"
+ci-render-horodisks = "manim -qp --progress_bar none -a horodisks.py"
 
 4k-render-introduction = "manim -qk -a introduction.py"
 4k-render-main-result = "manim -qk -a main_result.py && ./ffmpeg_concat/concat_main_result.sh 2160p60"
