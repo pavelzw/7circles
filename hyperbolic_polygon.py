@@ -2,7 +2,7 @@ from abc import ABC
 from typing import Union
 
 import numpy as np
-from manim import Dot, VGroup, WHITE, ArcBetweenPoints, Create, override_animation, AnimationGroup
+from manim import Dot, VGroup, WHITE, ArcBetweenPoints, Create, override_animation, AnimationGroup, ManimColor
 from math import pi
 
 from animation_constants import HEXAGON_DOT_CIRCLE_RADIUS
@@ -90,7 +90,7 @@ class HyperbolicPolygon(VGroup, ABC):
         super(HyperbolicPolygon, self).__init__()
 
         n = len(points)
-        if type(color) == str:
+        if type(color) == str or isinstance(color, ManimColor):
             color = [color] * n
         if color is None:
             color = [WHITE] * n

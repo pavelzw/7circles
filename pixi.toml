@@ -1,0 +1,39 @@
+[project]
+name = "7circles"
+description = "The Seven Circles Theorem made with manim"
+channels = ["conda-forge"]
+platforms = ["osx-arm64", "linux-64", "win-64"]
+
+[tasks]
+ci-render-introduction = "manim -qp --progress_bar none -a introduction.py"
+ci-render-main-result = "manim -qp --progress_bar none -a main_result.py && ./ffmpeg_concat/concat_main_result.sh 1440p60"
+ci-render-benedikt = "manim -qp --progress_bar none -a animation.py"
+ci-render-paulina = "manim -qp --progress_bar none -a paulinas_scenes.py"
+ci-render-horodisks = "manim -qp --progress_bar none -a horodisks.py"
+
+4k-render-introduction = "manim -qk -a introduction.py"
+4k-render-main-result = "manim -qk -a main_result.py && ./ffmpeg_concat/concat_main_result.sh 2160p60"
+4k-render-benedikt = "manim -qk -a animation.py"
+4k-render-paulina = "manim -qk -a paulinas_scenes.py"
+4k-render-horodisks = "manim -qk -a horodisks.py"
+
+fast-render-introduction = "manim -ql -a introduction.py"
+fast-render-main-result = "manim -ql -a main_result.py && ./ffmpeg_concat/concat_main_result.sh 480p15"
+fast-render-benedikt = "manim -ql -a animation.py"
+fast-render-paulina = "manim -ql -a paulinas_scenes.py"
+fast-render-horodisks = "manim -ql -a horodisks.py"
+
+4k-render-all = {depends_on = [
+    "4k-render-introduction",
+    "4k-render-main-result",
+    "4k-render-benedikt",
+    "4k-render-paulina",
+    "4k-render-horodisks"
+]}
+
+[dependencies]
+python = "3.11.*"
+manim = ">=0.18.0,<0.19"
+ffmpeg = ">=5.1.2,<5.2"
+# needed for pkg_resources
+setuptools = ">=69.2.0,<69.3"

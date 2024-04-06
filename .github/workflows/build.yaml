@@ -1,77 +1,41 @@
-name: Render videos
+name: CI
 on: push
 jobs:
-  main_result:
+  render-video:
+    name: Render video (${{ matrix.name }})
+    strategy:
+      matrix:
+        include:
+          - name: main-result
+            file: main_result
+          - name: benedikt
+            file: animation
+          - name: introduction
+            file: introduction
+          - name: paulina
+            file: paulinas_scenes
+          - name: horodisks
+            file: horodisks
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Rendering Scenes (Main Result)
-        uses: pavelzw/manim_community_renderer@v2
-        id: renderer
+      - uses: actions/checkout@v4
+      - uses: teatimeguest/setup-texlive-action@9855afe404b85dff721b382b9b50337e2dc252bd
         with:
-          source_file: main_result.py
-          pre_render: tlmgr update --self && tlmgr install mathtools
-          # concat all scenes into one video file
-          post_render: sh ./ffmpeg_concat/concat_main_result.sh
+          packages: |
+            scheme-basic
+            mathtools
+            standalone
+            preview
+            dvisvgm
+      - uses: prefix-dev/setup-pixi@19b5e6071f70a82d3c5741d7b3f98a71d192eb20
+      - name: Render Scenes
+        run: |
+          pixi run ci-render-${{ matrix.name }}
       - name: Save output as artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: main_result
-          path: ${{ steps.renderer.outputs.video_path }}
+          name: ${{ matrix.name }}
+          path: |
+            media/videos/${{ matrix.file }}/1440p60/*.mp4
+            media/videos/${{ matrix.file }}/1440p60/*.srt
           retention-days: 5
-  benedikt:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Rendering Scenes (Benedikt)
-        uses: pavelzw/manim_community_renderer@v2
-        id: renderer
-        with:
-          source_file: animation.py
-      - name: Save output as artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: benedikt
-          path: ${{ steps.renderer.outputs.video_path }}
-  introduction:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Rendering Scenes (Introduction)
-        uses: pavelzw/manim_community_renderer@v2
-        id: renderer
-        with:
-          source_file: introduction.py
-      - name: Save output as artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: introduction
-          path: ${{ steps.renderer.outputs.video_path }}
-  paulina:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Rendering Scenes (Paulina)
-        uses: pavelzw/manim_community_renderer@v2
-        id: renderer
-        with:
-          source_file: paulinas_scenes.py
-      - name: Save output as artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: paulina
-          path: ${{ steps.renderer.outputs.video_path }}
-  horodisks:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Rendering Scenes (Horodisks)
-        uses: pavelzw/manim_community_renderer@v2
-        id: renderer
-        with:
-          source_file: horodisks.py
-      - name: Save output as artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: horodisks
-          path: ${{ steps.renderer.outputs.video_path }}
