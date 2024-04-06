@@ -29,8 +29,7 @@ fast-render-horodisks = "manim -ql -a horodisks.py"
     "4k-render-main-result",
     "4k-render-benedikt",
     "4k-render-paulina",
-    "4k-render-horodisks",
-    "4k-concat-scenes"
+    "4k-render-horodisks"
 ]}
 
 [dependencies]
