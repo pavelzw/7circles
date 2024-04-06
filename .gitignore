@@ -146,3 +146,6 @@ media/
 
 # results
 rendered/
+# pixi environments
+.pixi
+*.egg-info
