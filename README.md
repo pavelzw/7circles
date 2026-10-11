@@ -11,12 +11,8 @@ For every chain $H_1, \ldots, H_6$ of consequently touching circles inscribed in
 
 [![The Seven Circle Theorem](thumbnail.png)](https://youtu.be/m9v0h2ibYpo)
 
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/circles-loop-dark.gif">
-    <img alt="The chain of six circles moving around while the main diagonals keep intersecting in one point" src="assets/circles-loop-light.gif" width="360">
-  </picture>
-</p>
+![The chain of six circles moving around while the main diagonals keep intersecting in one point](assets/circles-loop-dark.gif#gh-dark-mode-only)
+![The chain of six circles moving around while the main diagonals keep intersecting in one point](assets/circles-loop-light.gif#gh-light-mode-only)
 
 ## Acknowledgments
 
