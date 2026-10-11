@@ -11,9 +11,6 @@ For every chain $H_1, \ldots, H_6$ of consequently touching circles inscribed in
 
 [![The Seven Circle Theorem](thumbnail.png)](https://youtu.be/m9v0h2ibYpo)
 
-![The chain of six circles moving around while the main diagonals keep intersecting in one point](assets/circles-loop-dark.gif#gh-dark-mode-only)
-![The chain of six circles moving around while the main diagonals keep intersecting in one point](assets/circles-loop-light.gif#gh-light-mode-only)
-
 ## Acknowledgments
 
 [`tessellation_klein.png`](tessellation_klein.png) and [`tessellation_poincare.png`](tessellation_poincare.png) are made using the [Hyperbolic Tessellation program](https://dmitrybrant.com/2007/01/24/hyperbolic-tessellations) by [Dmirty Brant](https://github.com/dbrant).
@@ -51,14 +48,4 @@ To render the videos, run
 
 ```bash
 pixi run 4k-render-all
-```
-
-### Circles loop
-
-[`circles_loop.py`](circles_loop.py) contains `Scene1` of the introduction (the chain of circles moving around)
-with configurable colors, rendered as a seamless loop in a dark and a light variant.
-To render both variants and convert them to the GIFs shown above, run
-
-```bash
-pixi run render-loop
 ```
