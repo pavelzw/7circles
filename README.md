@@ -49,3 +49,13 @@ To render the videos, run
 ```bash
 pixi run 4k-render-all
 ```
+
+### Blog thumbnail
+
+[`blog_thumbnail.py`](blog_thumbnail.py) contains `Scene1` of the introduction (the chain of circles moving around)
+with configurable colors. It is used as a looping light/dark thumbnail on [pavel.pink/projects](https://pavel.pink/projects).
+To render and compress both variants into `media/videos/blog_thumbnail/`, run
+
+```bash
+pixi run render-thumbnail
+```

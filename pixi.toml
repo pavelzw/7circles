@@ -23,6 +23,15 @@ fast-render-benedikt = "manim -ql -a animation.py"
 fast-render-paulina = "manim -ql -a paulinas_scenes.py"
 fast-render-horodisks = "manim -ql -a horodisks.py"
 
+# Looping thumbnail of the moving circles (Scene1 of the introduction) for https://pavel.pink/projects
+render-thumbnail-dark = "manim -r 1280,720 --fps 60 -o thumbnail-dark blog_thumbnail.py ThumbnailDark"
+render-thumbnail-light = "manim -r 1280,720 --fps 60 -o thumbnail-light blog_thumbnail.py ThumbnailLight"
+compress-thumbnail = { cmd = """
+ffmpeg -y -i media/videos/blog_thumbnail/720p60/thumbnail-dark.mp4 -vf scale=960:540,fps=60 -c:v libx264 -preset slow -crf 28 -pix_fmt yuv420p -movflags +faststart -an media/videos/blog_thumbnail/seven-circles-dark.mp4 && \
+ffmpeg -y -i media/videos/blog_thumbnail/720p60/thumbnail-light.mp4 -vf scale=960:540,fps=60 -c:v libx264 -preset slow -crf 28 -pix_fmt yuv420p -movflags +faststart -an media/videos/blog_thumbnail/seven-circles-light.mp4
+""", depends_on = ["render-thumbnail-dark", "render-thumbnail-light"] }
+render-thumbnail = { depends_on = ["compress-thumbnail"] }
+
 4k-render-all = {depends_on = [
     "4k-render-introduction",
     "4k-render-main-result",
