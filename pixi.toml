@@ -23,14 +23,14 @@ fast-render-benedikt = "manim -ql -a animation.py"
 fast-render-paulina = "manim -ql -a paulinas_scenes.py"
 fast-render-horodisks = "manim -ql -a horodisks.py"
 
-# Looping thumbnail of the moving circles (Scene1 of the introduction) for https://pavel.pink/projects
-render-thumbnail-dark = "manim -r 1280,720 --fps 60 -o thumbnail-dark blog_thumbnail.py ThumbnailDark"
-render-thumbnail-light = "manim -r 1280,720 --fps 60 -o thumbnail-light blog_thumbnail.py ThumbnailLight"
-compress-thumbnail = { cmd = """
-ffmpeg -y -i media/videos/blog_thumbnail/720p60/thumbnail-dark.mp4 -vf scale=960:540,fps=60 -c:v libx264 -preset slow -crf 28 -pix_fmt yuv420p -movflags +faststart -an media/videos/blog_thumbnail/seven-circles-dark.mp4 && \
-ffmpeg -y -i media/videos/blog_thumbnail/720p60/thumbnail-light.mp4 -vf scale=960:540,fps=60 -c:v libx264 -preset slow -crf 28 -pix_fmt yuv420p -movflags +faststart -an media/videos/blog_thumbnail/seven-circles-light.mp4
-""", depends_on = ["render-thumbnail-dark", "render-thumbnail-light"] }
-render-thumbnail = { depends_on = ["compress-thumbnail"] }
+# Seamless loop of the moving circles (Scene1 of the introduction) in a dark and a light variant
+render-loop-dark = "manim -r 1280,720 --fps 60 -o circles-loop-dark circles_loop.py CirclesLoopDark"
+render-loop-light = "manim -r 1280,720 --fps 60 -o circles-loop-light circles_loop.py CirclesLoopLight"
+render-loop-gifs = { cmd = """
+ffmpeg -y -i media/videos/circles_loop/720p60/circles-loop-dark.mp4 -vf "crop=660:660,scale=320:320:flags=lanczos,fps=15,split[a][b];[a]palettegen=max_colors=32:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle" -loop 0 assets/circles-loop-dark.gif && \
+ffmpeg -y -i media/videos/circles_loop/720p60/circles-loop-light.mp4 -vf "crop=660:660,scale=320:320:flags=lanczos,fps=15,split[a][b];[a]palettegen=max_colors=32:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle" -loop 0 assets/circles-loop-light.gif
+""", depends_on = ["render-loop-dark", "render-loop-light"] }
+render-loop = { depends_on = ["render-loop-gifs"] }
 
 4k-render-all = {depends_on = [
     "4k-render-introduction",

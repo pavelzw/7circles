@@ -1,4 +1,6 @@
-"""Scene1 from introduction.py with configurable colors, used for the blog thumbnail."""
+"""Scene1 from introduction.py (the chain of circles moving around) with configurable colors.
+
+Rendered as a seamless loop in a dark and a light variant, see the README."""
 import numpy as np
 from manim import (BLACK, GREEN_B, GREEN_E, GREY, GREY_D, MovingCameraScene, ORANGE, WHITE, YELLOW,
                    YELLOW_E, Circle, Dot, Transform, config)
@@ -8,7 +10,7 @@ from geometry_util import get_intersection_from_angles
 from hexagon import HexagonAngles, HexagonCircles
 
 
-class ThumbnailBase(MovingCameraScene):
+class CirclesLoopBase(MovingCameraScene):
     OUTER_CIRCLE_COLOR = WHITE
     INNER_CIRCLE_COLOR = GREEN_B
     HEXAGON_COLOR = GREY
@@ -68,11 +70,11 @@ class ThumbnailBase(MovingCameraScene):
         self.add(*hex_circles, *diagonals, intersection)
 
 
-class ThumbnailDark(ThumbnailBase):
+class CirclesLoopDark(CirclesLoopBase):
     pass
 
 
-class ThumbnailLight(ThumbnailBase):
+class CirclesLoopLight(CirclesLoopBase):
     OUTER_CIRCLE_COLOR = BLACK
     INNER_CIRCLE_COLOR = GREEN_E
     HEXAGON_COLOR = GREY_D

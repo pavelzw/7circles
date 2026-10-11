@@ -11,6 +11,13 @@ For every chain $H_1, \ldots, H_6$ of consequently touching circles inscribed in
 
 [![The Seven Circle Theorem](thumbnail.png)](https://youtu.be/m9v0h2ibYpo)
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/circles-loop-dark.gif">
+    <img alt="The chain of six circles moving around while the main diagonals keep intersecting in one point" src="assets/circles-loop-light.gif" width="360">
+  </picture>
+</p>
+
 ## Acknowledgments
 
 [`tessellation_klein.png`](tessellation_klein.png) and [`tessellation_poincare.png`](tessellation_poincare.png) are made using the [Hyperbolic Tessellation program](https://dmitrybrant.com/2007/01/24/hyperbolic-tessellations) by [Dmirty Brant](https://github.com/dbrant).
@@ -50,12 +57,12 @@ To render the videos, run
 pixi run 4k-render-all
 ```
 
-### Blog thumbnail
+### Circles loop
 
-[`blog_thumbnail.py`](blog_thumbnail.py) contains `Scene1` of the introduction (the chain of circles moving around)
-with configurable colors. It is used as a looping light/dark thumbnail on [pavel.pink/projects](https://pavel.pink/projects).
-To render and compress both variants into `media/videos/blog_thumbnail/`, run
+[`circles_loop.py`](circles_loop.py) contains `Scene1` of the introduction (the chain of circles moving around)
+with configurable colors, rendered as a seamless loop in a dark and a light variant.
+To render both variants and convert them to the GIFs shown above, run
 
 ```bash
-pixi run render-thumbnail
+pixi run render-loop
 ```
