@@ -23,6 +23,10 @@ fast-render-benedikt = "manim -ql -a animation.py"
 fast-render-paulina = "manim -ql -a paulinas_scenes.py"
 fast-render-horodisks = "manim -ql -a horodisks.py"
 
+# Seamless loop of the moving circles (Scene1 of the introduction) in a dark and a light variant
+render-loop-dark = "manim -r 1280,720 --fps 60 -o circles-loop-dark circles_loop.py CirclesLoopDark"
+render-loop-light = "manim -r 1280,720 --fps 60 -o circles-loop-light circles_loop.py CirclesLoopLight"
+
 4k-render-all = {depends_on = [
     "4k-render-introduction",
     "4k-render-main-result",
