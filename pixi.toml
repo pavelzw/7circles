@@ -26,11 +26,6 @@ fast-render-horodisks = "manim -ql -a horodisks.py"
 # Seamless loop of the moving circles (Scene1 of the introduction) in a dark and a light variant
 render-loop-dark = "manim -r 1280,720 --fps 60 -o circles-loop-dark circles_loop.py CirclesLoopDark"
 render-loop-light = "manim -r 1280,720 --fps 60 -o circles-loop-light circles_loop.py CirclesLoopLight"
-render-loop-gifs = { cmd = """
-ffmpeg -y -i media/videos/circles_loop/720p60/circles-loop-dark.mp4 -vf "scale=480:270:flags=lanczos,fps=15,split[a][b];[a]palettegen=max_colors=32:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle" -loop 0 assets/circles-loop-dark.gif && \
-ffmpeg -y -i media/videos/circles_loop/720p60/circles-loop-light.mp4 -vf "scale=480:270:flags=lanczos,fps=15,split[a][b];[a]palettegen=max_colors=32:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle" -loop 0 assets/circles-loop-light.gif
-""", depends_on = ["render-loop-dark", "render-loop-light"] }
-render-loop = { depends_on = ["render-loop-gifs"] }
 
 4k-render-all = {depends_on = [
     "4k-render-introduction",
